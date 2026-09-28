@@ -5,19 +5,12 @@ import {
   ArrowLeft, 
   BrainCircuit, 
   Clock, 
-  ShieldAlert, 
-  CheckCircle2, 
-  AlertTriangle, 
-  Terminal, 
   FileCheck2, 
-  Share2, 
-  Activity,
   Server,
-  Layers,
-  Sparkles,
-  ExternalLink,
   ChevronRight,
-  Flame
+  Flame,
+  CheckCircle2,
+  AlertTriangle
 } from 'lucide-react';
 import { Card, Badge, SeverityBadge, StatusBadge, HindsightBadge, Button, CodeBlock } from '../components/ui';
 
@@ -56,8 +49,8 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] text-slate-400 font-mono text-sm space-y-3">
-        <div className="w-8 h-8 border-2 border-accent-cyan border-t-transparent rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-[#64748B] font-mono text-sm space-y-3">
+        <div className="w-8 h-8 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin" />
         <span>Loading incident war room dossier {incidentId}...</span>
       </div>
     );
@@ -65,8 +58,8 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
 
   if (!incident) {
     return (
-      <div className="p-8 text-center text-slate-400">
-        Incident not found. <button onClick={onBack} className="text-accent-cyan underline cursor-pointer">Return to Feed</button>
+      <div className="p-8 text-center text-[#64748B]">
+        Incident not found. <button onClick={onBack} className="text-[#4F46E5] underline cursor-pointer">Return to Feed</button>
       </div>
     );
   }
@@ -77,7 +70,7 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
       <div className="flex items-center justify-between">
         <button
           onClick={onBack}
-          className="flex items-center gap-1.5 text-xs font-mono text-slate-400 hover:text-white transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 text-xs font-mono text-[#64748B] hover:text-[#172033] transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Incidents Feed
         </button>
@@ -88,7 +81,7 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
             size="sm"
             onClick={() => onStartInvestigation(incident.id)}
           >
-            <BrainCircuit className="w-3.5 h-3.5 text-accent-cyan mr-1.5 animate-pulse" />
+            <BrainCircuit className="w-3.5 h-3.5 text-[#4F46E5] mr-1.5" />
             Launch AI Studio
           </Button>
 
@@ -110,39 +103,39 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
           <div className="space-y-2.5 max-w-3xl">
             <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-              <span className="font-bold text-accent-cyan text-sm px-2 py-0.5 rounded bg-slate-900 border border-slate-800">
+              <span className="font-bold text-[#4F46E5] text-sm px-2 py-0.5 rounded-lg bg-[#EEF2FF] border border-indigo-100">
                 {incident.id}
               </span>
               <SeverityBadge severity={incident.severity} />
               <StatusBadge status={incident.status} />
-              <span className="text-slate-400 flex items-center gap-1">
-                <Server className="w-3 h-3 text-slate-500" />
+              <span className="text-[#64748B] flex items-center gap-1">
+                <Server className="w-3 h-3 text-[#94A3B8]" />
                 [{incident.service}]
               </span>
-              <span className="text-slate-400">• env: {incident.environment}</span>
+              <span className="text-[#64748B]">• env: {incident.environment}</span>
             </div>
 
-            <h1 className="text-2xl font-extrabold text-white tracking-tight leading-snug">
+            <h1 className="text-2xl font-extrabold text-[#172033] tracking-tight leading-snug">
               {incident.title}
             </h1>
-            <p className="text-xs text-slate-300 leading-relaxed font-sans max-w-2xl">
+            <p className="text-xs text-[#64748B] leading-relaxed font-sans max-w-2xl">
               {incident.description}
             </p>
           </div>
 
-          {/* Quick Meta Badge */}
-          <div className="p-4 rounded-xl bg-slate-900/90 border border-slate-800 text-xs font-mono text-slate-400 space-y-2 self-start min-w-[220px] shadow-sm">
+          {/* Quick Meta Card */}
+          <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-mono text-[#64748B] space-y-2 self-start min-w-[220px] shadow-xs">
             <div className="flex items-center justify-between">
               <span>Declared:</span>
-              <span className="text-slate-200">{new Date(incident.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              <span className="text-[#172033]">{new Date(incident.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
             <div className="flex items-center justify-between">
               <span>Service:</span>
-              <span className="text-white font-semibold">{incident.service}</span>
+              <span className="text-[#172033] font-semibold">{incident.service}</span>
             </div>
-            <div className="pt-1 border-t border-slate-800 flex items-center justify-between">
+            <div className="pt-1 border-t border-[#E2E8F0] flex items-center justify-between">
               <span>Hindsight:</span>
-              <span className={incident.resolution?.retained_in_hindsight ? 'text-purple-400 font-bold' : 'text-slate-500'}>
+              <span className={incident.resolution?.retained_in_hindsight ? 'text-[#4F46E5] font-bold' : 'text-[#94A3B8]'}>
                 {incident.resolution?.retained_in_hindsight ? 'RETAINED' : 'PENDING POSTMORTEM'}
               </span>
             </div>
@@ -150,188 +143,237 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-6 border-t border-slate-800 pt-3 text-xs font-medium">
+        <div className="flex items-center gap-2 border-b border-[#E2E8F0] pt-2 text-xs font-mono">
           <button
             onClick={() => setActiveTab('timeline')}
-            className={`pb-2 border-b-2 font-semibold transition-colors cursor-pointer ${
-              activeTab === 'timeline' ? 'border-accent-cyan text-accent-cyan' : 'border-transparent text-slate-400 hover:text-white'
+            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer ${
+              activeTab === 'timeline'
+                ? 'border-[#4F46E5] text-[#4F46E5]'
+                : 'border-transparent text-[#64748B] hover:text-[#172033]'
             }`}
           >
-            Incident Timeline & Events
+            Lifecycle Stepper
           </button>
           <button
             onClick={() => setActiveTab('symptoms')}
-            className={`pb-2 border-b-2 font-semibold transition-colors cursor-pointer ${
-              activeTab === 'symptoms' ? 'border-accent-cyan text-accent-cyan' : 'border-transparent text-slate-400 hover:text-white'
+            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer ${
+              activeTab === 'symptoms'
+                ? 'border-[#4F46E5] text-[#4F46E5]'
+                : 'border-transparent text-[#64748B] hover:text-[#172033]'
             }`}
           >
-            Symptoms & Error Logs ({incident.symptoms.length})
+            Symptoms & Raw Logs
           </button>
           <button
             onClick={() => setActiveTab('investigation')}
-            className={`pb-2 border-b-2 font-semibold transition-colors cursor-pointer ${
-              activeTab === 'investigation' ? 'border-accent-cyan text-accent-cyan' : 'border-transparent text-slate-400 hover:text-white'
+            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer ${
+              activeTab === 'investigation'
+                ? 'border-[#4F46E5] text-[#4F46E5]'
+                : 'border-transparent text-[#64748B] hover:text-[#172033]'
             }`}
           >
-            AI Investigation Dossier {incident.investigation ? '✓' : ''}
+            Investigation Findings
           </button>
           <button
             onClick={() => setActiveTab('resolution')}
-            className={`pb-2 border-b-2 font-semibold transition-colors cursor-pointer ${
-              activeTab === 'resolution' ? 'border-accent-cyan text-accent-cyan' : 'border-transparent text-slate-400 hover:text-white'
+            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer ${
+              activeTab === 'resolution'
+                ? 'border-[#4F46E5] text-[#4F46E5]'
+                : 'border-transparent text-[#64748B] hover:text-[#172033]'
             }`}
           >
-            Postmortem & Verified Fix
+            Confirmed Postmortem
           </button>
         </div>
       </Card>
 
-      {/* Tab Panels */}
+      {/* Tab 1: Timeline */}
       {activeTab === 'timeline' && (
         <Card className="p-6 space-y-6">
-          <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-            <Clock className="w-4 h-4 text-accent-cyan" />
-            <span>Chronological Incident Lifecycle</span>
-          </h3>
-
-          <div className="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-800 text-xs">
-            <div className="relative space-y-1">
-              <div className="absolute -left-6 top-1 w-3 h-3 rounded-full bg-rose-500 ring-4 ring-[#0F172A]" />
-              <div className="font-mono text-slate-400 text-[11px]">{new Date(incident.created_at).toLocaleString()}</div>
-              <div className="font-bold text-white text-xs">Incident Declared (Telemetry Alert Triggered)</div>
-              <p className="text-slate-300">Automated monitor detected threshold breach on service <code className="text-accent-cyan font-mono">{incident.service}</code>.</p>
+          <h3 className="text-sm font-semibold text-[#172033]">Incident Lifecycle Progression</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 space-y-2">
+              <div className="flex items-center justify-between text-xs font-mono font-bold text-red-700">
+                <span>1. TRIGGERED</span>
+                <Flame className="w-4 h-4" />
+              </div>
+              <div className="text-xs text-[#172033]">Automated monitor tripped on {incident.service}</div>
+              <div className="text-[10px] text-[#64748B] font-mono">{new Date(incident.created_at).toLocaleTimeString()}</div>
             </div>
 
-            {incident.investigation && (
-              <div className="relative space-y-1">
-                <div className="absolute -left-6 top-1 w-3 h-3 rounded-full bg-accent-cyan ring-4 ring-[#0F172A]" />
-                <div className="font-mono text-slate-400 text-[11px]">{new Date(incident.investigation.created_at).toLocaleString()}</div>
-                <div className="font-bold text-white flex items-center gap-2 text-xs">
-                  <BrainCircuit className="w-3.5 h-3.5 text-accent-cyan" />
-                  Hindsight Investigation Completed & Grounded in Memory
-                </div>
-                <p className="text-slate-300">{incident.investigation.summary}</p>
+            <div className={`p-4 rounded-2xl border space-y-2 ${
+              incident.investigation ? 'bg-indigo-50 border-indigo-200' : 'bg-[#F8FAFC] border-[#E2E8F0]'
+            }`}>
+              <div className={`flex items-center justify-between text-xs font-mono font-bold ${
+                incident.investigation ? 'text-[#4F46E5]' : 'text-[#64748B]'
+              }`}>
+                <span>2. INVESTIGATING</span>
+                <BrainCircuit className="w-4 h-4" />
               </div>
-            )}
+              <div className="text-xs text-[#172033]">AI Agent querying Hindsight memory bank</div>
+              <div className="text-[10px] text-[#64748B] font-mono">
+                {incident.investigation ? 'Diagnosis synthesized' : 'Awaiting triage'}
+              </div>
+            </div>
 
-            {incident.resolution && (
-              <div className="relative space-y-1">
-                <div className="absolute -left-6 top-1 w-3 h-3 rounded-full bg-emerald-400 ring-4 ring-[#0F172A]" />
-                <div className="font-mono text-slate-400 text-[11px]">{new Date(incident.resolution.resolved_at).toLocaleString()}</div>
-                <div className="font-bold text-emerald-400 flex items-center gap-2 text-xs">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  Incident Resolved & Retained to Hindsight Bank
-                </div>
-                <p className="text-slate-300 font-mono text-[11px]">{incident.resolution.verified_root_cause}</p>
+            <div className={`p-4 rounded-2xl border space-y-2 ${
+              incident.status === 'Mitigated' || incident.status === 'Resolved' ? 'bg-blue-50 border-blue-200' : 'bg-[#F8FAFC] border-[#E2E8F0]'
+            }`}>
+              <div className={`flex items-center justify-between text-xs font-mono font-bold ${
+                incident.status === 'Mitigated' || incident.status === 'Resolved' ? 'text-blue-700' : 'text-[#64748B]'
+              }`}>
+                <span>3. MITIGATED</span>
+                <CheckCircle2 className="w-4 h-4" />
               </div>
-            )}
+              <div className="text-xs text-[#172033]">Initial mitigation steps executed</div>
+              <div className="text-[10px] text-[#64748B] font-mono">
+                {incident.resolution ? 'Applied' : 'Pending action'}
+              </div>
+            </div>
+
+            <div className={`p-4 rounded-2xl border space-y-2 ${
+              incident.status === 'Resolved' ? 'bg-emerald-50 border-emerald-200' : 'bg-[#F8FAFC] border-[#E2E8F0]'
+            }`}>
+              <div className={`flex items-center justify-between text-xs font-mono font-bold ${
+                incident.status === 'Resolved' ? 'text-emerald-700' : 'text-[#64748B]'
+              }`}>
+                <span>4. RESOLVED</span>
+                <FileCheck2 className="w-4 h-4" />
+              </div>
+              <div className="text-xs text-[#172033]">Root cause confirmed & retained in Hindsight</div>
+              <div className="text-[10px] text-[#64748B] font-mono">
+                {incident.resolved_at ? new Date(incident.resolved_at).toLocaleTimeString() : 'In Progress'}
+              </div>
+            </div>
           </div>
         </Card>
       )}
 
+      {/* Tab 2: Symptoms & Logs */}
       {activeTab === 'symptoms' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-white">Observed Symptoms & Error Signatures</h3>
+          <Card className="p-5 space-y-4">
+            <h3 className="text-sm font-semibold text-[#172033]">Observed Symptoms & Anomalies</h3>
             <div className="space-y-2">
-              {incident.symptoms.map((s, i) => (
-                <div key={i} className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-mono text-slate-200 flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+              {incident.symptoms.map((s, idx) => (
+                <div key={idx} className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] font-mono text-xs text-[#172033] flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4F46E5]" />
                   <span>{s}</span>
                 </div>
               ))}
             </div>
 
-            {incident.error_messages.length > 0 && (
-              <div className="pt-2 space-y-2">
-                <div className="text-xs font-semibold text-slate-400">Captured Error Traces:</div>
-                {incident.error_messages.map((err, i) => (
-                  <div key={i} className="p-2.5 rounded-lg bg-rose-950/20 border border-rose-500/30 font-mono text-[11px] text-rose-300">
-                    {err}
-                  </div>
-                ))}
-              </div>
-            )}
+            <h3 className="text-sm font-semibold text-[#172033] pt-2">Captured Error Messages</h3>
+            <div className="space-y-2">
+              {incident.error_messages.map((e, idx) => (
+                <div key={idx} className="p-3 rounded-xl bg-red-50 border border-red-200 font-mono text-xs text-red-700">
+                  {e}
+                </div>
+              ))}
+            </div>
           </Card>
 
-          <Card className="p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-white">Sanitized Telemetry Log Stream</h3>
+          <Card className="p-5 space-y-4">
+            <h3 className="text-sm font-semibold text-[#172033]">Sanitized Diagnostic Telemetry Log Stream</h3>
             {incident.logs_excerpt ? (
-              <CodeBlock code={incident.logs_excerpt} language="sanitized-logs" />
+              <CodeBlock code={incident.logs_excerpt} language="log" />
             ) : (
-              <div className="p-8 text-center text-xs text-slate-400 font-mono">No raw logs attached.</div>
+              <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs text-[#64748B]">
+                No raw telemetry traces attached to this incident.
+              </div>
             )}
           </Card>
         </div>
       )}
 
+      {/* Tab 3: Investigation Findings */}
       {activeTab === 'investigation' && (
-        <Card className="p-6 space-y-4">
+        <Card className="p-6 space-y-5">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-accent-cyan" />
-              <span>Latest Agent Investigation</span>
-            </h3>
-            <Button size="sm" variant="outline" onClick={() => onStartInvestigation(incident.id)}>
-              Open Full Studio
+            <h3 className="text-sm font-semibold text-[#172033]">Hindsight AI Synthesis & Hypotheses</h3>
+            <Button size="sm" variant="primary" onClick={() => onStartInvestigation(incident.id)}>
+              Open Full AI Studio
             </Button>
           </div>
 
           {incident.investigation ? (
-            <div className="space-y-4 text-xs font-sans">
-              <p className="text-slate-200 leading-relaxed font-medium">{incident.investigation.summary}</p>
-              
-              <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-2.5">
-                <div className="font-semibold text-white">Grounded Hypotheses:</div>
+            <div className="space-y-4">
+              <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 text-xs text-[#172033] leading-relaxed">
+                <span className="font-bold text-[#4F46E5] block mb-1">Executive AI Summary:</span>
+                {incident.investigation.summary}
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <h4 className="text-xs font-semibold text-[#172033]">Ranked Hypotheses:</h4>
                 {incident.investigation.hypotheses.map((h, i) => (
-                  <div key={i} className="flex items-center justify-between text-slate-300 font-mono text-[11px] p-2 rounded bg-black/30 border border-slate-800/60">
-                    <span>• {h.cause}</span>
-                    <Badge variant={h.status === 'Confirmed' ? 'success' : 'high'}>{h.status}</Badge>
+                  <div key={i} className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-[#172033]">{h.cause}</span>
+                      <Badge variant={h.status === 'Confirmed' ? 'success' : 'high'}>{h.status}</Badge>
+                    </div>
+                    <ul className="list-disc list-inside text-xs text-[#64748B] space-y-1">
+                      {h.evidence_supporting.map((ev, ei) => (
+                        <li key={ei}>{ev}</li>
+                      ))}
+                    </ul>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <div className="text-center py-8 space-y-3">
-              <p className="text-xs text-slate-400">No investigation record stored on this incident yet.</p>
-              <Button size="sm" onClick={() => onStartInvestigation(incident.id)}>
-                <BrainCircuit className="w-4 h-4 mr-1.5" /> Run Hindsight Investigation Now
+            <div className="p-8 text-center text-[#64748B] text-xs space-y-3">
+              <p>No automated investigation results generated yet.</p>
+              <Button size="sm" variant="primary" onClick={() => onStartInvestigation(incident.id)}>
+                Run Hindsight Investigation Now
               </Button>
             </div>
           )}
         </Card>
       )}
 
+      {/* Tab 4: Postmortem Resolution */}
       {activeTab === 'resolution' && (
-        <Card className="p-6 space-y-4">
-          <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-            <FileCheck2 className="w-4 h-4 text-emerald-400" />
-            <span>Verified Resolution Record</span>
-          </h3>
+        <Card className="p-6 space-y-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-[#172033]">Confirmed Root Cause & Resolution Record</h3>
+            {incident.status !== 'Resolved' && (
+              <Button size="sm" variant="primary" onClick={() => onNavigateToResolve(incident.id)}>
+                Edit & Resolve
+              </Button>
+            )}
+          </div>
 
           {incident.resolution ? (
-            <div className="space-y-4 text-xs font-sans">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[11px]">
-                <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-                  <span className="text-slate-400 block text-[10px]">Human-Verified Root Cause:</span>
-                  <span className="text-emerald-300 font-bold leading-snug">{incident.resolution.verified_root_cause}</span>
+            <div className="space-y-4 text-xs">
+              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-emerald-800 text-sm">Verified Root Cause:</span>
+                  <HindsightBadge label="Retained in Hindsight" />
                 </div>
-                <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
-                  <span className="text-slate-400 block text-[10px]">Permanent Fix Applied:</span>
-                  <span className="text-slate-200 leading-snug">{incident.resolution.permanent_fix}</span>
+                <p className="text-emerald-950 font-medium leading-relaxed">
+                  {incident.resolution.verified_root_cause}
+                </p>
+                <div className="text-[11px] text-emerald-700">
+                  Verified by: <span className="font-semibold">{incident.resolution.verified_by_user}</span>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-purple-950/40 border border-purple-800/60 text-[11px] font-mono text-purple-300 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-purple-400" />
-                <span>Stored in Hindsight Memory Bank. Provenance permanently linked to {incident.id}.</span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5">
+                  <span className="font-semibold text-[#172033]">Mitigation Applied:</span>
+                  <p className="text-[#64748B]">{incident.resolution.mitigation_applied}</p>
+                </div>
+                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5">
+                  <span className="font-semibold text-[#172033]">Permanent Architectural Fix:</span>
+                  <p className="text-[#64748B]">{incident.resolution.permanent_fix}</p>
+                </div>
               </div>
             </div>
           ) : (
-            <div className="text-center py-8 space-y-3">
-              <p className="text-xs text-slate-400">Incident is still active or waiting for human resolution confirmation.</p>
-              <Button size="sm" variant="success" onClick={() => onNavigateToResolve(incident.id)}>
-                Verify & Retain Resolution
+            <div className="p-8 text-center text-[#64748B] text-xs space-y-3">
+              <p>This incident is still open and has not yet been resolved or retained.</p>
+              <Button size="sm" variant="primary" onClick={() => onNavigateToResolve(incident.id)}>
+                Verify & Submit Postmortem
               </Button>
             </div>
           )}
@@ -340,4 +382,3 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
     </div>
   );
 };
-

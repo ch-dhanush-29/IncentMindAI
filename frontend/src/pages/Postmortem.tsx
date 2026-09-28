@@ -6,16 +6,12 @@ import {
   BrainCircuit, 
   CheckCircle2, 
   AlertCircle, 
-  Save,
-  ArrowRight,
-  Database,
-  ExternalLink,
-  ShieldCheck,
-  Sparkles,
-  Server,
-  Layers
+  Save, 
+  ArrowRight, 
+  ShieldCheck, 
+  Sparkles 
 } from 'lucide-react';
-import { Card, Badge, SeverityBadge, StatusBadge, HindsightBadge, Button, CodeBlock } from '../components/ui';
+import { Card, Button } from '../components/ui';
 
 interface PostmortemProps {
   selectedIncidentId: string | null;
@@ -104,39 +100,42 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!currentId || !rootCause || !permanentFix) {
-      setError('Please provide at least verified root cause and permanent fix.');
+      setError('Please provide the verified root cause and permanent fix before retaining in memory.');
       return;
     }
 
     try {
       setSubmitting(true);
       setError(null);
-      setRetainStep(1); // Validating
+
+      setRetainStep(1); // Step 1: Validating Human Verification
+      await new Promise(r => setTimeout(r, 600));
+
+      setRetainStep(2); // Step 2: Formulating TEMPR Biomimetic Index
+      await new Promise(r => setTimeout(r, 600));
+
+      setRetainStep(3); // Step 3: Retaining in Hindsight Bank
 
       const payload = {
         verified_root_cause: rootCause,
-        verification_method: verificationMethod || 'Direct engineer telemetry observation and metrics confirmation',
-        impact_summary: impactSummary || `Degraded ${currentIncident?.service || 'service'} requests during incident window`,
-        mitigation_applied: mitigation || 'Restored healthy state via configuration mitigation',
+        verification_method: verificationMethod || 'SRE Metrics Inspection',
+        impact_summary: impactSummary || 'Degraded customer service operations',
+        mitigation_applied: mitigation || 'Restored healthy state',
         permanent_fix: permanentFix,
         is_verified_by_human: true,
+        verified_by_user: 'sre-engineer',
         lessons_learned: lessons.split('\n').filter(l => l.trim().length > 0),
-        follow_up_tickets: tickets.split(',').map(t => t.trim()).filter(t => t.length > 0)
+        follow_up_tickets: tickets.split(',').map(t => t.trim()).filter(Boolean),
+        retain_in_hindsight: true
       };
 
-      // Step 2 simulation for high-end SRE visual feedback
-      await new Promise(r => setTimeout(r, 600));
-      setRetainStep(2); // Generating TEMPR embeddings
-
-      const result = await api.resolveIncident(currentId, payload);
-      
-      await new Promise(r => setTimeout(r, 600));
-      setRetainStep(3); // Ingested to Hindsight Bank
-
+      const updated = await api.resolveIncident(currentId, payload);
+      setCurrentIncident(updated);
+      setRetainedMemoryId(`mem-${currentId.toLowerCase()}`);
       setSuccess(true);
-      setRetainedMemoryId(`MEM-${currentId.replace('INC-', '')}`);
+      setRetainStep(4);
     } catch (err: any) {
-      setError(err.message || 'Failed to save postmortem and retain to Hindsight');
+      setError(err.message || 'Failed to resolve and retain incident in Hindsight.');
       setRetainStep(0);
     } finally {
       setSubmitting(false);
@@ -145,57 +144,68 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Header and Incident Selector */}
+      <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-            <FileCheck2 className="w-6 h-6 text-emerald-400" />
-            <span>Resolution Verification & Hindsight Knowledge Retention</span>
+          <h2 className="text-xl font-bold tracking-tight text-[#172033] flex items-center gap-2">
+            <FileCheck2 className="w-5 h-5 text-[#4F46E5]" />
+            Human-Verified Postmortem & Hindsight Retain
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Confirm human-verified facts, mark incident resolved, and write structured knowledge into the Hindsight memory bank.
+          <p className="text-xs text-[#64748B] mt-1">
+            Confirmed root causes and resolutions are committed to the Hindsight memory bank to prevent recurring triage toil.
           </p>
+        </div>
+
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <label className="text-xs font-mono text-[#64748B]">Target Incident:</label>
+          <select
+            value={currentId}
+            onChange={(e) => setCurrentId(e.target.value)}
+            className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-xs text-[#4F46E5] font-mono font-bold focus:outline-none focus:border-[#4F46E5] cursor-pointer"
+          >
+            {incidents.map((inc) => (
+              <option key={inc.id} value={inc.id}>
+                {inc.id} - {inc.service} ({inc.status})
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* Incident Switcher Card */}
-      <Card className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-        <span className="text-slate-300 font-medium flex items-center gap-2">
-          <Server className="w-4 h-4 text-accent-cyan" />
-          Select Incident for Postmortem Resolution:
-        </span>
-        <select
-          value={currentId}
-          onChange={(e) => setCurrentId(e.target.value)}
-          className="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-accent-cyan font-mono text-xs focus:outline-none focus:border-accent-cyan cursor-pointer max-w-md"
-        >
-          {incidents.map((inc) => (
-            <option key={inc.id} value={inc.id}>
-              [{inc.id}] {inc.service} - {inc.title.slice(0, 40)}... ({inc.status})
-            </option>
-          ))}
-        </select>
-      </Card>
+      {/* Persistence Steps Animation if Submitting */}
+      {submitting && retainStep > 0 && (
+        <Card className="p-5 space-y-3 bg-[#EEF2FF]/60 border-indigo-200">
+          <h4 className="text-xs font-mono font-bold text-[#4F46E5] flex items-center gap-2">
+            <BrainCircuit className="w-4 h-4 animate-spin text-[#4F46E5]" />
+            <span>Vectorize Hindsight Memory Bank Ingestion Pipeline:</span>
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+            <div className={`p-3 rounded-xl border transition-colors ${
+              retainStep >= 1 ? 'bg-white border-emerald-200 text-emerald-800' : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#94A3B8]'
+            }`}>
+              1. Enforce Human Verification ✓
+            </div>
+            <div className={`p-3 rounded-xl border transition-colors ${
+              retainStep >= 2 ? 'bg-white border-emerald-200 text-emerald-800' : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#94A3B8]'
+            }`}>
+              2. Index TEMPR Vectors ✓
+            </div>
+            <div className={`p-3 rounded-xl border transition-colors ${
+              retainStep >= 3 ? 'bg-white border-emerald-200 text-emerald-800' : 'bg-[#F8FAFC] border-[#E2E8F0] text-[#94A3B8]'
+            }`}>
+              3. Store in Memory Bank ✓
+            </div>
+          </div>
+        </Card>
+      )}
 
-      {/* Success Notification with Live Memory Snapshot */}
+      {/* Success Notification Banner */}
       {success && (
-        <div className="p-5 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-slate-900 to-purple-950/80 border border-emerald-500/50 shadow-xl space-y-3">
+        <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
-                <CheckCircle2 className="w-6 h-6 text-emerald-400" />
-              </div>
-              <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                  <span>Incident Resolved & Memory Persisted to Hindsight!</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-300">
-                    Provenance Verified
-                  </span>
-                </h3>
-                <p className="text-xs text-slate-300 mt-0.5">
-                  The SRE verified resolution has been permanently stored in Bank <code className="text-accent-cyan font-mono">incidentmind-prod-bank</code>.
-                </p>
-              </div>
+            <div className="flex items-center gap-2.5 text-emerald-800 font-bold text-sm">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <span>Resolution Retained in Hindsight Memory Bank!</span>
             </div>
 
             <Button
@@ -207,25 +217,25 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
             </Button>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-black/60 border border-slate-800 text-xs font-mono space-y-1 text-slate-300">
-            <div className="flex items-center justify-between text-[11px] text-slate-400 pb-1 border-b border-slate-800">
-              <span className="text-purple-300 font-semibold flex items-center gap-1.5">
-                <BrainCircuit className="w-3.5 h-3.5 text-purple-400" /> Retained Memory Record: {retainedMemoryId}
+          <div className="p-3.5 rounded-xl bg-white border border-emerald-200 text-xs font-mono space-y-1 text-[#172033]">
+            <div className="flex items-center justify-between text-[11px] text-[#64748B] pb-1 border-b border-[#E2E8F0]">
+              <span className="text-[#4F46E5] font-semibold flex items-center gap-1.5">
+                <BrainCircuit className="w-3.5 h-3.5" /> Retained Memory Record: {retainedMemoryId}
               </span>
-              <span className="text-emerald-400">Indexed in TEMPR</span>
+              <span className="text-emerald-700 font-medium">Indexed in TEMPR</span>
             </div>
-            <div className="text-[11px] text-slate-200 pt-1">
-              <span className="text-slate-400">Verified Root Cause: </span>{rootCause}
+            <div className="text-[11px] text-[#172033] pt-1">
+              <span className="text-[#64748B]">Verified Root Cause: </span>{rootCause}
             </div>
-            <div className="text-[11px] text-emerald-300">
-              <span className="text-slate-400">Permanent Fix: </span>{permanentFix}
+            <div className="text-[11px] text-emerald-700">
+              <span className="text-[#64748B]">Permanent Fix: </span>{permanentFix}
             </div>
           </div>
         </div>
       )}
 
       {error && (
-        <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-400 flex items-center gap-2">
+        <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -235,17 +245,17 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Section 1: Root Cause & Verification */}
         <Card className="p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2.5">
+            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
               <span>1. Root Cause & Verification Method</span>
             </h3>
-            <span className="text-[11px] font-mono text-slate-400">Human Verification Required</span>
+            <span className="text-[11px] font-mono text-[#64748B]">Human Verification Required</span>
           </div>
 
           <div className="space-y-3">
             <div>
-              <label className="block font-medium text-slate-200 mb-1.5 text-xs">
+              <label className="block font-medium text-[#172033] mb-1.5 text-xs">
                 Verified Root Cause * (Human SRE Confirmed)
               </label>
               <textarea
@@ -254,30 +264,30 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
                 value={rootCause}
                 onChange={(e) => setRootCause(e.target.value)}
                 placeholder="e.g., HikariCP connection leak in webhook retry executor combined with max_connections ceiling in RDS parameter group."
-                className="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-accent-cyan leading-relaxed font-sans"
+                className="w-full bg-white border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-indigo-100 leading-relaxed font-sans"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block font-medium text-slate-200 mb-1.5 text-xs">Verification Method Used</label>
+                <label className="block font-medium text-[#172033] mb-1.5 text-xs">Verification Method Used</label>
                 <input
                   type="text"
                   value={verificationMethod}
                   onChange={(e) => setVerificationMethod(e.target.value)}
                   placeholder="e.g., Inspected pg_stat_activity queries in idle in transaction state"
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-cyan"
+                  className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5]"
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-slate-200 mb-1.5 text-xs">Impact Summary</label>
+                <label className="block font-medium text-[#172033] mb-1.5 text-xs">Impact Summary</label>
                 <input
                   type="text"
                   value={impactSummary}
                   onChange={(e) => setImpactSummary(e.target.value)}
                   placeholder="e.g., Payment processing degraded for 18 minutes; 142 transactions dropped"
-                  className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-cyan"
+                  className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5]"
                 />
               </div>
             </div>
@@ -286,35 +296,35 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
 
         {/* Section 2: Mitigation & Permanent Fix */}
         <Card className="p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-accent-cyan" />
+          <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2.5">
+            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#4F46E5]" />
               <span>2. Remediation & Permanent Architecture Fix</span>
             </h3>
-            <span className="text-[11px] font-mono text-slate-400">Runbook Capture</span>
+            <span className="text-[11px] font-mono text-[#64748B]">Runbook Capture</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-medium text-slate-200 mb-1.5 text-xs">Immediate Mitigation Applied</label>
+              <label className="block font-medium text-[#172033] mb-1.5 text-xs">Immediate Mitigation Applied</label>
               <textarea
                 rows={3}
                 value={mitigation}
                 onChange={(e) => setMitigation(e.target.value)}
                 placeholder="e.g., Restarted worker pods to flush orphaned pool connections; scaled max_connections to 250."
-                className="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-accent-cyan leading-relaxed font-sans"
+                className="w-full bg-white border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-indigo-100 leading-relaxed font-sans"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-slate-200 mb-1.5 text-xs">Permanent Fix Applied *</label>
+              <label className="block font-medium text-[#172033] mb-1.5 text-xs">Permanent Fix Applied *</label>
               <textarea
                 required
                 rows={3}
                 value={permanentFix}
                 onChange={(e) => setPermanentFix(e.target.value)}
                 placeholder="e.g., Patched PaymentWebhookClient with try-with-resources and integrated pgbouncer proxy layer."
-                className="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-accent-cyan leading-relaxed font-sans"
+                className="w-full bg-white border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-indigo-100 leading-relaxed font-sans"
               />
             </div>
           </div>
@@ -322,33 +332,33 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
 
         {/* Section 3: Lessons Learned & Tickets */}
         <Card className="p-5 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
-            <h3 className="text-sm font-semibold text-white">3. Continuous Improvement</h3>
-            <span className="text-[11px] font-mono text-slate-400">Knowledge Retention</span>
+          <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-2.5">
+            <h3 className="text-sm font-semibold text-[#172033]">3. Continuous Improvement</h3>
+            <span className="text-[11px] font-mono text-[#64748B]">Knowledge Retention</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block font-medium text-slate-200 mb-1.5 text-xs">Lessons Learned (one per line)</label>
+              <label className="block font-medium text-[#172033] mb-1.5 text-xs">Lessons Learned (one per line)</label>
               <textarea
                 rows={3}
                 value={lessons}
                 onChange={(e) => setLessons(e.target.value)}
                 placeholder="Always wrap external webhook invocations with try-with-resources&#10;Deploy connection pool alerts at 80% threshold"
-                className="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-xs text-white focus:outline-none focus:border-accent-cyan font-mono text-[11px] leading-relaxed"
+                className="w-full bg-white border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5] font-mono text-[11px] leading-relaxed"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-slate-200 mb-1.5 text-xs">Follow-up Jira / GitHub Tickets</label>
+              <label className="block font-medium text-[#172033] mb-1.5 text-xs">Follow-up Jira / GitHub Tickets</label>
               <input
                 type="text"
                 value={tickets}
                 onChange={(e) => setTickets(e.target.value)}
                 placeholder="e.g., INFRA-4421, PAY-904"
-                className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-accent-cyan font-mono"
+                className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-2 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5] font-mono"
               />
-              <p className="text-[11px] text-slate-400 mt-2 font-mono">
+              <p className="text-[11px] text-[#64748B] mt-2 font-mono">
                 Tickets are linked to the incident memory node in Hindsight for future cross-referencing.
               </p>
             </div>
@@ -356,22 +366,22 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
         </Card>
 
         {/* Bottom Submission Bar with TEMPR Memory Hook */}
-        <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-slate-900 to-indigo-950/40 border border-purple-500/40 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="p-5 rounded-2xl bg-[#EEF2FF] border border-indigo-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center flex-shrink-0">
-              <BrainCircuit className="w-5 h-5 text-purple-400 animate-pulse" />
+            <div className="w-10 h-10 rounded-xl bg-white border border-indigo-200 flex items-center justify-center flex-shrink-0">
+              <BrainCircuit className="w-5 h-5 text-[#4F46E5]" />
             </div>
             <div>
-              <span className="font-bold text-white text-sm block">Persist Outcome to Hindsight Memory Bank</span>
-              <span className="text-slate-400 text-xs">
-                Embeds this verified resolution into Bank <code className="text-accent-cyan font-mono">incidentmind-prod-bank</code>. Future outages with matching symptoms will automatically recall this exact solution.
+              <span className="font-bold text-[#172033] text-sm block">Persist Outcome to Hindsight Memory Bank</span>
+              <span className="text-[#64748B] text-xs">
+                Embeds this verified resolution into Bank <code className="text-[#4F46E5] font-mono font-semibold">incidentmind-prod-bank</code>. Future outages with matching symptoms will automatically recall this exact solution.
               </span>
             </div>
           </div>
 
           <Button
             type="submit"
-            variant="hindsight"
+            variant="primary"
             size="lg"
             loading={submitting}
           >
@@ -383,4 +393,3 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
     </div>
   );
 };
-

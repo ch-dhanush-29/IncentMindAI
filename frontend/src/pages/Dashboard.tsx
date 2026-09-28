@@ -5,16 +5,12 @@ import {
   Brain, 
   ArrowUpRight, 
   Flame, 
-  ShieldCheck,
-  TrendingDown,
-  Layers,
-  Sparkles,
-  AlertTriangle,
-  ChevronRight,
-  Server
+  ShieldCheck, 
+  Sparkles, 
+  Server 
 } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from 'recharts';
-import { Card, Badge, SeverityBadge, StatusBadge, HindsightBadge, Button } from '../components/ui';
+import { SeverityBadge, Button } from '../components/ui';
 
 export const Dashboard: React.FC<{ 
   onSelectIncident: (id: string) => void;
@@ -47,8 +43,8 @@ export const Dashboard: React.FC<{
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] text-slate-400 font-mono text-sm space-y-3">
-        <div className="w-8 h-8 border-2 border-accent-cyan border-t-transparent rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-[#64748B] font-mono text-sm space-y-3">
+        <div className="w-8 h-8 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin" />
         <span>Loading SRE Executive Telemetry & Hindsight Memories...</span>
       </div>
     );
@@ -62,65 +58,61 @@ export const Dashboard: React.FC<{
       title: 'Active Production Incidents',
       value: summary?.open_incidents ?? 0,
       icon: Flame,
-      color: 'text-rose-400',
-      bgColor: 'from-rose-500/10 to-transparent',
-      borderColor: 'border-rose-500/30',
-      badge: 'Current Outages',
-      badgeClass: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
+      iconColor: 'text-red-600',
+      iconBg: 'bg-red-50',
+      badge: 'Active Outages',
+      badgeClass: 'bg-red-50 text-red-700 border-red-200',
     },
     {
       title: 'Mean Time to Resolution (MTTR)',
       value: mttrValue,
       icon: Clock,
-      color: 'text-accent-cyan',
-      bgColor: 'from-cyan-500/10 to-transparent',
-      borderColor: 'border-cyan-500/30',
+      iconColor: 'text-[#4F46E5]',
+      iconBg: 'bg-[#EEF2FF]',
       badge: '-42% with Hindsight',
-      badgeClass: 'bg-cyan-500/10 text-accent-cyan border-cyan-500/30 font-semibold',
+      badgeClass: 'bg-indigo-50 text-[#4F46E5] border-indigo-200 font-semibold',
     },
     {
       title: 'Verified Memories in Bank',
       value: summary?.total_hindsight_memories ?? 0,
       icon: Brain,
-      color: 'text-purple-400',
-      bgColor: 'from-purple-500/10 to-transparent',
-      borderColor: 'border-purple-500/30',
+      iconColor: 'text-[#4F46E5]',
+      iconBg: 'bg-[#EEF2FF]',
       badge: 'TEMPR Indexed',
-      badgeClass: 'bg-purple-950/70 text-purple-300 border-purple-700/60',
+      badgeClass: 'bg-indigo-50 text-[#4F46E5] border-indigo-200',
     },
     {
       title: 'Total Retained Resolutions',
       value: summary?.resolved_incidents ?? 0,
       icon: ShieldCheck,
-      color: 'text-emerald-400',
-      bgColor: 'from-emerald-500/10 to-transparent',
-      borderColor: 'border-emerald-500/30',
+      iconColor: 'text-emerald-600',
+      iconBg: 'bg-emerald-50',
       badge: '100% Provenance',
-      badgeClass: 'bg-emerald-950/70 text-emerald-300 border-emerald-700/60',
+      badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200',
     },
   ];
 
   return (
     <div className="space-y-6">
-      {/* Top Critical Alert Ticker if Active */}
+      {/* Top Critical Alert Banner if Active */}
       {criticalIncident && (
-        <div className="p-4 rounded-xl bg-gradient-to-r from-rose-950/70 via-slate-900 to-slate-900 border border-rose-500/50 shadow-lg shadow-rose-950/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-rose-500/20 border border-rose-500/50 flex items-center justify-center flex-shrink-0 animate-pulse">
-              <Flame className="w-5 h-5 text-rose-400" />
+            <div className="w-10 h-10 rounded-xl bg-red-100 border border-red-200 flex items-center justify-center flex-shrink-0">
+              <Flame className="w-5 h-5 text-red-600" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <SeverityBadge severity="Critical" />
-                <span className="font-mono text-xs text-rose-300 font-bold">{criticalIncident.id}</span>
-                <span className="text-xs text-slate-400">on service <span className="text-white font-mono font-semibold">{criticalIncident.service}</span></span>
+                <span className="font-mono text-xs text-red-700 font-bold">{criticalIncident.id}</span>
+                <span className="text-xs text-[#64748B]">on service <span className="text-[#172033] font-mono font-semibold">{criticalIncident.service}</span></span>
               </div>
-              <h3 className="text-sm font-semibold text-white mt-0.5">{criticalIncident.title}</h3>
+              <h3 className="text-sm font-semibold text-[#172033] mt-0.5">{criticalIncident.title}</h3>
             </div>
           </div>
 
           <div className="flex items-center gap-2.5 self-end md:self-auto">
-            <span className="text-xs font-mono text-slate-400 hidden lg:inline">Hindsight Match: <span className="text-accent-cyan font-bold">94%</span></span>
+            <span className="text-xs font-mono text-[#64748B] hidden lg:inline">Hindsight Match: <span className="text-[#4F46E5] font-bold">98%</span></span>
             <Button
               variant="danger"
               size="sm"
@@ -136,16 +128,16 @@ export const Dashboard: React.FC<{
       {/* Header with Cluster Pill */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+          <h2 className="text-2xl font-bold tracking-tight text-[#172033] flex items-center gap-2">
             Executive SRE Operations Dashboard
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-[#64748B] mt-1">
             Continuous telemetry, recurring incident signatures, and Hindsight persistent memory acceleration.
           </p>
         </div>
-        <div className="text-xs font-mono px-3.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-800 text-slate-300 flex items-center gap-2 self-start md:self-auto shadow-sm">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span>Environment: <span className="text-white font-semibold">Production Multi-Cluster</span></span>
+        <div className="text-xs font-mono px-3.5 py-1.5 rounded-xl bg-white border border-[#E2E8F0] text-[#64748B] flex items-center gap-2 self-start md:self-auto shadow-xs">
+          <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Environment: <span className="text-[#172033] font-semibold">Production Multi-Cluster</span></span>
         </div>
       </div>
 
@@ -156,16 +148,16 @@ export const Dashboard: React.FC<{
           return (
             <div 
               key={idx} 
-              className={`p-5 rounded-xl bg-gradient-to-b ${kpi.bgColor} bg-[#0F172A] border ${kpi.borderColor} relative overflow-hidden transition-all duration-200 hover:scale-[1.01] hover:shadow-lg`}
+              className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs relative overflow-hidden transition-colors hover:border-slate-300"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-slate-400">{kpi.title}</span>
-                <div className="p-2 rounded-lg bg-slate-900/80 border border-slate-800">
-                  <Icon className={'w-4 h-4 ' + kpi.color} />
+                <span className="text-xs font-medium text-[#64748B]">{kpi.title}</span>
+                <div className={`p-2 rounded-xl ${kpi.iconBg}`}>
+                  <Icon className={`w-4 h-4 ${kpi.iconColor}`} />
                 </div>
               </div>
               <div className="mt-4 flex items-baseline justify-between">
-                <div className="text-3xl font-extrabold font-mono tracking-tight text-white">{kpi.value}</div>
+                <div className="text-3xl font-extrabold font-mono tracking-tight text-[#172033]">{kpi.value}</div>
                 <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${kpi.badgeClass}`}>
                   {kpi.badge}
                 </span>
@@ -177,55 +169,55 @@ export const Dashboard: React.FC<{
 
       {/* Charts & Severity Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 p-5 rounded-xl bg-[#0F172A] border border-[#1E293B] shadow-sm space-y-4">
+        <div className="lg:col-span-2 p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
                 <span>Incident Investigations & Memory Recall Assists</span>
-                <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 border border-cyan-800/80 px-2 py-0.5 rounded-full">TEMPR</span>
+                <span className="text-[10px] font-mono text-[#4F46E5] bg-[#EEF2FF] border border-indigo-100 px-2 py-0.5 rounded-full font-medium">TEMPR</span>
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">Volume of active outages vs investigations accelerated by Hindsight past memory</p>
+              <p className="text-xs text-[#64748B] mt-0.5">Volume of active outages vs investigations accelerated by Hindsight past memory</p>
             </div>
           </div>
           <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={trends?.daily_volume || []}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
                 <XAxis dataKey="date" stroke="#64748B" fontSize={11} tickLine={false} />
                 <YAxis stroke="#64748B" fontSize={11} tickLine={false} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#0B0F19', borderColor: '#334155', borderRadius: '8px', fontSize: '12px' }}
+                  contentStyle={{ backgroundColor: '#FFFFFF', borderColor: '#E2E8F0', borderRadius: '12px', fontSize: '12px', color: '#172033', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}
                 />
                 <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '8px' }} />
-                <Bar dataKey="incidents" name="Total Incidents" fill="#3B82F6" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="recalled_assists" name="Hindsight Assisted" fill="#00D2FF" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="incidents" name="Total Incidents" fill="#94A3B8" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="recalled_assists" name="Hindsight Assisted" fill="#4F46E5" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="p-5 rounded-xl bg-[#0F172A] border border-[#1E293B] shadow-sm space-y-4">
-          <h3 className="text-sm font-semibold text-white">Severity Breakdown</h3>
+        <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs space-y-4">
+          <h3 className="text-sm font-semibold text-[#172033]">Severity Breakdown</h3>
           <div className="space-y-3">
             {summary?.by_severity && Object.entries(summary.by_severity).map(([sev, count]: [string, any]) => {
               return (
-                <div key={sev} className="flex items-center justify-between text-xs p-2 rounded-lg bg-slate-900/60 border border-slate-800/60">
+                <div key={sev} className="flex items-center justify-between text-xs p-2.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
                   <div className="flex items-center gap-2">
                     <SeverityBadge severity={sev} />
                   </div>
-                  <span className="font-mono text-slate-300 font-semibold">{count} active</span>
+                  <span className="font-mono text-[#172033] font-semibold">{count} active</span>
                 </div>
               );
             })}
           </div>
 
-          <div className="pt-3 border-t border-slate-800">
-            <h3 className="text-sm font-semibold text-white mb-2.5">Top Critical Services</h3>
+          <div className="pt-3 border-t border-[#E2E8F0]">
+            <h3 className="text-sm font-semibold text-[#172033] mb-2.5">Top Critical Services</h3>
             <div className="space-y-2">
               {summary?.by_service && Object.entries(summary.by_service).map(([srv, count]: [string, any]) => (
-                <div key={srv} className="flex items-center justify-between text-xs font-mono text-slate-300 p-2 rounded-lg bg-slate-900/40 border border-slate-800/40">
-                  <span className="text-slate-200 font-medium">{srv}</span>
-                  <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-accent-cyan font-bold">{count}</span>
+                <div key={srv} className="flex items-center justify-between text-xs font-mono text-[#172033] p-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                  <span className="text-[#172033] font-medium">{srv}</span>
+                  <span className="px-2 py-0.5 rounded-lg bg-[#EEF2FF] border border-indigo-100 text-[#4F46E5] font-bold">{count}</span>
                 </div>
               ))}
             </div>
@@ -234,14 +226,14 @@ export const Dashboard: React.FC<{
       </div>
 
       {/* Recurring Incident Signatures */}
-      <div className="p-5 rounded-xl bg-[#0F172A] border border-[#1E293B] shadow-sm space-y-4">
+      <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-white flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
               <span>Recurring Production Incident Signatures</span>
-              <span className="text-[10px] font-mono text-purple-400 bg-purple-950/60 border border-purple-800/80 px-2 py-0.5 rounded-full">Automated Signature Detection</span>
+              <span className="text-[10px] font-mono text-[#4F46E5] bg-[#EEF2FF] border border-indigo-100 px-2 py-0.5 rounded-full font-medium">Automated Signature Detection</span>
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">Recurring failure patterns recognized by Hindsight memory bank across deployment cycles</p>
+            <p className="text-xs text-[#64748B] mt-0.5">Recurring failure patterns recognized by Hindsight memory bank across deployment cycles</p>
           </div>
         </div>
 
@@ -249,28 +241,28 @@ export const Dashboard: React.FC<{
           {trends?.recurring_signatures?.map((sig: any, idx: number) => (
             <div 
               key={idx}
-              className="p-4 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-accent-cyan/60 hover:bg-slate-900 transition-all flex flex-col justify-between gap-3 cursor-pointer group"
+              className="p-4 rounded-2xl bg-white border border-[#E2E8F0] hover:border-indigo-200 hover:bg-[#EEF2FF]/30 transition-colors flex flex-col justify-between gap-3 cursor-pointer group shadow-xs"
               onClick={() => onSelectIncident(incidents[0]?.id || 'INC-CEC3A6')}
             >
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-white text-xs flex items-center gap-1.5">
-                    <Server className="w-3.5 h-3.5 text-accent-cyan" />
+                  <span className="font-semibold text-[#172033] text-xs flex items-center gap-1.5">
+                    <Server className="w-3.5 h-3.5 text-[#4F46E5]" />
                     {sig.service}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-800 text-accent-cyan text-[10px] font-mono">
+                  <span className="px-2 py-0.5 rounded-full bg-[#EEF2FF] border border-indigo-100 text-[#4F46E5] text-[10px] font-mono font-medium">
                     {sig.status}
                   </span>
                 </div>
-                <div className="text-xs text-slate-300 font-medium">
+                <div className="text-xs text-[#172033] font-medium">
                   {sig.pattern}
                 </div>
-                <div className="text-[11px] text-slate-400 font-mono">
+                <div className="text-[11px] text-[#64748B] font-mono">
                   {sig.occurrences} historical occurrences documented in Hindsight memory
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-accent-cyan font-mono group-hover:text-cyan-300">
+              <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-[#4F46E5] font-mono group-hover:text-[#4338CA]">
                 <span className="flex items-center gap-1 text-[11px]">
                   <Sparkles className="w-3 h-3" /> Quick AI Triage
                 </span>
@@ -283,4 +275,3 @@ export const Dashboard: React.FC<{
     </div>
   );
 };
-

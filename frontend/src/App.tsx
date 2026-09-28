@@ -42,7 +42,7 @@ export function App() {
   };
 
   return (
-    <div className="flex h-screen bg-background text-gray-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#F5F7FB] text-[#172033] overflow-hidden font-sans">
       {/* Sidebar Desktop */}
       <div className={`${mobileSidebarOpen ? 'block' : 'hidden'} md:block fixed md:relative z-40 h-full`}>
         <Sidebar 
@@ -61,7 +61,7 @@ export function App() {
       {mobileSidebarOpen && (
         <div 
           onClick={() => setMobileSidebarOpen(false)}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden"
+          className="fixed inset-0 bg-slate-900/30 backdrop-blur-xs z-30 md:hidden"
         />
       )}
 

@@ -6,13 +6,11 @@ import {
   FileText, 
   BarChart3, 
   Settings, 
-  ChevronRight,
-  Radio,
-  Archive,
-  LineChart,
-  Layers,
-  ChevronLeft,
-  Server
+  ChevronRight, 
+  Radio, 
+  Archive, 
+  LineChart, 
+  ChevronLeft 
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -43,30 +41,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <aside 
-      className={`bg-sidebar border-r border-border flex flex-col justify-between h-screen select-none transition-all duration-300 relative z-30 ${
+      className={`bg-white border-r border-[#E2E8F0] flex flex-col justify-between h-screen select-none transition-all duration-300 relative z-30 ${
         collapsed ? 'w-18' : 'w-64'
       }`}
     >
       <div>
         {/* Brand Header */}
-        <div className="p-4 border-b border-border/80 flex items-center justify-between">
+        <div className="p-4 border-b border-[#E2E8F0] flex items-center justify-between">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-9 h-9 min-w-9 rounded-xl bg-gradient-to-tr from-accent-blue via-blue-600 to-accent-cyan flex items-center justify-center shadow-lg shadow-cyan-500/25 ring-1 ring-cyan-400/40">
-              <BrainCircuit className="w-5 h-5 text-white font-bold" />
+            <div className="w-9 h-9 min-w-9 rounded-xl bg-[#4F46E5] flex items-center justify-center shadow-xs">
+              <BrainCircuit className="w-5 h-5 text-white" />
             </div>
             {!collapsed && (
               <div className="truncate">
-                <h1 className="font-bold text-sm tracking-tight text-white flex items-center gap-1.5">
-                  IncidentMind <span className="text-accent-cyan text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-950/70 border border-cyan-700/60">AI</span>
+                <h1 className="font-bold text-sm tracking-tight text-[#172033] flex items-center gap-1.5">
+                  IncidentMind <span className="text-[#4F46E5] text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#EEF2FF] border border-indigo-100 font-semibold">AI</span>
                 </h1>
-                <p className="text-[11px] text-gray-400 truncate">Agentic SRE Memory</p>
+                <p className="text-[11px] text-[#64748B] truncate">Agentic SRE Memory</p>
               </div>
             )}
           </div>
 
           <button
             onClick={() => setCollapsed(!collapsed)}
-            className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-card border border-transparent hover:border-border transition-colors hidden md:block"
+            className="p-1 rounded-md text-[#64748B] hover:text-[#172033] hover:bg-[#F8FAFC] border border-transparent hover:border-[#E2E8F0] transition-colors hidden md:block cursor-pointer"
             title={collapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             <ChevronLeft className={`w-4 h-4 transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} />
@@ -75,16 +73,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Hindsight Bank Indicator */}
         {!collapsed ? (
-          <div className="mx-3 mt-3 px-3 py-2 rounded-lg bg-card/70 border border-border/90 flex items-center justify-between text-xs">
+          <div className="mx-3 mt-3 px-3 py-2 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full ${hindsightConnected ? 'bg-emerald-400 ring-2 ring-emerald-500/20 animate-pulse' : 'bg-amber-400'}`} />
-              <span className="text-gray-300 font-mono text-[11px]">Hindsight Bank</span>
+              <div className={`w-2 h-2 rounded-full ${hindsightConnected ? 'bg-emerald-500 ring-2 ring-emerald-100' : 'bg-amber-400'}`} />
+              <span className="text-[#172033] font-mono text-[11px] font-medium">Hindsight Bank</span>
             </div>
-            <span className="text-[10px] text-accent-cyan font-mono bg-cyan-950/60 border border-cyan-800/60 px-1.5 py-0.5 rounded font-medium">TEMPR Active</span>
+            <span className="text-[10px] text-[#4F46E5] font-mono bg-[#EEF2FF] border border-indigo-100 px-1.5 py-0.5 rounded font-medium">TEMPR Active</span>
           </div>
         ) : (
           <div className="mt-3 flex justify-center">
-            <div className={`w-2.5 h-2.5 rounded-full ${hindsightConnected ? 'bg-emerald-400 ring-2 ring-emerald-500/20 animate-pulse' : 'bg-amber-400'}`} title="Hindsight Connected" />
+            <div className={`w-2.5 h-2.5 rounded-full ${hindsightConnected ? 'bg-emerald-500 ring-2 ring-emerald-100' : 'bg-amber-400'}`} title="Hindsight Connected" />
           </div>
         )}
 
@@ -99,30 +97,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onClick={() => setCurrentTab(item.id)}
                 className={`w-full flex items-center ${
                   collapsed ? 'justify-center py-3' : 'justify-between px-3 py-2.5'
-                } rounded-lg text-xs font-medium transition-all duration-150 relative group ${
+                } rounded-xl text-xs font-medium transition-colors duration-150 relative group cursor-pointer ${
                   isActive
-                    ? 'bg-accent-blue/15 text-accent-cyan border border-accent-cyan/35 shadow-sm shadow-cyan-950/30 font-semibold'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-card/60 border border-transparent'
+                    ? 'bg-[#EEF2FF] text-[#4F46E5] font-semibold border border-indigo-100'
+                    : 'text-[#64748B] hover:text-[#172033] hover:bg-[#F8FAFC] border border-transparent'
                 }`}
                 title={collapsed ? item.label : undefined}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${
-                    isActive ? 'text-accent-cyan' : 'text-slate-400 group-hover:text-slate-200'
+                    isActive ? 'text-[#4F46E5]' : 'text-[#94A3B8] group-hover:text-[#64748B]'
                   }`} />
                   {!collapsed && <span className="truncate">{item.label}</span>}
                 </div>
                 {!collapsed && item.badge && (
                   <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border transition-all ${
                     isActive 
-                      ? 'bg-cyan-950/80 text-cyan-300 border-cyan-500/50 shadow-[0_0_8px_rgba(0,210,255,0.2)]' 
-                      : 'bg-slate-900 text-slate-400 border-slate-800 group-hover:border-slate-700'
+                      ? 'bg-white text-[#4F46E5] border-indigo-200' 
+                      : 'bg-slate-100 text-slate-600 border-slate-200'
                   }`}>
                     {item.badge}
                   </span>
                 )}
                 {!collapsed && !item.badge && isActive && (
-                  <ChevronRight className="w-3.5 h-3.5 text-accent-cyan animate-pulse" />
+                  <ChevronRight className="w-3.5 h-3.5 text-[#4F46E5]" />
                 )}
               </button>
             );
@@ -131,27 +129,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Footer Profile & Status */}
-      <div className="p-3 border-t border-border bg-[#060911]/90 text-xs text-slate-400">
+      <div className="p-3 border-t border-[#E2E8F0] bg-[#F8FAFC] text-xs text-[#64748B]">
         {!collapsed ? (
           <>
-            <div className="flex items-center gap-2.5 mb-2.5 p-2 rounded-lg bg-slate-900/60 border border-slate-800/80">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-600 to-blue-600 border border-cyan-400/40 flex items-center justify-center text-white font-mono font-bold text-xs shadow-md shadow-cyan-950/50">
+            <div className="flex items-center gap-2.5 mb-2.5 p-2 rounded-xl bg-white border border-[#E2E8F0] shadow-xs">
+              <div className="w-7 h-7 rounded-lg bg-[#EEF2FF] border border-indigo-100 flex items-center justify-center text-[#4F46E5] font-mono font-bold text-xs">
                 SRE
               </div>
               <div className="truncate flex-1">
-                <div className="text-slate-200 font-semibold text-xs truncate flex items-center justify-between">
+                <div className="text-[#172033] font-semibold text-xs truncate flex items-center justify-between">
                   <span>Incident Commander</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                 </div>
-                <div className="text-[10px] text-slate-400 font-mono truncate">scope: prod-global</div>
+                <div className="text-[10px] text-[#64748B] font-mono truncate">scope: prod-global</div>
               </div>
             </div>
-            <div className="space-y-1 text-[10px] text-slate-400 pt-1 font-mono">
+            <div className="space-y-1 text-[10px] text-[#64748B] pt-1 font-mono">
               <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5"><Radio className="w-2.5 h-2.5 text-emerald-400 animate-pulse" /> Groq Fast Llama-70B</span>
-                <span className="text-emerald-400 font-bold">ONLINE</span>
+                <span className="flex items-center gap-1.5"><Radio className="w-2.5 h-2.5 text-emerald-600" /> Groq Fast Llama-70B</span>
+                <span className="text-emerald-700 font-semibold">ONLINE</span>
               </div>
-              <div className="flex items-center justify-between text-slate-400">
+              <div className="flex items-center justify-between text-[#64748B]">
                 <span>Bank: incidentmind-prod</span>
                 <span>v1.0.0</span>
               </div>
@@ -159,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </>
         ) : (
           <div className="flex justify-center">
-            <div className="w-7 h-7 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-accent-cyan font-mono text-xs" title="Production SRE">
+            <div className="w-7 h-7 rounded-lg bg-[#EEF2FF] border border-indigo-100 flex items-center justify-center text-[#4F46E5] font-mono text-xs font-bold" title="Production SRE">
               SRE
             </div>
           </div>
@@ -168,4 +166,3 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </aside>
   );
 };
-
