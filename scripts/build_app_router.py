@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿app_code = """import { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { Dashboard } from './pages/Dashboard';
@@ -138,3 +138,8 @@ export function App() {
 }
 
 export default App;
+"""
+
+with open(r"d:\IncidentMind AI\frontend\src\App.tsx", "w", encoding="utf-8") as f:
+    f.write(app_code)
+print("Updated App.tsx with full 9-page router navigation")

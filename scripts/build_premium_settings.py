@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿settings_code = """import { useState, useEffect } from 'react';
 import { api } from '../services/api';
 import { 
   Settings as SettingsIcon, 
@@ -239,3 +239,8 @@ DEMO_MODE=true`}
     </div>
   );
 };
+"""
+
+with open(r"d:\IncidentMind AI\frontend\src\pages\SettingsPage.tsx", "w", encoding="utf-8") as f:
+    f.write(settings_code)
+print("Updated SettingsPage.tsx successfully")
