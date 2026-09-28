@@ -75,7 +75,10 @@ export function App() {
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
           {currentTab === 'dashboard' && (
-            <Dashboard onSelectIncident={handleSelectIncidentDetail} />
+            <Dashboard 
+              onSelectIncident={handleSelectIncidentDetail} 
+              onStartInvestigation={handleStartInvestigation}
+            />
           )}
 
           {currentTab === 'incidents' && (

@@ -107,18 +107,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 title={collapsed ? item.label : undefined}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-accent-cyan' : 'text-gray-400 group-hover:text-gray-300'}`} />
+                  <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${
+                    isActive ? 'text-accent-cyan' : 'text-slate-400 group-hover:text-slate-200'
+                  }`} />
                   {!collapsed && <span className="truncate">{item.label}</span>}
                 </div>
                 {!collapsed && item.badge && (
-                  <span className={`text-[9px] font-mono px-1.5 py-0.2 rounded border ${
-                    isActive ? 'bg-cyan-950/80 text-cyan-300 border-cyan-700/60' : 'bg-card text-gray-400 border-border'
+                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border transition-all ${
+                    isActive 
+                      ? 'bg-cyan-950/80 text-cyan-300 border-cyan-500/50 shadow-[0_0_8px_rgba(0,210,255,0.2)]' 
+                      : 'bg-slate-900 text-slate-400 border-slate-800 group-hover:border-slate-700'
                   }`}>
                     {item.badge}
                   </span>
                 )}
                 {!collapsed && !item.badge && isActive && (
-                  <ChevronRight className="w-3.5 h-3.5 text-accent-cyan" />
+                  <ChevronRight className="w-3.5 h-3.5 text-accent-cyan animate-pulse" />
                 )}
               </button>
             );
@@ -127,27 +131,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       {/* Footer Profile & Status */}
-      <div className="p-3 border-t border-border bg-sidebar/90 text-xs text-gray-400">
+      <div className="p-3 border-t border-border bg-[#060911]/90 text-xs text-slate-400">
         {!collapsed ? (
           <>
-            <div className="flex items-center gap-2.5 mb-2">
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-slate-800 to-slate-700 border border-slate-600 flex items-center justify-center text-accent-cyan font-mono font-bold text-xs shadow-inner">
-                SR
+            <div className="flex items-center gap-2.5 mb-2.5 p-2 rounded-lg bg-slate-900/60 border border-slate-800/80">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-cyan-600 to-blue-600 border border-cyan-400/40 flex items-center justify-center text-white font-mono font-bold text-xs shadow-md shadow-cyan-950/50">
+                SRE
               </div>
-              <div className="truncate">
-                <div className="text-gray-200 font-medium text-xs truncate">Production SRE</div>
-                <div className="text-[10px] text-gray-500 font-mono truncate">workspace: prod-east</div>
+              <div className="truncate flex-1">
+                <div className="text-slate-200 font-semibold text-xs truncate flex items-center justify-between">
+                  <span>Incident Commander</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                </div>
+                <div className="text-[10px] text-slate-400 font-mono truncate">scope: prod-global</div>
               </div>
             </div>
-            <div className="flex items-center justify-between text-[10px] text-gray-500 pt-2 border-t border-border/50 font-mono">
-              <span className="flex items-center gap-1.5"><Radio className="w-2.5 h-2.5 text-emerald-400" /> Groq Fast</span>
-              <span>v1.0.0</span>
+            <div className="space-y-1 text-[10px] text-slate-400 pt-1 font-mono">
+              <div className="flex items-center justify-between">
+                <span className="flex items-center gap-1.5"><Radio className="w-2.5 h-2.5 text-emerald-400 animate-pulse" /> Groq Fast Llama-70B</span>
+                <span className="text-emerald-400 font-bold">ONLINE</span>
+              </div>
+              <div className="flex items-center justify-between text-slate-400">
+                <span>Bank: incidentmind-prod</span>
+                <span>v1.0.0</span>
+              </div>
             </div>
           </>
         ) : (
           <div className="flex justify-center">
-            <div className="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-accent-cyan font-mono text-xs" title="Production SRE">
-              SR
+            <div className="w-7 h-7 rounded-lg bg-slate-900 border border-slate-700 flex items-center justify-center text-accent-cyan font-mono text-xs" title="Production SRE">
+              SRE
             </div>
           </div>
         )}
@@ -155,3 +168,4 @@ export const Sidebar: React.FC<SidebarProps> = ({
     </aside>
   );
 };
+

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { api } from '../services/api';
-import { X, AlertCircle, ShieldAlert } from 'lucide-react';
+import { X, AlertCircle, ShieldAlert, Sparkles, Server, Flame, Check } from 'lucide-react';
+import { Button, Badge } from './ui';
 
 interface CreateIncidentModalProps {
   isOpen: boolean;
@@ -21,6 +22,39 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({ isOpen
   const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
+
+  const presets = [
+    {
+      label: 'PostgreSQL Pool Saturation',
+      service: 'payment-api',
+      severity: 'Critical',
+      title: 'PostgreSQL connection pool saturation under checkout surge',
+      desc: 'Sudden spike in 504 Gateway Timeouts across checkout routes. Multiple backend threads blocked waiting for free DB connection handle.',
+      symptoms: '504 Gateway Timeout during checkout\np99 latency > 4200ms\nHikariCP pool saturation at 100/100 connections',
+      errors: 'HikariPool-1 - Connection is not available, request timed out after 30000ms.\nPSQLException: FATAL: remaining connection slots are reserved',
+      logs: '[ERROR] 18:40:12 [http-nio-8080-exec-19] HikariPool-1 - Connection is not available, request timed out after 30000ms.\n[ERROR] 18:40:13 [http-nio-8080-exec-22] PSQLException: FATAL: remaining connection slots are reserved for non-replication superuser connections.'
+    },
+    {
+      label: 'Redis Cache Stampede',
+      service: 'auth-service',
+      severity: 'High',
+      title: 'Auth token session cache stampede following Redis failover',
+      desc: 'Massive surge in DB CPU utilization after redis session cluster restart. Simultaneous cache miss storm on popular user session tokens.',
+      symptoms: 'Auth latency escalated to 2.8s\nRedis cache hit ratio dropped from 99% to 18%\nPostgres user_db CPU reached 96%',
+      errors: 'RedisCommandTimeoutException: Command timed out after 2000ms\nAuthTokenVerifyError: unable to verify session token in store',
+      logs: '[ERROR] 09:12:44 RedisCommandTimeoutException: Command timed out after 2000ms [key=sess_token_auth_91823]\n[WARN] 09:12:45 Fallback to Postgres user_sessions DB table under high concurrency.'
+    }
+  ];
+
+  const applyPreset = (p: typeof presets[0]) => {
+    setTitle(p.title);
+    setService(p.service);
+    setSeverity(p.severity);
+    setDescription(p.desc);
+    setSymptoms(p.symptoms);
+    setErrorMessages(p.errors);
+    setLogsExcerpt(p.logs);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,50 +89,73 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({ isOpen
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-card border border-border w-full max-w-2xl rounded-2xl shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between pb-4 border-b border-border">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center">
-              <ShieldAlert className="w-4 h-4 text-red-400" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto">
+      <div className="bg-[#0F172A] border border-[#1E293B] w-full max-w-2xl rounded-2xl shadow-2xl p-6 relative max-h-[92vh] overflow-y-auto space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center flex-shrink-0">
+              <ShieldAlert className="w-5 h-5 text-rose-400" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Declare New Incident</h2>
-              <p className="text-xs text-gray-400">Capture telemetry, symptoms, and initiate Hindsight memory investigation</p>
+              <h2 className="text-base font-bold text-white">Declare Production Incident</h2>
+              <p className="text-xs text-slate-400">Capture telemetry, symptoms, and initiate automatic Hindsight memory investigation</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-background">
+          <button 
+            onClick={onClose} 
+            className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
+        {/* Demo Presets Bar */}
+        <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800/80 flex items-center justify-between text-xs font-mono">
+          <span className="text-slate-400 flex items-center gap-1.5 text-[11px]">
+            <Sparkles className="w-3.5 h-3.5 text-accent-cyan" /> Quick Telemetry Presets:
+          </span>
+          <div className="flex items-center gap-2">
+            {presets.map((p, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => applyPreset(p)}
+                className="text-[11px] text-cyan-300 hover:text-white bg-cyan-950/60 hover:bg-cyan-900 border border-cyan-800/80 px-2.5 py-1 rounded-lg transition-colors cursor-pointer"
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {error && (
-          <div className="mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-xs text-red-400 flex items-center gap-2">
+          <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-400 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block font-medium text-gray-300 mb-1">Incident Title *</label>
+            <label className="block font-medium text-slate-300 mb-1.5">Incident Title *</label>
             <input
               type="text"
               required
-              placeholder="e.g., PostgreSQL connection pool saturation under checkout load"
+              placeholder="e.g., PostgreSQL connection pool saturation under checkout surge"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-accent-cyan"
+              className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3.5 py-2 text-white placeholder-slate-400 focus:outline-none focus:border-accent-cyan"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label className="block font-medium text-gray-300 mb-1">Service *</label>
+              <label className="block font-medium text-slate-300 mb-1.5">Service *</label>
               <select
                 value={service}
                 onChange={(e) => setService(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-cyan"
+                className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-cyan cursor-pointer"
               >
                 <option value="payment-api">payment-api</option>
                 <option value="auth-service">auth-service</option>
@@ -108,25 +165,25 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({ isOpen
             </div>
 
             <div>
-              <label className="block font-medium text-gray-300 mb-1">Severity</label>
+              <label className="block font-medium text-slate-300 mb-1.5">Severity Level</label>
               <select
                 value={severity}
                 onChange={(e) => setSeverity(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-cyan"
+                className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-cyan cursor-pointer"
               >
-                <option value="Critical">Critical (P1)</option>
-                <option value="High">High (P2)</option>
-                <option value="Medium">Medium (P3)</option>
-                <option value="Low">Low (P4)</option>
+                <option value="Critical">Critical (P1 Outage)</option>
+                <option value="High">High (P2 Degraded)</option>
+                <option value="Medium">Medium (P3 Partial)</option>
+                <option value="Low">Low (P4 Minor)</option>
               </select>
             </div>
 
             <div>
-              <label className="block font-medium text-gray-300 mb-1">Environment</label>
+              <label className="block font-medium text-slate-300 mb-1.5">Environment</label>
               <select
                 value={environment}
                 onChange={(e) => setEnvironment(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-cyan"
+                className="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-accent-cyan cursor-pointer"
               >
                 <option value="production">production</option>
                 <option value="staging">staging</option>
@@ -135,70 +192,74 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({ isOpen
           </div>
 
           <div>
-            <label className="block font-medium text-gray-300 mb-1">Description *</label>
+            <label className="block font-medium text-slate-300 mb-1.5">Summary & Scope of Impact *</label>
             <textarea
               required
               rows={2}
-              placeholder="Summary of what is broken and who is impacted..."
+              placeholder="Summary of what is broken, error rates, and customers impacted..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-accent-cyan"
+              className="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-white placeholder-slate-400 focus:outline-none focus:border-accent-cyan leading-relaxed font-sans"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block font-medium text-gray-300 mb-1">Observed Symptoms (one per line)</label>
+              <label className="block font-medium text-slate-300 mb-1.5">Observed Symptoms (one per line)</label>
               <textarea
                 rows={3}
                 placeholder="504 Gateway Timeout&#10;p99 latency > 4000ms"
                 value={symptoms}
                 onChange={(e) => setSymptoms(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg px-3 py-2 font-mono text-white placeholder-gray-500 focus:outline-none focus:border-accent-cyan"
+                className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 font-mono text-white placeholder-slate-400 focus:outline-none focus:border-accent-cyan text-[11px]"
               />
             </div>
 
             <div>
-              <label className="block font-medium text-gray-300 mb-1">Error Messages / Signatures</label>
+              <label className="block font-medium text-slate-300 mb-1.5">Error Traces / Exception Messages</label>
               <textarea
                 rows={3}
                 placeholder="HikariPool-1 - Connection is not available"
                 value={errorMessages}
                 onChange={(e) => setErrorMessages(e.target.value)}
-                className="w-full bg-background border border-border rounded-lg px-3 py-2 font-mono text-white placeholder-gray-500 focus:outline-none focus:border-accent-cyan"
+                className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 font-mono text-white placeholder-slate-400 focus:outline-none focus:border-accent-cyan text-[11px]"
               />
             </div>
           </div>
 
           <div>
-            <label className="block font-medium text-gray-300 mb-1">Sanitized Log Excerpt</label>
+            <label className="block font-medium text-slate-300 mb-1.5">Sanitized Log Stream Excerpt</label>
             <textarea
               rows={3}
               placeholder="[ERROR] 14:22:01.104 HikariPool-1 - Connection timeout..."
               value={logsExcerpt}
               onChange={(e) => setLogsExcerpt(e.target.value)}
-              className="w-full bg-background border border-border rounded-lg px-3 py-2 font-mono text-gray-300 placeholder-gray-500 focus:outline-none focus:border-accent-cyan"
+              className="w-full bg-slate-900 border border-slate-800 rounded-lg p-2.5 font-mono text-slate-300 placeholder-slate-400 focus:outline-none focus:border-accent-cyan text-[11px]"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-            <button
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               onClick={onClose}
-              className="px-4 py-2 rounded-lg bg-background border border-border text-gray-300 hover:bg-card"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              disabled={submitting}
-              className="px-4 py-2 rounded-lg bg-accent-blue hover:bg-blue-600 text-white font-medium shadow-sm transition-all flex items-center gap-1.5"
+              variant="primary"
+              size="md"
+              loading={submitting}
             >
-              {submitting ? 'Submitting...' : 'Declare & Open Investigation'}
-            </button>
+              <Flame className="w-4 h-4 mr-1.5" />
+              {submitting ? 'Declaring...' : 'Declare & Launch AI Studio'}
+            </Button>
           </div>
         </form>
       </div>
     </div>
   );
 };
+
