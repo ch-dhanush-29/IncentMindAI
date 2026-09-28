@@ -17,7 +17,7 @@ export const Badge: React.FC<BadgeProps> = ({ variant = 'neutral', className, ch
   const variants = {
     critical: 'bg-red-50 text-red-700 border-red-200',
     high: 'bg-orange-50 text-orange-700 border-orange-200',
-    medium: 'bg-amber-50 text-amber-700 border-amber-200',
+    medium: 'bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]',
     low: 'bg-blue-50 text-blue-700 border-blue-200',
     info: 'bg-sky-50 text-sky-700 border-sky-200',
     success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
@@ -40,7 +40,7 @@ export const Badge: React.FC<BadgeProps> = ({ variant = 'neutral', className, ch
   );
 };
 
-// Consistent Severity Badge: Critical red, High orange, Medium amber, Low blue
+// Consistent Severity Badge: Critical red, High orange, Medium yellow (#FEF3C7 / #92400E), Low blue
 export const SeverityBadge: React.FC<{ severity: string; className?: string }> = ({ severity, className }) => {
   const sev = severity.toLowerCase();
   if (sev === 'critical') {
@@ -61,8 +61,8 @@ export const SeverityBadge: React.FC<{ severity: string; className?: string }> =
   }
   if (sev === 'medium') {
     return (
-      <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-amber-50 text-amber-700 border border-amber-200', className)}>
-        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+      <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]', className)}>
+        <span className="w-1.5 h-1.5 rounded-full bg-[#92400E]" />
         Medium
       </span>
     );

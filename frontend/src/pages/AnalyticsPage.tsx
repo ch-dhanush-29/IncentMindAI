@@ -57,7 +57,7 @@ export const AnalyticsPage: React.FC = () => {
   const severityPie = summary?.by_severity ? [
     { name: 'Critical', value: summary.by_severity.Critical || 0, color: '#DC2626' },
     { name: 'High', value: summary.by_severity.High || 0, color: '#EA580C' },
-    { name: 'Medium', value: summary.by_severity.Medium || 0, color: '#D97706' },
+    { name: 'Medium', value: summary.by_severity.Medium || 0, color: '#92400E' },
     { name: 'Low', value: summary.by_severity.Low || 0, color: '#2563EB' },
   ].filter(p => p.value > 0) : [];
 

@@ -402,7 +402,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                       isConfirmed 
                         ? 'bg-emerald-50/50 border-emerald-200' 
                         : isSuspected 
-                        ? 'bg-amber-50/50 border-amber-200' 
+                        ? 'bg-[#FEF3C7]/40 border-[#FDE68A]' 
                         : 'bg-[#F8FAFC] border-[#E2E8F0]'
                     }`}
                   >
@@ -413,7 +413,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                             isConfirmed 
                               ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
                               : isSuspected 
-                              ? 'bg-amber-50 text-amber-700 border-amber-200' 
+                              ? 'bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]' 
                               : 'bg-slate-100 text-slate-700 border-slate-200'
                           }`}>
                             {hypo.status}
@@ -423,8 +423,14 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                         {hypo.notes && <p className="text-[#64748B] text-[11px]">{hypo.notes}</p>}
                       </div>
 
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-lg bg-white border border-[#E2E8F0] text-[#64748B] flex-shrink-0">
-                        Risk: <span className="text-[#172033] font-semibold">{hypo.risk_level}</span>
+                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-lg border flex-shrink-0 ${
+                        hypo.risk_level === 'Medium'
+                          ? 'text-[#92400E] bg-[#FEF3C7] border-[#FDE68A]'
+                          : hypo.risk_level === 'High'
+                          ? 'text-orange-700 bg-orange-50 border-orange-200'
+                          : 'text-[#64748B] bg-white border-[#E2E8F0]'
+                      }`}>
+                        Risk: <span className="font-semibold">{hypo.risk_level}</span>
                       </span>
                     </div>
 
@@ -495,7 +501,13 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                         }`}>
                           {step.is_reversible ? 'Reversible' : 'Irreversible'}
                         </span>
-                        <span className="text-[#64748B] bg-white px-2 py-0.5 rounded-full border border-[#E2E8F0]">
+                        <span className={`px-2 py-0.5 rounded-full border ${
+                          step.risk === 'Medium'
+                            ? 'text-[#92400E] bg-[#FEF3C7] border-[#FDE68A]'
+                            : step.risk === 'High'
+                            ? 'text-orange-700 bg-orange-50 border-orange-200'
+                            : 'text-[#64748B] bg-white border-[#E2E8F0]'
+                        }`}>
                           Risk: {step.risk}
                         </span>
                       </div>
