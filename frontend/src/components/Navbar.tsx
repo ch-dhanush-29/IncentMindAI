@@ -1,18 +1,20 @@
 import type React from 'react';
-import { Search, Database, Menu, Plus } from 'lucide-react';
+import { Search, Database, Menu, Plus, Sparkles } from 'lucide-react';
 
 interface NavbarProps {
   onSearch?: (q: string) => void;
   openCreateModal: () => void;
   currentTab: string;
   onToggleMobileSidebar?: () => void;
+  onNavigateLanding?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ 
   onSearch, 
   openCreateModal, 
   currentTab,
-  onToggleMobileSidebar
+  onToggleMobileSidebar,
+  onNavigateLanding
 }) => {
   const tabTitles: Record<string, { title: string; subtitle: string }> = {
     dashboard: { title: 'Executive Operations Dashboard', subtitle: 'Live incident metrics & MTTR trends' },
@@ -41,7 +43,13 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         <div className="hidden sm:block">
           <div className="flex items-center gap-1.5 text-[11px] font-mono text-[#64748B]">
-            <span>IncidentMind</span>
+            <button 
+              onClick={onNavigateLanding} 
+              className="hover:text-[#4F46E5] hover:underline cursor-pointer"
+              title="Return to Product Landing Page"
+            >
+              IncidentMind
+            </button>
             <span>/</span>
             <span className="text-[#4F46E5] font-semibold">{current.title}</span>
           </div>
@@ -67,15 +75,27 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Right Actions */}
       <div className="flex items-center gap-2.5">
+        {/* Product Landing Link */}
+        {onNavigateLanding && (
+          <button
+            onClick={onNavigateLanding}
+            className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#EEF2FF] hover:border-indigo-200 text-xs font-medium text-[#64748B] hover:text-[#4F46E5] transition-colors cursor-pointer"
+            title="View Product Landing Page"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#4F46E5]" />
+            <span>Product Tour</span>
+          </button>
+        )}
+
         {/* Environment Badge */}
-        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-mono text-[#64748B]">
+        <div className="hidden xl:flex items-center gap-2 px-2.5 py-1 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-mono text-[#64748B]">
           <span className="w-2 h-2 rounded-full bg-emerald-500" />
           <span>Cluster: <span className="text-[#172033] font-semibold">prod-east-1</span></span>
           <span className="text-[10px] text-[#94A3B8] font-sans border-l border-[#E2E8F0] pl-1.5">3ms</span>
         </div>
 
         {/* Hindsight Status */}
-        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#EEF2FF] border border-indigo-100 text-xs font-mono text-[#4F46E5] font-medium">
+        <div className="hidden 2xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#EEF2FF] border border-indigo-100 text-xs font-mono text-[#4F46E5] font-medium">
           <Database className="w-3.5 h-3.5 text-[#4F46E5]" />
           <span>Hindsight TEMPR</span>
         </div>

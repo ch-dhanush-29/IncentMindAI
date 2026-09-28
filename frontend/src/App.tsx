@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
+import { LandingPage } from './pages/LandingPage';
 import { Dashboard } from './pages/Dashboard';
 import { IncidentList } from './pages/IncidentList';
 import { IncidentDetail } from './pages/IncidentDetail';
@@ -13,7 +14,7 @@ import { SettingsPage } from './pages/SettingsPage';
 import { CreateIncidentModal } from './components/CreateIncidentModal';
 
 export function App() {
-  const [currentTab, setCurrentTab] = useState('dashboard');
+  const [currentTab, setCurrentTab] = useState('landing');
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -40,6 +41,27 @@ export function App() {
     setSelectedIncidentId(id);
     setCurrentTab('postmortem');
   };
+
+  // Standalone Landing Page View
+  if (currentTab === 'landing') {
+    return (
+      <>
+        <LandingPage
+          onLaunchConsole={() => setCurrentTab('dashboard')}
+          onOpenInvestigation={() => setCurrentTab('investigation')}
+          onOpenMemoryExplorer={() => setCurrentTab('memory-explorer')}
+          onOpenHistory={() => setCurrentTab('history')}
+          onOpenAnalytics={() => setCurrentTab('analytics')}
+          onDeclareIncident={() => setIsCreateModalOpen(true)}
+        />
+        <CreateIncidentModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onCreated={handleCreatedIncident}
+        />
+      </>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-[#F5F7FB] text-[#172033] overflow-hidden font-sans">
@@ -71,6 +93,7 @@ export function App() {
           openCreateModal={() => setIsCreateModalOpen(true)} 
           currentTab={currentTab}
           onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+          onNavigateLanding={() => setCurrentTab('landing')}
         />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8">

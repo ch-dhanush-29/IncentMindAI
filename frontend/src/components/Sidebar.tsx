@@ -10,7 +10,8 @@ import {
   Radio, 
   Archive, 
   LineChart, 
-  ChevronLeft 
+  ChevronLeft,
+  Sparkles
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -29,6 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setCollapsed
 }) => {
   const navItems = [
+    { id: 'landing', label: 'Product Landing', icon: Sparkles, badge: 'Home' },
     { id: 'dashboard', label: 'Executive Overview', icon: BarChart3, badge: 'Live' },
     { id: 'incidents', label: 'Incidents Feed', icon: Activity },
     { id: 'investigation', label: 'AI Investigation', icon: BrainCircuit, badge: 'Hindsight' },
@@ -48,8 +50,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div>
         {/* Brand Header */}
         <div className="p-4 border-b border-[#E2E8F0] flex items-center justify-between">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-9 h-9 min-w-9 rounded-xl bg-[#4F46E5] flex items-center justify-center shadow-xs">
+          <div 
+            onClick={() => setCurrentTab('landing')}
+            className="flex items-center gap-3 overflow-hidden cursor-pointer group"
+            title="Go to Product Landing Page"
+          >
+            <div className="w-9 h-9 min-w-9 rounded-xl bg-[#4F46E5] flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
               <BrainCircuit className="w-5 h-5 text-white" />
             </div>
             {!collapsed && (
