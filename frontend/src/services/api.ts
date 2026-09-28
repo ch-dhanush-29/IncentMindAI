@@ -1,6 +1,6 @@
 import type { Incident, InvestigationResult } from '../types/incident';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const api = {
   async getIncidents(service?: string, severity?: string, status?: string, q?: string): Promise<Incident[]> {
