@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   Sparkles
 } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 interface SidebarProps {
   currentTab: string;
@@ -138,6 +139,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-3 border-t border-[#E2E8F0] bg-[#F8FAFC] text-xs text-[#64748B]">
         {!collapsed ? (
           <>
+            {/* Theme Toggle row */}
+            <div className="flex items-center justify-between mb-2.5 px-0.5">
+              <span className="text-[11px] font-medium text-[#64748B]">Theme Mode</span>
+              <ThemeToggle showLabel={true} className="py-1 px-2 text-[11px]" />
+            </div>
+
             <div className="flex items-center gap-2.5 mb-2.5 p-2 rounded-xl bg-white border border-[#E2E8F0] shadow-xs">
               <div className="w-7 h-7 rounded-lg bg-[#EEF2FF] border border-indigo-100 flex items-center justify-center text-[#4F46E5] font-mono font-bold text-xs">
                 SRE
@@ -162,7 +169,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
           </>
         ) : (
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <ThemeToggle className="p-1.5" />
             <div className="w-7 h-7 rounded-lg bg-[#EEF2FF] border border-indigo-100 flex items-center justify-center text-[#4F46E5] font-mono text-xs font-bold" title="Production SRE">
               SRE
             </div>

@@ -13,6 +13,7 @@ import {
   Cpu, 
   FileCheck 
 } from 'lucide-react';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 const GithubIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor">
@@ -252,6 +253,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2.5">
+            <ThemeToggle />
             <button
               onClick={onDeclareIncident}
               className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#E2E8F0] hover:border-slate-300 bg-white hover:bg-[#F8FAFC] text-xs font-medium text-[#172033] shadow-2xs transition-colors cursor-pointer"
@@ -668,9 +670,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <p className="text-xs text-[#64748B] leading-relaxed mb-4">
                 AI-powered incident response agent using Hindsight persistent memory for DevOps and SRE teams.
               </p>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono font-medium">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                All Systems Operational
+              <div className="flex items-center gap-2.5">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono font-medium">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  All Systems Operational
+                </div>
+                <ThemeToggle className="py-1 px-2" />
               </div>
             </div>
 

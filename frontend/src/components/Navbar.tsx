@@ -1,5 +1,6 @@
 import type React from 'react';
 import { Search, Database, Menu, Plus, Sparkles } from 'lucide-react';
+import { ThemeToggle } from './ThemeToggle';
 
 interface NavbarProps {
   onSearch?: (q: string) => void;
@@ -99,6 +100,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Database className="w-3.5 h-3.5 text-[#4F46E5]" />
           <span>Hindsight TEMPR</span>
         </div>
+
+        {/* Theme Mode Toggle */}
+        <ThemeToggle />
 
         {/* Action Button */}
         <button

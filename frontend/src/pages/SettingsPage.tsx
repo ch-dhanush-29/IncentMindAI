@@ -6,15 +6,20 @@ import {
   Cpu, 
   ShieldCheck, 
   RefreshCw,
-  CheckCircle2
+  CheckCircle2,
+  Sun,
+  Moon,
+  Palette
 } from 'lucide-react';
 import { Card, Badge, Button } from '../components/ui';
+import { useTheme } from '../context/ThemeContext';
 
 export const SettingsPage: React.FC = () => {
   const [settings, setSettings] = useState<any>(null);
   const [auditTrail, setAuditTrail] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<'connectivity' | 'access' | 'audit' | 'notifications'>('connectivity');
+  const [activeTab, setActiveTab] = useState<'connectivity' | 'access' | 'audit' | 'notifications' | 'appearance'>('connectivity');
   const [loading, setLoading] = useState(true);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     loadSettings();
@@ -87,6 +92,15 @@ export const SettingsPage: React.FC = () => {
           }`}
         >
           Alert Escalations
+        </button>
+        <button
+          onClick={() => setActiveTab('appearance')}
+          className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer flex items-center gap-1.5 ${
+            activeTab === 'appearance' ? 'border-[#4F46E5] text-[#4F46E5]' : 'border-transparent text-[#64748B] hover:text-[#172033]'
+          }`}
+        >
+          <Palette className="w-3.5 h-3.5" />
+          Appearance & Theme
         </button>
       </div>
 
@@ -227,6 +241,77 @@ DEMO_MODE=true`}
               <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Webhook Integration Active
             </div>
             <p className="text-[#64748B] font-mono text-[11px]">POST /api/incidents handles automated telemetry ingest from Datadog, Prometheus, or CloudWatch.</p>
+          </div>
+        </Card>
+      )}
+
+      {activeTab === 'appearance' && (
+        <Card className="p-6 space-y-6 text-xs">
+          <div>
+            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+              <Palette className="w-4 h-4 text-[#4F46E5]" /> Theme & Visual Experience
+            </h3>
+            <p className="text-[#64748B] mt-1">
+              Select your interface theme preference. Changes apply instantly across the entire application and persist in local storage.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Light Theme Card */}
+            <div 
+              onClick={() => setTheme('light')}
+              className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
+                theme === 'light'
+                  ? 'border-[#4F46E5] ring-2 ring-indigo-500/20 bg-white shadow-xs'
+                  : 'border-[#E2E8F0] hover:border-slate-300 bg-[#F8FAFC]'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
+                    <Sun className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-[#172033]">Enterprise Light Theme</h4>
+                    <span className="text-[10px] text-[#64748B] font-mono">Indigo & Slate (#F5F7FB / #FFFFFF)</span>
+                  </div>
+                </div>
+                {theme === 'light' && (
+                  <span className="w-5 h-5 rounded-full bg-[#4F46E5] text-white flex items-center justify-center text-xs font-bold">✓</span>
+                )}
+              </div>
+              <p className="text-[11px] text-[#64748B] leading-relaxed">
+                Crisp white cards, hairline slate borders, and high-contrast typography designed for daytime operations and presentations.
+              </p>
+            </div>
+
+            {/* Dark Theme Card */}
+            <div 
+              onClick={() => setTheme('dark')}
+              className={`p-5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between ${
+                theme === 'dark'
+                  ? 'border-[#4F46E5] ring-2 ring-indigo-500/20 bg-[#161F30] shadow-xs'
+                  : 'border-[#E2E8F0] hover:border-slate-300 bg-[#F8FAFC]'
+              }`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-indigo-950 border border-indigo-800 flex items-center justify-center text-indigo-400">
+                    <Moon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-[#172033]">Operations Dark Theme</h4>
+                    <span className="text-[10px] text-[#64748B] font-mono">Midnight Obsidian & Deep Slate</span>
+                  </div>
+                </div>
+                {theme === 'dark' && (
+                  <span className="w-5 h-5 rounded-full bg-[#4F46E5] text-white flex items-center justify-center text-xs font-bold">✓</span>
+                )}
+              </div>
+              <p className="text-[11px] text-[#64748B] leading-relaxed">
+                Deep obsidian background, elevated slate cards, and low-eye-strain luminous indigo accents for nocturnal SRE on-call rotations.
+              </p>
+            </div>
           </div>
         </Card>
       )}
