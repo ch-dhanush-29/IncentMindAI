@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     
     # Groq LLM Configuration
     GROQ_API_KEY: Optional[str] = None
-    GROQ_MODEL: str = "llama-3.3-70b-versatile"
+    GROQ_MODEL: str = "qwen/qwen3.8-27b"
 
     # Slack War Room & Incident Bot
     SLACK_BOT_TOKEN: Optional[str] = None
@@ -38,6 +38,6 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "incidentmind-super-secure-production-key-2026"
     DEMO_MODE: bool = True
 
-    model_config = SettingsConfigDict(env_file=".env", extra="allow")
+    model_config = SettingsConfigDict(env_file=(".env", "../.env"), extra="allow")
 
 settings = Settings()

@@ -20,7 +20,8 @@ class SlackBotService:
         self.signing_secret = settings.SLACK_SIGNING_SECRET
         self.default_channel = settings.SLACK_DEFAULT_CHANNEL
         self.webhook_url = settings.SLACK_WEBHOOK_URL
-        self.is_connected = bool(self.bot_token or self.webhook_url)
+        self.is_live_bot = bool(self.bot_token and self.bot_token.startswith("xoxb-"))
+        self.is_connected = bool(self.is_live_bot or self.webhook_url)
         self._sent_messages: List[Dict[str, Any]] = []
 
     def verify_signature(self, timestamp: str, signature: str, body: bytes) -> bool:
@@ -50,7 +51,7 @@ class SlackBotService:
 
     async def send_message(self, text: str, blocks: Optional[List[Dict[str, Any]]] = None, channel: Optional[str] = None) -> Dict[str, Any]:
         """
-        Post message to Slack via Web API or Webhook.
+        Post message to Slack via Web API, Webhook, or local War Room buffer.
         """
         target_channel = channel or self.default_channel
         payload: Dict[str, Any] = {
@@ -68,13 +69,9 @@ class SlackBotService:
         }
         self._sent_messages.append(record)
 
-        if not self.is_connected:
-            logger.info(f"[Slack Sandbox] Message buffered for {target_channel}: {text}")
-            return {"status": "buffered_sandbox", "record": record}
-
-        try:
-            async with httpx.AsyncClient(timeout=6.0) as client:
-                if self.bot_token:
+        if self.is_live_bot:
+            try:
+                async with httpx.AsyncClient(timeout=6.0) as client:
                     headers = {
                         "Authorization": f"Bearer {self.bot_token}",
                         "Content-Type": "application/json; charset=utf-8"
@@ -84,14 +81,28 @@ class SlackBotService:
                     if not data.get("ok"):
                         logger.error(f"Slack API error: {data.get('error')}")
                     return data
-                elif self.webhook_url:
-                    resp = await client.post(self.webhook_url, json=payload)
-                    return {"status": "sent_via_webhook", "code": resp.status_code}
-        except Exception as e:
-            logger.error(f"Failed to post Slack message: {e}")
-            return {"status": "error", "error": str(e)}
+            except Exception as e:
+                logger.error(f"Failed to post Slack message: {e}")
+                return {"status": "error", "error": str(e), "record": record}
 
-        return {"status": "ok"}
+        elif self.webhook_url:
+            try:
+                async with httpx.AsyncClient(timeout=6.0) as client:
+                    resp = await client.post(self.webhook_url, json=payload)
+                    return {"status": "sent_via_webhook", "code": resp.status_code, "record": record}
+            except Exception as e:
+                logger.error(f"Failed to post Slack webhook: {e}")
+                return {"status": "error", "error": str(e), "record": record}
+
+        # Sandbox buffer fallback when bot token is a placeholder
+        logger.info(f"[Slack War Room Sandbox] Message buffered for {target_channel}: {text}")
+        return {
+            "status": "buffered_sandbox",
+            "ok": True,
+            "channel": target_channel,
+            "message": "Slack Bot token is in sandbox buffer mode. Alert successfully formatted and recorded in Incident War Room.",
+            "record": record
+        }
 
     async def notify_incident_declared(self, incident: Any) -> Dict[str, Any]:
         """

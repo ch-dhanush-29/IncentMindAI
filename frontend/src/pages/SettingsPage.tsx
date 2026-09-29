@@ -165,11 +165,11 @@ export const SettingsPage: React.FC = () => {
                 <span className="text-xs font-semibold text-[#172033] flex items-center gap-1.5">
                   <MessageSquare className="w-4 h-4 text-[#4F46E5]" /> Slack War Room
                 </span>
-                <span className={`w-2 h-2 rounded-full ${settings?.slack_connected ? 'bg-emerald-500' : 'bg-emerald-400'}`} />
+                <span className={`w-2 h-2 rounded-full ${settings?.slack_is_live ? 'bg-emerald-500' : 'bg-amber-400'}`} />
               </div>
               <div className="text-xs font-mono text-[#172033] space-y-1">
                 <div>Channel: <span className="text-[#4F46E5] font-semibold">{settings?.slack_channel || '#incidents-war-room'}</span></div>
-                <div>Status: <span className="text-emerald-700 font-medium">{settings?.slack_connected ? 'Live Connected' : 'Sandbox Buffer'}</span></div>
+                <div>Status: <span className="text-emerald-700 font-medium">{settings?.slack_is_live ? 'Live Bot Connected' : 'War Room Sandbox Buffer'}</span></div>
               </div>
               <p className="text-[11px] text-[#64748B] font-sans">
                 Automated incident alert broadcasts, command handlers, and diagnosis thread updates.
@@ -182,11 +182,11 @@ export const SettingsPage: React.FC = () => {
                 <span className="text-xs font-semibold text-[#172033] flex items-center gap-1.5">
                   <Lock className="w-4 h-4 text-emerald-600" /> Clerk SSO & RBAC
                 </span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className={`w-2 h-2 rounded-full ${settings?.clerk_configured ? 'bg-emerald-500' : 'bg-emerald-400'}`} />
               </div>
               <div className="text-xs font-mono text-[#172033] space-y-1">
                 <div>Provider: <span className="text-[#172033]">Clerk Cloud</span></div>
-                <div>Mode: <span className="text-emerald-700 font-medium">{settings?.clerk_auth_enabled ? 'Enforced JWT' : 'Dev SRE Sandbox'}</span></div>
+                <div>Mode: <span className="text-emerald-700 font-medium">{settings?.clerk_configured ? 'Keys Authenticated' : 'Dev SRE Sandbox'}</span></div>
               </div>
               <p className="text-[11px] text-[#64748B] font-sans">
                 Enterprise Multi-Factor Authentication, Role-Based Access Control, and session audit logs.

@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 import json
 import httpx
 from typing import Dict, Any, List, Optional
@@ -123,29 +123,38 @@ Respond ONLY with a valid JSON object matching this exact schema:
 
         # Call Groq if configured
         if self.is_connected:
-            try:
-                async with httpx.AsyncClient(timeout=20.0) as client:
-                    headers = {
-                        "Authorization": f"Bearer {self.api_key}",
-                        "Content-Type": "application/json"
-                    }
-                    payload = {
-                        "model": self.model,
-                        "messages": [
-                            {"role": "system", "content": "You are IncidentMind AI, an SRE incident investigation copilot. Output JSON only."},
-                            {"role": "user", "content": prompt}
-                        ],
-                        "response_format": {"type": "json_object"},
-                        "temperature": 0.2
-                    }
-                    resp = await client.post("https://api.groq.com/openai/v1/chat/completions", json=payload, headers=headers)
-                    if resp.is_success:
-                        data = resp.json()
-                        content = data["choices"][0]["message"]["content"]
-                        parsed = json.loads(content)
-                        return self._build_investigation_result(incident.id, parsed, evidence_list, use_memory)
-            except Exception as e:
-                logger.error(f"Groq API call failed: {e}. Falling back to rule-based engine.")
+            candidate_models = [self.model]
+            if "qwen/qwen3.8-27b" not in candidate_models:
+                candidate_models.append("qwen/qwen3.8-27b")
+            if "openai/gpt-oss-120b" not in candidate_models:
+                candidate_models.append("openai/gpt-oss-120b")
+
+            for m in candidate_models:
+                try:
+                    async with httpx.AsyncClient(timeout=25.0) as client:
+                        headers = {
+                            "Authorization": f"Bearer {self.api_key}",
+                            "Content-Type": "application/json"
+                        }
+                        payload = {
+                            "model": m,
+                            "messages": [
+                                {"role": "system", "content": "You are IncidentMind AI, an SRE incident investigation copilot. Output JSON only."},
+                                {"role": "user", "content": prompt}
+                            ],
+                            "response_format": {"type": "json_object"},
+                            "temperature": 0.2
+                        }
+                        resp = await client.post("https://api.groq.com/openai/v1/chat/completions", json=payload, headers=headers)
+                        if resp.is_success:
+                            data = resp.json()
+                            content = data["choices"][0]["message"]["content"]
+                            parsed = json.loads(content)
+                            return self._build_investigation_result(incident.id, parsed, evidence_list, use_memory)
+                        else:
+                            logger.warning(f"Groq API model {m} returned {resp.status_code}: {resp.text}")
+                except Exception as e:
+                    logger.error(f"Groq API call with {m} failed: {e}. Trying fallback if available.")
 
         # Deterministic / Sandbox generation (used when Groq key is absent or fallback)
         return self._generate_sandbox_investigation(incident, evidence_list, use_memory)

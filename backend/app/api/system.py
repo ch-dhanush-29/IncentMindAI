@@ -42,11 +42,16 @@ async def get_settings():
         "hindsight_bank_id": hindsight_adapter.bank_id,
         "hindsight_base_url": hindsight_adapter.base_url,
         "hindsight_mode": "Vectorize Cloud" if hindsight_adapter.is_cloud_connected else "Local Resilient Sandbox",
+        "hindsight_configured": hindsight_adapter.is_cloud_connected,
         "groq_model": groq_adapter.model,
         "groq_configured": groq_adapter.is_connected,
         "slack_connected": slack_service.is_connected,
         "slack_channel": slack_service.default_channel,
+        "slack_is_live": slack_service.is_live_bot,
+        "slack_configured": bool(slack_service.bot_token or slack_service.webhook_url),
         "clerk_auth_enabled": auth_manager.auth_enabled,
+        "clerk_configured": bool(auth_manager.secret_key or auth_manager.publishable_key),
+        "clerk_publishable_key": auth_manager.publishable_key,
         "db_mode": "MongoDB" if incident_repo._is_mongo_connected else "In-Memory Store"
     }
 

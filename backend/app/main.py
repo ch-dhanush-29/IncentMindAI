@@ -21,7 +21,9 @@ logger = logging.getLogger("incidentmind")
 async def lifespan(app: FastAPI):
     logger.info("Initializing IncidentMind AI unified server...")
     await incident_repo.connect()
-    if settings.DEMO_MODE:
+    existing = await incident_repo.list_all()
+    if not existing or settings.DEMO_MODE:
+        logger.info("Populating realistic incident data and memory grounding...")
         await seed_realistic_incidents()
     yield
     logger.info("Shutting down IncidentMind AI unified server...")
