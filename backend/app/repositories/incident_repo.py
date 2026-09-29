@@ -3,6 +3,7 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 from app.models.incident import Incident, IncidentCreate, IncidentUpdate, IncidentStatus
 from app.core.config import settings
+from app.core.events import event_hub
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,18 @@ class IncidentRepository:
             except Exception as e:
                 logger.error(f"MongoDB insert failed: {e}")
 
+        # Real-time event broadcast
+        await event_hub.broadcast("INCIDENT_CREATED", {
+            "incident_id": incident.id,
+            "title": incident.title,
+            "service": incident.service,
+            "severity": incident.severity.value,
+            "status": incident.status.value,
+            "created_at": incident.created_at.isoformat()
+        })
+
         return incident
+
 
     async def get_by_id(self, incident_id: str) -> Optional[Incident]:
         if self._is_mongo_connected and self._db is not None:
@@ -108,6 +120,16 @@ class IncidentRepository:
             except Exception as e:
                 logger.error(f"MongoDB update failed: {e}")
 
+        # Real-time event broadcast
+        await event_hub.broadcast("INCIDENT_UPDATED", {
+            "incident_id": incident_id,
+            "fields": list(data.keys()),
+            "status": incident.status.value,
+            "severity": incident.severity.value,
+            "assignee": incident.assignee,
+            "updated_at": incident.updated_at.isoformat()
+        })
+
         return incident
 
     async def add_note(self, incident_id: str, note_data: Dict[str, Any]) -> Optional[Incident]:
@@ -136,6 +158,12 @@ class IncidentRepository:
                 )
             except Exception as e:
                 logger.error(f"MongoDB note update failed: {e}")
+
+        # Real-time event broadcast
+        await event_hub.broadcast("NOTE_ADDED", {
+            "incident_id": incident_id,
+            "note": note_entry
+        })
 
         return incident
 
@@ -173,6 +201,14 @@ class IncidentRepository:
             except Exception as e:
                 logger.error(f"MongoDB reopen update failed: {e}")
 
+        # Real-time event broadcast
+        await event_hub.broadcast("INCIDENT_REOPENED", {
+            "incident_id": incident_id,
+            "status": "Investigating",
+            "reason": reason,
+            "engineer": engineer
+        })
+
         return incident
 
     async def save(self, incident: Incident) -> Incident:
@@ -188,6 +224,7 @@ class IncidentRepository:
             except Exception as e:
                 logger.error(f"MongoDB replace failed: {e}")
         return incident
+
 
     def _log_audit(self, action: str, incident_id: str, details: str):
         self._audit_store.append({

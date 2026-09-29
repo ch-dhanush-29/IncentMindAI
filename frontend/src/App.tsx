@@ -14,11 +14,13 @@ import { SettingsPage } from './pages/SettingsPage';
 import { AfterActionReports } from './pages/AfterActionReports';
 import { ImprovementItems } from './pages/ImprovementItems';
 import { CreateIncidentModal } from './components/CreateIncidentModal';
+import { HelpModal } from './components/HelpModal';
 
 export function App() {
   const [currentTab, setCurrentTab] = useState('landing');
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -96,6 +98,7 @@ export function App() {
           currentTab={currentTab}
           onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
           onNavigateLanding={() => setCurrentTab('landing')}
+          onOpenHelp={() => setIsHelpModalOpen(true)}
         />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
@@ -171,6 +174,13 @@ export function App() {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onCreated={handleCreatedIncident}
+      />
+
+      {/* Operational User Guide & Live Manual Modal */}
+      <HelpModal
+        isOpen={isHelpModalOpen}
+        onClose={() => setIsHelpModalOpen(false)}
+        onNavigateTab={(tab) => setCurrentTab(tab)}
       />
     </div>
   );

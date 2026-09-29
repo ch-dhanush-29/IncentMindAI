@@ -15,15 +15,15 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 export const Badge: React.FC<BadgeProps> = ({ variant = 'neutral', className, children, ...props }) => {
   const variants = {
-    critical: 'bg-red-50 text-red-700 border-red-200',
-    high: 'bg-orange-50 text-orange-700 border-orange-200',
-    medium: 'bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]',
-    low: 'bg-blue-50 text-blue-700 border-blue-200',
-    info: 'bg-sky-50 text-sky-700 border-sky-200',
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    purple: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    cyan: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    neutral: 'bg-slate-100 text-slate-700 border-slate-200',
+    critical: 'bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/60',
+    high: 'bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-800/60',
+    medium: 'bg-[#FEF3C7] dark:bg-amber-950/40 text-[#92400E] dark:text-amber-400 border-[#FDE68A] dark:border-amber-800/60',
+    low: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/60',
+    info: 'bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 border-sky-200 dark:border-sky-800/60',
+    success: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/60',
+    purple: 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/60',
+    cyan: 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800/60',
+    neutral: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700',
   };
 
   return (
@@ -40,20 +40,20 @@ export const Badge: React.FC<BadgeProps> = ({ variant = 'neutral', className, ch
   );
 };
 
-// Consistent Severity Badge: Critical red, High orange, Medium yellow (#FEF3C7 / #92400E), Low blue
+// Consistent Severity Badge: Critical red, High orange, Medium yellow, Low blue
 export const SeverityBadge: React.FC<{ severity: string; className?: string }> = ({ severity, className }) => {
-  const sev = severity.toLowerCase();
+  const sev = (severity || 'low').toLowerCase();
   if (sev === 'critical') {
     return (
-      <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-red-50 text-red-700 border border-red-200', className)}>
-        <span className="w-1.5 h-1.5 rounded-full bg-red-600" />
+      <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/60', className)}>
+        <span className="w-1.5 h-1.5 rounded-full bg-red-600 dark:bg-red-500" />
         Critical
       </span>
     );
   }
   if (sev === 'high') {
     return (
-      <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-orange-50 text-orange-700 border border-orange-200', className)}>
+      <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800/60', className)}>
         <span className="w-1.5 h-1.5 rounded-full bg-orange-500" />
         High
       </span>
@@ -61,15 +61,15 @@ export const SeverityBadge: React.FC<{ severity: string; className?: string }> =
   }
   if (sev === 'medium') {
     return (
-      <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]', className)}>
-        <span className="w-1.5 h-1.5 rounded-full bg-[#92400E]" />
+      <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-[#FEF3C7] dark:bg-amber-950/40 text-[#92400E] dark:text-amber-400 border border-[#FDE68A] dark:border-amber-800/60', className)}>
+        <span className="w-1.5 h-1.5 rounded-full bg-[#92400E] dark:bg-amber-400" />
         Medium
       </span>
     );
   }
   return (
-    <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-blue-50 text-blue-700 border border-blue-200', className)}>
-      <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+    <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60', className)}>
+      <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400" />
       Low
     </span>
   );
@@ -77,33 +77,33 @@ export const SeverityBadge: React.FC<{ severity: string; className?: string }> =
 
 // Specialized Status Badge: Resolved green, Investigating indigo, Mitigated blue
 export const StatusBadge: React.FC<{ status: string; className?: string }> = ({ status, className }) => {
-  const st = status.toLowerCase();
-  if (st === 'resolved') {
+  const st = (status || 'new').toLowerCase();
+  if (st === 'resolved' || st === 'closed') {
     return (
-      <span className={cn('inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-emerald-50 text-emerald-700 border border-emerald-200', className)}>
-        <ShieldCheck className="w-3 h-3 text-emerald-600" />
-        Resolved
+      <span className={cn('inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60', className)}>
+        <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+        {status}
       </span>
     );
   }
   if (st === 'investigating') {
     return (
-      <span className={cn('inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-indigo-50 text-indigo-700 border border-indigo-200', className)}>
-        <Activity className="w-3 h-3 text-indigo-600 animate-spin" />
+      <span className={cn('inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/60', className)}>
+        <Activity className="w-3 h-3 text-indigo-600 dark:text-indigo-400 animate-spin" />
         Investigating
       </span>
     );
   }
   if (st === 'mitigated') {
     return (
-      <span className={cn('inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-blue-50 text-blue-700 border border-blue-200', className)}>
-        <Check className="w-3 h-3 text-blue-600" />
+      <span className={cn('inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800/60', className)}>
+        <Check className="w-3 h-3 text-blue-600 dark:text-blue-400" />
         Mitigated
       </span>
     );
   }
   return (
-    <span className={cn('inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200', className)}>
+    <span className={cn('inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700', className)}>
       <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
       {status}
     </span>
@@ -113,8 +113,8 @@ export const StatusBadge: React.FC<{ status: string; className?: string }> = ({ 
 // Specialized Hindsight Badge
 export const HindsightBadge: React.FC<{ label?: string; className?: string }> = ({ label = 'Hindsight TEMPR', className }) => {
   return (
-    <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-indigo-50 text-indigo-700 border border-indigo-200', className)}>
-      <Brain className="w-3 h-3 text-indigo-600" />
+    <span className={cn('inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/60', className)}>
+      <Brain className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
       {label}
     </span>
   );
@@ -146,10 +146,10 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variants = {
     primary: 'bg-[#4F46E5] hover:bg-[#4338CA] text-white border border-[#4F46E5] shadow-xs',
-    secondary: 'bg-white hover:bg-[#F8FAFC] text-[#172033] border border-[#E2E8F0] hover:border-slate-300 shadow-xs',
-    outline: 'bg-white hover:bg-[#EEF2FF] text-[#4F46E5] border border-[#E2E8F0] hover:border-indigo-200 shadow-xs',
+    secondary: 'bg-white dark:bg-[#1E2536] hover:bg-[#F8FAFC] dark:hover:bg-[#252D3D] text-[#172033] dark:text-[#F1F5F9] border border-[#E2E8F0] dark:border-[#2D3545] shadow-xs',
+    outline: 'bg-white dark:bg-[#141820] hover:bg-[#EEF2FF] dark:hover:bg-[#1E2536] text-[#4F46E5] dark:text-indigo-400 border border-[#E2E8F0] dark:border-[#222834] shadow-xs',
     danger: 'bg-red-600 hover:bg-red-700 text-white border border-red-600 shadow-xs',
-    ghost: 'bg-transparent hover:bg-slate-100 text-[#64748B] hover:text-[#172033] border border-transparent',
+    ghost: 'bg-transparent hover:bg-slate-100 dark:hover:bg-[#1E2536] text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] border border-transparent',
     success: 'bg-emerald-600 hover:bg-emerald-700 text-white border border-emerald-600 shadow-xs',
     hindsight: 'bg-[#4F46E5] hover:bg-[#4338CA] text-white border border-[#4F46E5] shadow-xs',
   };
@@ -168,12 +168,12 @@ export const Button: React.FC<ButtonProps> = ({
   );
 };
 
-// Card - Rounded (12-16px), white background, subtle shadow, thin border
+// Card - Theme aware with dark mode support
 export const Card: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, children, ...props }) => {
   return (
     <div
       className={cn(
-        'rounded-2xl bg-white border border-[#E2E8F0] shadow-xs p-5 transition-colors',
+        'rounded-2xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] text-[#172033] dark:text-[#F1F5F9] shadow-xs p-5 transition-colors',
         className
       )}
       {...props}
@@ -198,22 +198,22 @@ export const CodeBlock: React.FC<{ code: string; language?: string; className?: 
   };
 
   return (
-    <div className={cn('relative group rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] font-mono text-xs overflow-hidden', className)}>
-      <div className="flex items-center justify-between px-3 py-1.5 bg-white border-b border-[#E2E8F0] text-[11px] text-[#64748B]">
-        <span className="flex items-center gap-1.5 text-[#4F46E5] font-medium">
+    <div className={cn('relative group rounded-xl bg-[#F8FAFC] dark:bg-[#0E1117] border border-[#E2E8F0] dark:border-[#222834] font-mono text-xs overflow-hidden', className)}>
+      <div className="flex items-center justify-between px-3 py-1.5 bg-white dark:bg-[#161B22] border-b border-[#E2E8F0] dark:border-[#222834] text-[11px] text-[#64748B] dark:text-[#94A3B8]">
+        <span className="flex items-center gap-1.5 text-[#4F46E5] dark:text-indigo-400 font-medium">
           <Terminal className="w-3.5 h-3.5" />
           {language}
         </span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 text-[#64748B] hover:text-[#172033] px-2 py-0.5 rounded hover:bg-slate-100 transition-colors cursor-pointer"
+          className="flex items-center gap-1 text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] px-2 py-0.5 rounded hover:bg-slate-100 dark:hover:bg-[#1F2633] transition-colors cursor-pointer"
           title="Copy command"
         >
-          {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+          {copied ? <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3 h-3" />}
           <span>{copied ? 'Copied!' : 'Copy'}</span>
         </button>
       </div>
-      <pre className="p-3 text-[#172033] overflow-x-auto whitespace-pre-wrap leading-relaxed select-all">
+      <pre className="p-3 text-[#172033] dark:text-[#F1F5F9] overflow-x-auto whitespace-pre-wrap leading-relaxed select-all">
         <code>{code}</code>
       </pre>
     </div>

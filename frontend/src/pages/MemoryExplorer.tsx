@@ -24,6 +24,12 @@ export const MemoryExplorer: React.FC = () => {
 
   useEffect(() => {
     loadMemoryData();
+
+    const handleStreamUpdate = () => {
+      loadMemoryData();
+    };
+    window.addEventListener('incident_stream_update', handleStreamUpdate);
+    return () => window.removeEventListener('incident_stream_update', handleStreamUpdate);
   }, []);
 
   const loadMemoryData = async () => {
@@ -64,28 +70,32 @@ export const MemoryExplorer: React.FC = () => {
       name: 'Temporal Awareness',
       tag: 'Decay & Recurrence Tracking',
       desc: 'Weights memories using dynamic exponential decay and periodicity algorithms. Recent outages during similar deployment windows receive higher contextual rank.',
-      metric: 'Time Horizon: 90-day rolling window with recency-boosted score decay'
+      metric: status?.hindsight?.stats?.last_consolidated_at
+        ? `Last Consolidated: ${new Date(status.hindsight.stats.last_consolidated_at).toLocaleTimeString()}`
+        : 'Time Horizon: 90-day rolling window with recency-boosted score decay'
     },
     E: {
       letter: 'E',
       name: 'Entity Topologies',
       tag: 'Microservice Graph Linking',
       desc: 'Builds entity relationships across interconnected components (e.g., payment-api → postgres-primary → HikariCP pool). Allows cross-service failure correlation.',
-      metric: 'Active Graph: 14 microservice nodes & 42 mapped dependency edges'
+      metric: status?.hindsight?.stats?.total_nodes !== undefined
+        ? `Live Graph: ${status.hindsight.stats.total_nodes} nodes & ${status.hindsight.stats.total_links} semantic/causal links in Bank: ${status.hindsight.bank_id}`
+        : 'Active Graph: 0 nodes (Local Sandbox Mode)'
     },
     M: {
       letter: 'M',
       name: 'Multi-Strategy Retrieval',
       tag: 'Hybrid Dense + Sparse Vectors',
       desc: 'Combines dense semantic vector embeddings with sparse BM25 keyword matching and exact error hash lookups, preventing semantic drift.',
-      metric: 'Hybrid Strategy: 1536-dim vector cosine similarity + BM25 keyword rank'
+      metric: 'Hybrid Strategy: Vector cosine similarity + BM25 keyword rank'
     },
     P: {
       letter: 'P',
       name: 'Parallel Retrieval Pipeline',
       tag: 'Concurrent Async Lookups',
       desc: 'Executes parallel multi-headed queries across past postmortems, verified runbooks, repository code, and configuration parameter histories.',
-      metric: 'Query Latency: < 42ms parallel execution across 4 shard partitions'
+      metric: 'Query Latency: < 45ms parallel execution across bank shards'
     },
     R: {
       letter: 'R',
@@ -97,14 +107,14 @@ export const MemoryExplorer: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-[#172033] dark:text-[#F1F5F9] transition-colors">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-[#172033] flex items-center gap-2">
+          <h2 className="text-2xl font-bold tracking-tight text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
             Institutional Memory Explorer
           </h2>
-          <p className="text-xs text-[#64748B] mt-1">
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1">
             Inspect persistent incident resolutions, historical lessons, and verification provenance.
           </p>
         </div>
@@ -118,44 +128,44 @@ export const MemoryExplorer: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="p-4 flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-mono text-[#64748B]">Primary Memory Bank</span>
-            <div className="text-sm font-bold text-[#172033] font-mono">Enterprise Knowledge Bank</div>
+            <span className="text-xs font-mono text-[#64748B] dark:text-[#94A3B8]">Primary Memory Bank</span>
+            <div className="text-sm font-bold text-[#172033] dark:text-[#F1F5F9] font-mono">{status?.hindsight?.bank_id || 'Enterprise Knowledge Bank'}</div>
           </div>
-          <Database className="w-5 h-5 text-[#4F46E5]" />
+          <Database className="w-5 h-5 text-[#4F46E5] dark:text-indigo-400" />
         </Card>
 
         <Card className="p-4 flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-xs font-mono text-[#64748B]">Total Stored Incidents</span>
-            <div className="text-xl font-bold text-[#172033] font-mono">{memories.length} Records</div>
+            <span className="text-xs font-mono text-[#64748B] dark:text-[#94A3B8]">Total Stored Incidents</span>
+            <div className="text-xl font-bold text-[#172033] dark:text-[#F1F5F9] font-mono">{memories.length} Records</div>
           </div>
-          <BrainCircuit className="w-5 h-5 text-[#4F46E5]" />
+          <BrainCircuit className="w-5 h-5 text-[#4F46E5] dark:text-indigo-400" />
         </Card>
 
         <Card className="p-4 flex flex-col justify-between space-y-1">
-          <div className="text-xs font-mono text-emerald-700 font-semibold flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <div className="text-xs font-mono text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             {status?.hindsight?.status === 'connected_remote' ? 'Cloud Memory Active' : 'Local Memory Active'}
           </div>
-          <span className="text-[11px] text-[#64748B] font-mono">Provenance & Recurrence Tracking Active</span>
+          <span className="text-[11px] text-[#64748B] dark:text-[#94A3B8] font-mono">Provenance & Recurrence Tracking Active</span>
         </Card>
       </div>
 
       {/* TEMPR Architecture Interactive Widget */}
       <Card className="p-5 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] dark:border-[#222834] pb-3">
           <div>
-            <h3 className="text-sm font-bold text-[#172033] flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#4F46E5]" />
+            <h3 className="text-sm font-bold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
+              <Layers className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
               <span>5-Pillar Knowledge Architecture</span>
             </h3>
-            <p className="text-xs text-[#64748B] mt-0.5">
+            <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5">
               How IncidentMind structures persistent incident memory across 5 key pillars
             </p>
           </div>
 
           {/* Pillar Selector Pills */}
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] self-start sm:self-auto font-mono text-xs">
+          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] self-start sm:self-auto font-mono text-xs">
             {(['T', 'E', 'M', 'P', 'R'] as const).map((letter) => (
               <button
                 key={letter}
@@ -163,7 +173,7 @@ export const MemoryExplorer: React.FC = () => {
                 className={`px-3 py-1 rounded-lg font-bold transition-colors cursor-pointer ${
                   activeTemprTab === letter
                     ? 'bg-[#4F46E5] text-white shadow-xs'
-                    : 'text-[#64748B] hover:text-[#172033] hover:bg-slate-100'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-slate-100 dark:hover:bg-[#252D3D]'
                 }`}
               >
                 {letter}
@@ -177,24 +187,24 @@ export const MemoryExplorer: React.FC = () => {
           const tab = temprConcepts[activeTemprTab];
           return (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
-              <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5 md:col-span-2">
+              <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] space-y-1.5 md:col-span-2">
                 <div className="flex items-center gap-2">
-                  <span className="w-6 h-6 rounded-lg bg-[#EEF2FF] border border-indigo-100 text-[#4F46E5] font-mono font-bold text-xs flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-lg bg-[#EEF2FF] dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-900/40 text-[#4F46E5] dark:text-indigo-400 font-mono font-bold text-xs flex items-center justify-center">
                     {tab.letter}
                   </span>
-                  <span className="font-bold text-[#172033] text-sm">{tab.name}</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EEF2FF] text-[#4F46E5] border border-indigo-100 font-semibold">
+                  <span className="font-bold text-[#172033] dark:text-[#F1F5F9] text-sm">{tab.name}</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EEF2FF] dark:bg-indigo-950/50 text-[#4F46E5] dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/40 font-semibold">
                     {tab.tag}
                   </span>
                 </div>
-                <p className="text-xs text-[#64748B] leading-relaxed font-sans pt-1">
+                <p className="text-xs text-[#64748B] dark:text-[#94A3B8] leading-relaxed font-sans pt-1">
                   {tab.desc}
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#EEF2FF]/60 border border-indigo-100 flex flex-col justify-center space-y-1 font-mono text-xs">
-                <span className="text-[#64748B] text-[10px]">Pillar Metric:</span>
-                <span className="text-[#4F46E5] font-semibold text-xs leading-relaxed">{tab.metric}</span>
+              <div className="p-4 rounded-xl bg-[#EEF2FF]/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 flex flex-col justify-center space-y-1 font-mono text-xs">
+                <span className="text-[#64748B] dark:text-[#94A3B8] text-[10px]">Pillar Metric:</span>
+                <span className="text-[#4F46E5] dark:text-indigo-300 font-semibold text-xs leading-relaxed">{tab.metric}</span>
               </div>
             </div>
           );
@@ -202,15 +212,15 @@ export const MemoryExplorer: React.FC = () => {
       </Card>
 
       {/* Search and Filters Bar */}
-      <div className="p-3.5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-wrap items-center gap-3">
+      <div className="p-3.5 rounded-2xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] shadow-xs flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[240px]">
-          <Search className="w-3.5 h-3.5 text-[#94A3B8] absolute left-3 top-2.5" />
+          <Search className="w-3.5 h-3.5 text-[#94A3B8] dark:text-[#64748B] absolute left-3 top-2.5" />
           <input
             type="text"
             placeholder="Search memory records by service, incident ID, root cause, or error keyword..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-9 pr-4 py-1.5 text-xs text-[#172033] placeholder-[#94A3B8] focus:outline-none focus:border-[#4F46E5] focus:bg-white"
+            className="w-full bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-xl pl-9 pr-4 py-1.5 text-xs text-[#172033] dark:text-[#F1F5F9] placeholder-[#94A3B8] dark:placeholder-[#64748B] focus:outline-none focus:border-[#4F46E5]"
           />
         </div>
 
@@ -222,8 +232,8 @@ export const MemoryExplorer: React.FC = () => {
               onClick={() => setServiceFilter(srv)}
               className={`px-2.5 py-1 rounded-xl border transition-colors cursor-pointer ${
                 serviceFilter === srv
-                  ? 'bg-[#EEF2FF] text-[#4F46E5] border-indigo-200 font-bold'
-                  : 'bg-white text-[#64748B] border-[#E2E8F0] hover:text-[#172033]'
+                  ? 'bg-[#EEF2FF] dark:bg-indigo-950/60 text-[#4F46E5] dark:text-indigo-400 border-indigo-200 dark:border-indigo-800 font-bold'
+                  : 'bg-white dark:bg-[#181D26] text-[#64748B] dark:text-[#94A3B8] border-[#E2E8F0] dark:border-[#222834] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
               }`}
             >
               {srv}
@@ -237,20 +247,20 @@ export const MemoryExplorer: React.FC = () => {
         {/* Left 2 Cols: Memory Records Cards */}
         <div className="lg:col-span-2 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
-              <BrainCircuit className="w-4 h-4 text-[#4F46E5]" />
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
+              <BrainCircuit className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
               <span>Retained Incident Knowledge Records ({filteredMemories.length})</span>
             </h3>
-            <span className="text-[11px] font-mono text-[#64748B]">Click any card to inspect full details</span>
+            <span className="text-[11px] font-mono text-[#64748B] dark:text-[#94A3B8]">Click any card to inspect full details</span>
           </div>
 
           {loading ? (
-            <div className="p-12 text-center text-[#64748B] font-mono text-xs flex flex-col items-center justify-center space-y-3">
+            <div className="p-12 text-center text-[#64748B] dark:text-[#94A3B8] font-mono text-xs flex flex-col items-center justify-center space-y-3">
               <div className="w-6 h-6 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin" />
               <span>Querying institutional memory records...</span>
             </div>
           ) : filteredMemories.length === 0 ? (
-            <Card className="p-8 text-center text-xs text-[#64748B]">
+            <Card className="p-8 text-center text-xs text-[#64748B] dark:text-[#94A3B8]">
               No memories found matching your search.
             </Card>
           ) : (
@@ -263,40 +273,40 @@ export const MemoryExplorer: React.FC = () => {
                     onClick={() => setSelectedMemory(mem)}
                     className={`p-5 rounded-2xl border transition-colors cursor-pointer space-y-3 shadow-xs ${
                       isSelected
-                        ? 'bg-[#EEF2FF]/40 border-indigo-300'
-                        : 'bg-white border-[#E2E8F0] hover:border-slate-300 hover:bg-[#F8FAFC]'
+                        ? 'bg-[#EEF2FF]/40 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-700'
+                        : 'bg-white dark:bg-[#141820] border-[#E2E8F0] dark:border-[#222834] hover:border-slate-300 dark:hover:border-slate-700 hover:bg-[#F8FAFC] dark:hover:bg-[#181D26]'
                     }`}
                   >
                     <div className="flex items-center justify-between font-mono text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-[#4F46E5] px-2 py-0.5 rounded-lg bg-[#EEF2FF] border border-indigo-100">
+                        <span className="font-bold text-[#4F46E5] dark:text-indigo-400 px-2 py-0.5 rounded-lg bg-[#EEF2FF] dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/40">
                           {mem.id}
                         </span>
-                        <span className="text-[#64748B]">
-                          Source: <span className="text-[#172033] font-semibold">{mem.source_incident_id}</span>
+                        <span className="text-[#64748B] dark:text-[#94A3B8]">
+                          Source: <span className="text-[#172033] dark:text-[#F1F5F9] font-semibold">{mem.source_incident_id}</span>
                         </span>
-                        <span className="text-[#64748B]">[{mem.metadata?.service}]</span>
+                        <span className="text-[#64748B] dark:text-[#94A3B8]">[{mem.metadata?.service}]</span>
                       </div>
 
-                      <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 font-semibold flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Human Verified
+                      <span className="text-[10px] text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800 font-semibold flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> Human Verified
                       </span>
                     </div>
 
-                    <p className="text-xs text-[#172033] leading-relaxed font-sans">
+                    <p className="text-xs text-[#172033] dark:text-[#F1F5F9] leading-relaxed font-sans">
                       {mem.content}
                     </p>
 
                     {mem.metadata?.verified_root_cause && (
-                      <div className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-mono space-y-1">
-                        <span className="text-[#64748B] text-[10px] font-semibold uppercase block">Verified Root Cause:</span>
-                        <span className="text-emerald-700 font-medium">{mem.metadata.verified_root_cause}</span>
+                      <div className="p-3 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] text-xs font-mono space-y-1">
+                        <span className="text-[#64748B] dark:text-[#94A3B8] text-[10px] font-semibold uppercase block">Verified Root Cause:</span>
+                        <span className="text-emerald-700 dark:text-emerald-400 font-medium">{mem.metadata.verified_root_cause}</span>
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between text-[11px] font-mono text-[#64748B] pt-1">
+                    <div className="flex items-center justify-between text-[11px] font-mono text-[#64748B] dark:text-[#94A3B8] pt-1">
                       <span>Retained: {new Date(mem.retained_at).toLocaleDateString()}</span>
-                      <span className="text-[#4F46E5] font-semibold">Inspect Full Record →</span>
+                      <span className="text-[#4F46E5] dark:text-indigo-400 font-semibold">Inspect Full Record →</span>
                     </div>
                   </div>
                 );
@@ -309,12 +319,12 @@ export const MemoryExplorer: React.FC = () => {
         <div className="space-y-6">
           {/* Selected Record Dossier */}
           <Card className="p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
-              <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
-                <Code className="w-4 h-4 text-[#4F46E5]" />
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[#222834] pb-3">
+              <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
+                <Code className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
                 <span>Record Inspector</span>
               </h3>
-              <span className="text-[10px] font-mono text-[#64748B]">
+              <span className="text-[10px] font-mono text-[#64748B] dark:text-[#94A3B8]">
                 {selectedMemory?.id || 'None Selected'}
               </span>
             </div>
@@ -322,14 +332,14 @@ export const MemoryExplorer: React.FC = () => {
             {selectedMemory ? (
               <div className="space-y-3">
                 <div className="space-y-1 text-xs">
-                  <span className="text-[#64748B] block font-mono text-[10px]">Context Key:</span>
-                  <span className="font-mono text-[#172033] bg-[#F8FAFC] px-2 py-1 rounded-lg border border-[#E2E8F0] block">
+                  <span className="text-[#64748B] dark:text-[#94A3B8] block font-mono text-[10px]">Context Key:</span>
+                  <span className="font-mono text-[#172033] dark:text-[#F1F5F9] bg-[#F8FAFC] dark:bg-[#181D26] px-2 py-1 rounded-lg border border-[#E2E8F0] dark:border-[#222834] block">
                     {selectedMemory.context}
                   </span>
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-[#64748B] block font-mono text-[10px]">Structured Record Payload:</span>
+                  <span className="text-[#64748B] dark:text-[#94A3B8] block font-mono text-[10px]">Structured Record Payload:</span>
                   <CodeBlock 
                     code={JSON.stringify(selectedMemory, null, 2)} 
                     language="json" 
@@ -337,7 +347,7 @@ export const MemoryExplorer: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="p-8 text-center text-xs text-[#64748B] font-mono">
+              <div className="p-8 text-center text-xs text-[#64748B] dark:text-[#94A3B8] font-mono">
                 Click any memory card on the left to inspect its details.
               </div>
             )}
@@ -345,26 +355,26 @@ export const MemoryExplorer: React.FC = () => {
 
           {/* Immutable Audit Log Stream */}
           <Card className="p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
-              <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#4F46E5]" />
+            <div className="flex items-center justify-between border-b border-[#E2E8F0] dark:border-[#222834] pb-3">
+              <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
+                <Clock className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
                 <span>Memory Audit Trail</span>
               </h3>
-              <span className="text-[10px] font-mono text-[#64748B]">{auditLog.length} Events</span>
+              <span className="text-[10px] font-mono text-[#64748B] dark:text-[#94A3B8]">{auditLog.length} Events</span>
             </div>
 
             <div className="space-y-2.5 max-h-80 overflow-y-auto pr-1">
               {auditLog.map((ev, i) => (
-                <div key={i} className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs space-y-1">
+                <div key={i} className="p-3 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] text-xs space-y-1">
                   <div className="flex items-center justify-between font-mono text-[10px]">
-                    <span className="text-[#4F46E5] font-bold px-1.5 py-0.5 rounded bg-[#EEF2FF] border border-indigo-100">
+                    <span className="text-[#4F46E5] dark:text-indigo-400 font-bold px-1.5 py-0.5 rounded bg-[#EEF2FF] dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/40">
                       {ev.action}
                     </span>
-                    <span className="text-[#94A3B8]">
+                    <span className="text-[#94A3B8] dark:text-[#64748B]">
                       {new Date(ev.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                  <p className="text-[#172033] text-[11px] leading-snug">{ev.details}</p>
+                  <p className="text-[#172033] dark:text-[#F1F5F9] text-[11px] leading-snug">{ev.summary || ev.details}</p>
                 </div>
               ))}
             </div>

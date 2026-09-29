@@ -1,4 +1,5 @@
 import logging
+import asyncio
 import httpx
 from typing import Dict, Any, List, Optional
 from datetime import datetime
@@ -251,6 +252,96 @@ class HindsightMemoryAdapter:
                 logger.error(f"Remote Hindsight recall failed: {e}. Falling back to sandbox memories.")
 
         return scored_local[:limit]
+
+    async def get_all_memories_async(self) -> List[Dict[str, Any]]:
+        """
+        Fetch all retained memories from Vectorize Hindsight Cloud bank or local sandbox.
+        """
+        cloud_memories: List[Dict[str, Any]] = []
+        if self.is_cloud_connected:
+            try:
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
+                    url = f"{self.base_url}/v1/default/banks/{self.bank_id}/documents"
+                    resp = await client.get(url, headers=headers)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        items = data.get("items", [])
+                        
+                        # Fetch documents content concurrently (up to 25 items)
+                        async def fetch_doc(item: Dict[str, Any]):
+                            doc_id = item.get("id")
+                            try:
+                                d_resp = await client.get(f"{url}/{doc_id}", headers=headers)
+                                if d_resp.status_code == 200:
+                                    return d_resp.json()
+                            except Exception:
+                                pass
+                            return item
+
+                        tasks = [fetch_doc(item) for item in items[:25]]
+                        fetched_docs = await asyncio.gather(*tasks, return_exceptions=True)
+
+                        for doc in fetched_docs:
+                            if isinstance(doc, dict):
+                                doc_id = doc.get("id", "mem-unknown")
+                                text = doc.get("original_text", "")
+                                
+                                # Extract structured fields from standard postmortem text if present
+                                service = None
+                                root_cause = None
+                                resolution = None
+                                
+                                if "Service: " in text:
+                                    try:
+                                        service = text.split("Service: ")[1].split("[")[0].strip()
+                                    except Exception:
+                                        pass
+                                if "Verified Root Cause: " in text:
+                                    try:
+                                        root_cause = text.split("Verified Root Cause: ")[1].split("..")[0].split(". ")[0].strip()
+                                    except Exception:
+                                        pass
+                                if "Applied Resolution: " in text:
+                                    try:
+                                        resolution = text.split("Applied Resolution: ")[1].split("..")[0].split(". ")[0].strip()
+                                    except Exception:
+                                        pass
+
+                                retain_params = doc.get("retain_params") or {}
+                                cloud_memories.append({
+                                    "id": doc_id,
+                                    "bank_id": self.bank_id,
+                                    "content": text or f"Vectorize Hindsight Memory Document {doc_id}",
+                                    "context": retain_params.get("context", "incident_investigation"),
+                                    "source_incident_id": doc_id,
+                                    "retained_at": doc.get("created_at"),
+                                    "is_verified": True,
+                                    "metadata": {
+                                        "service": service or (doc.get("tags") or ["production"])[0] if doc.get("tags") else "Production Service",
+                                        "verified_root_cause": root_cause,
+                                        "permanent_fix": resolution,
+                                        "fact_types": doc.get("nodes_by_fact_type", {}),
+                                        "source": "Vectorize Hindsight Cloud",
+                                    },
+                                    "provenance": {
+                                        "source": "vectorize_hindsight_cloud",
+                                        "bank_id": self.bank_id,
+                                        "memory_units": doc.get("memory_unit_count", 1),
+                                        "fact_types": doc.get("nodes_by_fact_type", {})
+                                    }
+                                })
+            except Exception as e:
+                logger.error(f"Error fetching memories from Hindsight Cloud: {e}")
+
+        # Combine with any in-memory sandbox entries that aren't already included
+        seen_ids = {m["id"] for m in cloud_memories}
+        combined = list(cloud_memories)
+        for local_m in self._local_sandbox_memories:
+            if local_m.get("id") not in seen_ids and local_m.get("source_incident_id") not in seen_ids:
+                combined.append(local_m)
+
+        return combined
 
     def get_all_memories(self) -> List[Dict[str, Any]]:
         return list(self._local_sandbox_memories)

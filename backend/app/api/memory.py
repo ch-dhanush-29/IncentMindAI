@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter
+from fastapi import APIRouter
 from typing import List, Dict, Any, Optional
 from app.services.hindsight_adapter import hindsight_adapter
 
@@ -10,7 +10,7 @@ async def get_memory_status():
 
 @router.get("/records")
 async def list_memories():
-    return hindsight_adapter.get_all_memories()
+    return await hindsight_adapter.get_all_memories_async()
 
 @router.get("/audit")
 async def get_memory_audit():

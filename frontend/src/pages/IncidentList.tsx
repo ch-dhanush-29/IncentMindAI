@@ -106,10 +106,10 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
       {/* Header with Declare & Export Buttons */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-[#172033] flex items-center gap-2">
+          <h2 className="text-2xl font-bold tracking-tight text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
             Production Incidents Feed
           </h2>
-          <p className="text-xs text-[#64748B] mt-1">
+          <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1">
             Real-time telemetry, active war room workspaces, and historical records linked to Hindsight memory banks.
           </p>
         </div>
@@ -143,16 +143,16 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
       </div>
 
       {/* Filter and Status Bar */}
-      <div className="p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs space-y-3">
+      <div className="p-4 rounded-2xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] shadow-xs space-y-3">
         {/* Top Status Tabs */}
-        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-[#E2E8F0] pb-3">
+        <div className="flex items-center justify-between flex-wrap gap-2 border-b border-[#E2E8F0] dark:border-[#222834] pb-3">
           <div className="flex items-center gap-2 text-xs font-mono">
             <button
               onClick={() => setStatusTab('ALL')}
               className={`px-3 py-1.5 rounded-xl font-semibold transition-colors cursor-pointer border ${
                 statusTab === 'ALL'
                   ? 'bg-[#4F46E5] text-white border-[#4F46E5]'
-                  : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:text-[#172033]'
+                  : 'bg-[#F8FAFC] dark:bg-[#181D26] text-[#64748B] dark:text-[#94A3B8] border-[#E2E8F0] dark:border-[#222834] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
               }`}
             >
               All Incidents ({incidents.length})
@@ -162,7 +162,7 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
               className={`px-3 py-1.5 rounded-xl font-semibold transition-colors cursor-pointer border ${
                 statusTab === 'ACTIVE'
                   ? 'bg-red-600 text-white border-red-600'
-                  : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:text-[#172033]'
+                  : 'bg-[#F8FAFC] dark:bg-[#181D26] text-[#64748B] dark:text-[#94A3B8] border-[#E2E8F0] dark:border-[#222834] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
               }`}
             >
               Active Outages ({activeCount})
@@ -172,25 +172,25 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
               className={`px-3 py-1.5 rounded-xl font-semibold transition-colors cursor-pointer border ${
                 statusTab === 'RESOLVED'
                   ? 'bg-emerald-600 text-white border-emerald-600'
-                  : 'bg-[#F8FAFC] text-[#64748B] border-[#E2E8F0] hover:text-[#172033]'
+                  : 'bg-[#F8FAFC] dark:bg-[#181D26] text-[#64748B] dark:text-[#94A3B8] border-[#E2E8F0] dark:border-[#222834] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
               }`}
             >
               Resolved & Retained ({resolvedCount})
             </button>
           </div>
 
-          <div className="text-xs font-mono text-[#64748B] flex items-center gap-2">
-            <span>Showing <strong className="text-[#172033]">{sortedIncidents.length}</strong> incidents</span>
-            <div className="flex items-center gap-1.5 ml-2 border-l border-[#E2E8F0] pl-3">
+          <div className="text-xs font-mono text-[#64748B] dark:text-[#94A3B8] flex items-center gap-2">
+            <span>Showing <strong className="text-[#172033] dark:text-[#F1F5F9]">{sortedIncidents.length}</strong> incidents</span>
+            <div className="flex items-center gap-1.5 ml-2 border-l border-[#E2E8F0] dark:border-[#222834] pl-3">
               <ArrowUpDown className="w-3 h-3 text-[#94A3B8]" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-transparent text-xs text-[#172033] font-semibold focus:outline-none cursor-pointer"
+                className="bg-transparent text-xs text-[#172033] dark:text-[#F1F5F9] font-semibold focus:outline-none cursor-pointer"
               >
-                <option value="newest">Sort: Newest</option>
-                <option value="oldest">Sort: Oldest</option>
-                <option value="severity">Sort: Highest Severity</option>
+                <option value="newest" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Sort: Newest</option>
+                <option value="oldest" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Sort: Oldest</option>
+                <option value="severity" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Sort: Highest Severity</option>
               </select>
             </div>
           </div>
@@ -205,7 +205,7 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
               placeholder="Filter by title, symptoms, or error messages..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-white border border-[#E2E8F0] rounded-xl pl-9 pr-3 py-1.5 text-xs text-[#172033] placeholder-[#94A3B8] focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-indigo-100"
+              className="w-full bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-xl pl-9 pr-3 py-1.5 text-xs text-[#172033] dark:text-[#F1F5F9] placeholder-[#94A3B8] dark:placeholder-[#64748B] focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-indigo-100"
             />
           </div>
 
@@ -213,13 +213,13 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
             <select
               value={serviceFilter}
               onChange={(e) => setServiceFilter(e.target.value)}
-              className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5] cursor-pointer"
+              className="w-full bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-xl px-3 py-1.5 text-xs text-[#172033] dark:text-[#F1F5F9] focus:outline-none focus:border-[#4F46E5] cursor-pointer"
             >
-              <option value="">All Services</option>
-              <option value="payment-api">payment-api</option>
-              <option value="auth-service">auth-service</option>
-              <option value="checkout-worker">checkout-worker</option>
-              <option value="order-service">order-service</option>
+              <option value="" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">All Services</option>
+              <option value="payment-api" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">payment-api</option>
+              <option value="auth-service" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">auth-service</option>
+              <option value="checkout-worker" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">checkout-worker</option>
+              <option value="order-service" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">order-service</option>
             </select>
           </div>
 
@@ -227,13 +227,13 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
             <select
               value={severityFilter}
               onChange={(e) => setSeverityFilter(e.target.value)}
-              className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5] cursor-pointer"
+              className="w-full bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-xl px-3 py-1.5 text-xs text-[#172033] dark:text-[#F1F5F9] focus:outline-none focus:border-[#4F46E5] cursor-pointer"
             >
-              <option value="">All Severities</option>
-              <option value="Critical">Critical</option>
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
+              <option value="" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">All Severities</option>
+              <option value="Critical" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Critical</option>
+              <option value="High" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">High</option>
+              <option value="Medium" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Medium</option>
+              <option value="Low" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Low</option>
             </select>
           </div>
 
@@ -241,57 +241,57 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
             <select
               value={assigneeFilter}
               onChange={(e) => setAssigneeFilter(e.target.value)}
-              className="w-full bg-white border border-[#E2E8F0] rounded-xl px-3 py-1.5 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5] cursor-pointer"
+              className="w-full bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-xl px-3 py-1.5 text-xs text-[#172033] dark:text-[#F1F5F9] focus:outline-none focus:border-[#4F46E5] cursor-pointer"
             >
-              <option value="">All Assignees</option>
-              <option value="Ryan Cox Administrator">Ryan Cox Administrator</option>
-              <option value="Carlos Ruiz (Infra Lead)">Carlos Ruiz (Infra Lead)</option>
-              <option value="Elena Rostova (Principal SRE)">Elena Rostova (Principal SRE)</option>
-              <option value="Jane Smith (DBA)">Jane Smith (DBA)</option>
-              <option value="sre-oncall">sre-oncall</option>
-              <option value="unassigned">Unassigned</option>
+              <option value="" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">All Assignees</option>
+              <option value="Ryan Cox Administrator" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Ryan Cox Administrator</option>
+              <option value="Carlos Ruiz (Infra Lead)" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Carlos Ruiz (Infra Lead)</option>
+              <option value="Elena Rostova (Principal SRE)" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Elena Rostova (Principal SRE)</option>
+              <option value="Jane Smith (DBA)" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Jane Smith (DBA)</option>
+              <option value="sre-oncall" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">sre-oncall</option>
+              <option value="unassigned" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Unassigned</option>
             </select>
           </div>
         </div>
       </div>
 
       {/* Incidents List Card */}
-      <div className="bg-white rounded-2xl border border-[#E2E8F0] shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-[#141820] rounded-2xl border border-[#E2E8F0] dark:border-[#222834] shadow-xs overflow-hidden">
         {loading ? (
-          <div className="p-12 text-center text-[#64748B] font-mono text-xs flex flex-col items-center justify-center space-y-3">
+          <div className="p-12 text-center text-[#64748B] dark:text-[#94A3B8] font-mono text-xs flex flex-col items-center justify-center space-y-3">
             <div className="w-6 h-6 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin" />
             <span>Streaming incident events...</span>
           </div>
         ) : paginatedIncidents.length === 0 ? (
-          <div className="p-12 text-center text-[#64748B] text-xs">
+          <div className="p-12 text-center text-[#64748B] dark:text-[#94A3B8] text-xs">
             No production incidents matched the selected criteria.
           </div>
         ) : (
-          <div className="divide-y divide-[#E2E8F0]">
+          <div className="divide-y divide-[#E2E8F0] dark:divide-[#222834]">
             {paginatedIncidents.map((inc) => (
               <div
                 key={inc.id}
                 onClick={() => onSelectIncident(inc.id)}
-                className="p-5 hover:bg-[#EEF2FF]/40 transition-colors cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                className="p-5 hover:bg-[#EEF2FF]/40 dark:hover:bg-[#1C2230]/60 transition-colors cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-4 group"
               >
                 <div className="space-y-2 max-w-3xl">
                   {/* Top Row Badges */}
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-[#4F46E5] px-2 py-0.5 rounded-lg bg-[#EEF2FF] border border-indigo-100">
+                    <span className="font-mono text-xs font-bold text-[#4F46E5] dark:text-indigo-400 px-2 py-0.5 rounded-lg bg-[#EEF2FF] dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60">
                       {inc.id}
                     </span>
                     <SeverityBadge severity={inc.severity} />
                     <StatusBadge status={inc.status} />
-                    <span className="text-xs text-[#64748B] font-mono flex items-center gap-1">
+                    <span className="text-xs text-[#64748B] dark:text-[#94A3B8] font-mono flex items-center gap-1">
                       <Server className="w-3 h-3 text-[#94A3B8]" />
                       [{inc.service}]
                     </span>
-                    <span className="text-[11px] text-[#64748B] font-mono">
+                    <span className="text-[11px] text-[#64748B] dark:text-[#94A3B8] font-mono">
                       env: {inc.environment}
                     </span>
                     {inc.assignee && inc.assignee !== 'unassigned' && (
-                      <span className="text-[11px] font-mono text-[#4F46E5] bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md flex items-center gap-1">
-                        <User className="w-3 h-3 text-[#4F46E5]" />
+                      <span className="text-[11px] font-mono text-[#4F46E5] dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-2 py-0.5 rounded-md flex items-center gap-1">
+                        <User className="w-3 h-3 text-[#4F46E5] dark:text-indigo-400" />
                         {inc.assignee}
                       </span>
                     )}
@@ -299,10 +299,10 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
 
                   {/* Title & Description */}
                   <div>
-                    <h3 className="text-sm font-bold text-[#172033] group-hover:text-[#4F46E5] transition-colors">
+                    <h3 className="text-sm font-bold text-[#172033] dark:text-[#F1F5F9] group-hover:text-[#4F46E5] dark:group-hover:text-indigo-400 transition-colors">
                       {inc.title}
                     </h3>
-                    <p className="text-xs text-[#64748B] line-clamp-1 mt-0.5">
+                    <p className="text-xs text-[#64748B] dark:text-[#94A3B8] line-clamp-1 mt-0.5">
                       {inc.description}
                     </p>
                   </div>
@@ -312,7 +312,7 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
                     {inc.symptoms.slice(0, 3).map((symp, idx) => (
                       <span 
                         key={idx} 
-                        className="text-[11px] font-mono text-[#64748B] bg-[#F8FAFC] px-2 py-0.5 rounded-md border border-[#E2E8F0]"
+                        className="text-[11px] font-mono text-[#64748B] dark:text-[#94A3B8] bg-[#F8FAFC] dark:bg-[#181D26] px-2 py-0.5 rounded-md border border-[#E2E8F0] dark:border-[#222834]"
                       >
                         {symp}
                       </span>
@@ -324,17 +324,17 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
                 </div>
 
                 {/* Right: Timestamp and Launch Action */}
-                <div className="flex items-center gap-4 text-xs font-mono text-[#64748B] self-end md:self-auto flex-shrink-0">
+                <div className="flex items-center gap-4 text-xs font-mono text-[#64748B] dark:text-[#94A3B8] self-end md:self-auto flex-shrink-0">
                   <div className="text-right">
-                    <div className="text-[#172033] font-medium">
+                    <div className="text-[#172033] dark:text-[#F1F5F9] font-medium">
                       {new Date(inc.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
-                    <div className="text-[10px] text-[#64748B]">
+                    <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8]">
                       {new Date(inc.created_at).toLocaleDateString()}
                     </div>
                   </div>
 
-                  <div className="px-3 py-1.5 rounded-xl bg-[#EEF2FF] group-hover:bg-[#4F46E5] group-hover:text-white border border-indigo-100 transition-colors flex items-center gap-1.5 text-[#4F46E5] text-xs font-semibold">
+                  <div className="px-3 py-1.5 rounded-xl bg-[#EEF2FF] dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 text-[#4F46E5] dark:text-indigo-300 group-hover:bg-[#4F46E5] group-hover:text-white dark:group-hover:bg-[#4F46E5] dark:group-hover:text-white transition-colors flex items-center gap-1.5 text-xs font-semibold">
                     <span>Investigate</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </div>
@@ -346,22 +346,22 @@ export const IncidentList: React.FC<IncidentListProps> = ({ onSelectIncident, op
 
         {/* Pagination Bar */}
         {totalPages > 1 && (
-          <div className="p-4 bg-[#F8FAFC] border-t border-[#E2E8F0] flex items-center justify-between text-xs font-mono">
-            <span className="text-[#64748B]">
+          <div className="p-4 bg-[#F8FAFC] dark:bg-[#181D26] border-t border-[#E2E8F0] dark:border-[#222834] flex items-center justify-between text-xs font-mono">
+            <span className="text-[#64748B] dark:text-[#94A3B8]">
               Page {currentPage} of {totalPages} ({sortedIncidents.length} total)
             </span>
             <div className="flex items-center gap-2">
               <button
                 disabled={currentPage <= 1}
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                className="px-2.5 py-1 rounded-lg border border-[#E2E8F0] bg-white text-[#172033] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 flex items-center gap-1"
+                className="px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-[#222834] bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-[#1C2230] flex items-center gap-1"
               >
                 <ChevronLeft className="w-3.5 h-3.5" /> Previous
               </button>
               <button
                 disabled={currentPage >= totalPages}
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                className="px-2.5 py-1 rounded-lg border border-[#E2E8F0] bg-white text-[#172033] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 flex items-center gap-1"
+                className="px-2.5 py-1 rounded-lg border border-[#E2E8F0] dark:border-[#222834] bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-[#1C2230] flex items-center gap-1"
               >
                 Next <ChevronRight className="w-3.5 h-3.5" />
               </button>

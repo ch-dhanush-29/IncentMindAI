@@ -160,16 +160,16 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
   return (
     <div className="space-y-6">
       {/* Incident Switcher and Main Hero Bar */}
-      <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-2.5">
             <select
               value={incident.id}
               onChange={(e) => loadIncident(e.target.value)}
-              className="bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl px-2.5 py-1 text-[#4F46E5] font-mono text-xs font-bold focus:outline-none focus:border-[#4F46E5] cursor-pointer"
+              className="bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-xl px-2.5 py-1 text-[#4F46E5] dark:text-indigo-400 font-mono text-xs font-bold focus:outline-none focus:border-[#4F46E5] cursor-pointer"
             >
               {allIncidents.map((inc) => (
-                <option key={inc.id} value={inc.id}>
+                <option key={inc.id} value={inc.id} className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">
                   {inc.id} - {inc.service} ({inc.severity})
                 </option>
               ))}
@@ -178,17 +178,17 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
             <SeverityBadge severity={incident.severity} />
             <StatusBadge status={incident.status} />
 
-            <span className="text-xs text-[#64748B] font-mono flex items-center gap-1">
+            <span className="text-xs text-[#64748B] dark:text-[#94A3B8] font-mono flex items-center gap-1">
               <Server className="w-3 h-3 text-[#94A3B8]" />
-              Service: <span className="text-[#172033] font-semibold">{incident.service}</span>
+              Service: <span className="text-[#172033] dark:text-[#F1F5F9] font-semibold">{incident.service}</span>
             </span>
 
-            <span className="text-xs text-[#64748B] font-mono">
-              Env: <span className="text-[#172033]">{incident.environment}</span>
+            <span className="text-xs text-[#64748B] dark:text-[#94A3B8] font-mono">
+              Env: <span className="text-[#172033] dark:text-[#F1F5F9]">{incident.environment}</span>
             </span>
           </div>
 
-          <h2 className="text-xl font-extrabold text-[#172033] tracking-tight leading-snug">{incident.title}</h2>
+          <h2 className="text-xl font-extrabold text-[#172033] dark:text-[#F1F5F9] tracking-tight leading-snug">{incident.title}</h2>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
@@ -196,12 +196,12 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
             onClick={() => runComparison()}
             className={`px-3.5 py-2 rounded-xl font-mono text-xs flex items-center gap-2 transition-colors cursor-pointer border ${
               compareMode
-                ? 'bg-[#EEF2FF] text-[#4F46E5] border-indigo-200 font-semibold'
-                : 'bg-white hover:bg-[#F8FAFC] border-[#E2E8F0] text-[#172033]'
+                ? 'bg-[#EEF2FF] dark:bg-indigo-950/60 text-[#4F46E5] dark:text-indigo-300 border-indigo-200 dark:border-indigo-800 font-semibold'
+                : 'bg-white dark:bg-[#181D26] hover:bg-[#F8FAFC] dark:hover:bg-[#1E2536] border-[#E2E8F0] dark:border-[#222834] text-[#172033] dark:text-[#F1F5F9]'
             }`}
             title="Side-by-side comparison of diagnosis with vs without institutional memory"
           >
-            <SplitSquareVertical className="w-4 h-4 text-[#4F46E5]" />
+            <SplitSquareVertical className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
             <span>{compareMode ? 'Comparing Active' : 'Compare vs No-Memory'}</span>
           </button>
 
@@ -228,20 +228,20 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
 
       {/* Side-by-Side Comparison Hero Display */}
       {compareMode && baselineInvestigation && (
-        <div className="p-5 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] pb-3">
+        <div className="p-5 rounded-2xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E2E8F0] dark:border-[#222834] pb-3">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#EEF2FF] border border-indigo-100 flex items-center justify-center">
-                <SplitSquareVertical className="w-4 h-4 text-[#4F46E5]" />
+              <div className="w-8 h-8 rounded-xl bg-[#EEF2FF] dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 flex items-center justify-center">
+                <SplitSquareVertical className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-[#172033] flex items-center gap-2">
+                <h3 className="text-sm font-bold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
                   <span>Institutional Memory Recall vs Generic Baseline</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EEF2FF] border border-indigo-100 text-[#4F46E5] font-semibold">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EEF2FF] dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 text-[#4F46E5] dark:text-indigo-300 font-semibold">
                     A/B SRE Diagnostic Benchmark
                   </span>
                 </h3>
-                <p className="text-xs text-[#64748B]">
+                <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
                   Visual comparison showing how institutional memory eliminates guesswork and reduces triage time.
                 </p>
               </div>
@@ -249,7 +249,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
 
             <button 
               onClick={() => setCompareMode(false)}
-              className="text-xs font-mono text-[#64748B] hover:text-[#172033] px-2.5 py-1 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] hover:border-slate-300 transition-colors self-start sm:self-auto cursor-pointer"
+              className="text-xs font-mono text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] px-2.5 py-1 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] hover:border-slate-300 transition-colors self-start sm:self-auto cursor-pointer"
             >
               Close Comparison ✕
             </button>
@@ -257,46 +257,46 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Column A: Generic Baseline LLM (No Memory) */}
-            <div className="p-5 rounded-2xl bg-[#F8FAFC] border border-red-200 space-y-3">
-              <div className="flex items-center justify-between border-b border-red-200 pb-2.5">
+            <div className="p-5 rounded-2xl bg-[#F8FAFC] dark:bg-red-950/20 border border-red-200 dark:border-red-900/60 space-y-3">
+              <div className="flex items-center justify-between border-b border-red-200 dark:border-red-900/60 pb-2.5">
                 <div className="flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-red-600" />
-                  <span className="font-bold text-red-900 text-xs font-mono">WITHOUT MEMORY (Generic Baseline)</span>
+                  <AlertTriangle className="w-4 h-4 text-red-600 dark:text-red-400" />
+                  <span className="font-bold text-red-900 dark:text-red-300 text-xs font-mono">WITHOUT MEMORY (Generic Baseline)</span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200 font-medium">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/60 font-medium">
                   0 Memories Recalled
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                <div className="p-2.5 rounded-xl bg-white border border-red-200">
-                  <span className="text-[#64748B] block text-[10px]">Triage Duration</span>
-                  <span className="text-red-700 font-bold">~45 - 60 minutes</span>
+                <div className="p-2.5 rounded-xl bg-white dark:bg-[#141820] border border-red-200 dark:border-red-900/50">
+                  <span className="text-[#64748B] dark:text-[#94A3B8] block text-[10px]">Triage Duration</span>
+                  <span className="text-red-700 dark:text-red-400 font-bold">~45 - 60 minutes</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-white border border-red-200">
-                  <span className="text-[#64748B] block text-[10px]">Hallucination Risk</span>
-                  <span className="text-red-700 font-bold">HIGH (Generic Guessing)</span>
+                <div className="p-2.5 rounded-xl bg-white dark:bg-[#141820] border border-red-200 dark:border-red-900/50">
+                  <span className="text-[#64748B] dark:text-[#94A3B8] block text-[10px]">Hallucination Risk</span>
+                  <span className="text-red-700 dark:text-red-400 font-bold">HIGH (Generic Guessing)</span>
                 </div>
               </div>
 
-              <p className="text-xs text-[#172033] leading-relaxed font-sans">
+              <p className="text-xs text-[#172033] dark:text-[#F1F5F9] leading-relaxed font-sans">
                 {baselineInvestigation.summary}
               </p>
 
-              <div className="text-[11px] text-amber-900 bg-amber-50 p-3 rounded-xl border border-amber-200">
-                <div className="font-bold mb-1 flex items-center gap-1.5 text-amber-800">
+              <div className="text-[11px] text-amber-900 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/30 p-3 rounded-xl border border-amber-200 dark:border-amber-900/60">
+                <div className="font-bold mb-1 flex items-center gap-1.5 text-amber-800 dark:text-amber-400">
                   <AlertTriangle className="w-3.5 h-3.5" /> Warning: Unverified Generic Path
                 </div>
                 {baselineInvestigation.insufficient_evidence_warning || 'The agent lacks persistent memory of previous occurrences. Proposes broad trial-and-error debugging.'}
               </div>
 
               <div className="pt-1">
-                <span className="text-xs font-bold text-[#172033] block mb-1.5">Speculative Hypotheses:</span>
+                <span className="text-xs font-bold text-[#172033] dark:text-[#F1F5F9] block mb-1.5">Speculative Hypotheses:</span>
                 <div className="space-y-1.5 text-xs font-mono">
                   {baselineInvestigation.hypotheses.map((h, i) => (
-                    <div key={i} className="p-2.5 rounded-xl bg-white border border-[#E2E8F0] flex items-center justify-between">
-                      <span className="text-[#172033]">{h.cause}</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-[#64748B] border border-slate-200">{h.status}</span>
+                    <div key={i} className="p-2.5 rounded-xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] flex items-center justify-between">
+                      <span className="text-[#172033] dark:text-[#F1F5F9]">{h.cause}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#181D26] text-[#64748B] dark:text-[#94A3B8] border border-slate-200 dark:border-[#222834]">{h.status}</span>
                     </div>
                   ))}
                 </div>
@@ -304,46 +304,46 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
             </div>
 
             {/* Column B: With Institutional Memory (Hero) */}
-            <div className="p-5 rounded-2xl bg-indigo-50/50 border border-indigo-200 space-y-3 shadow-xs">
-              <div className="flex items-center justify-between border-b border-indigo-200 pb-2.5">
+            <div className="p-5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/60 space-y-3 shadow-xs">
+              <div className="flex items-center justify-between border-b border-indigo-200 dark:border-indigo-900/60 pb-2.5">
                 <div className="flex items-center gap-2">
-                  <BrainCircuit className="w-4 h-4 text-[#4F46E5]" />
-                  <span className="font-bold text-[#4F46E5] text-xs font-mono">WITH INSTITUTIONAL MEMORY</span>
+                  <BrainCircuit className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
+                  <span className="font-bold text-[#4F46E5] dark:text-indigo-400 text-xs font-mono">WITH INSTITUTIONAL MEMORY</span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EEF2FF] text-[#4F46E5] border border-indigo-200 font-bold">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EEF2FF] dark:bg-indigo-950/60 text-[#4F46E5] dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 font-bold">
                   {String(investigation?.recalled_memories.length || 1)} Match(es) Found
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
-                <div className="p-2.5 rounded-xl bg-white border border-indigo-200">
-                  <span className="text-[#64748B] block text-[10px]">Triage Duration</span>
-                  <span className="text-emerald-700 font-bold">~5 - 8 mins (-86% MTTR)</span>
+                <div className="p-2.5 rounded-xl bg-white dark:bg-[#141820] border border-indigo-200 dark:border-indigo-900/50">
+                  <span className="text-[#64748B] dark:text-[#94A3B8] block text-[10px]">Triage Duration</span>
+                  <span className="text-emerald-700 dark:text-emerald-400 font-bold">~5 - 8 mins (-86% MTTR)</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-white border border-indigo-200">
-                  <span className="text-[#64748B] block text-[10px]">Grounding Provenance</span>
-                  <span className="text-[#4F46E5] font-bold">100% SRE Confirmed</span>
+                <div className="p-2.5 rounded-xl bg-white dark:bg-[#141820] border border-indigo-200 dark:border-indigo-900/50">
+                  <span className="text-[#64748B] dark:text-[#94A3B8] block text-[10px]">Grounding Provenance</span>
+                  <span className="text-[#4F46E5] dark:text-indigo-400 font-bold">100% SRE Confirmed</span>
                 </div>
               </div>
 
-              <p className="text-xs text-[#172033] leading-relaxed font-sans font-medium">
+              <p className="text-xs text-[#172033] dark:text-[#F1F5F9] leading-relaxed font-sans font-medium">
                 {investigation?.summary}
               </p>
 
-              <div className="text-[11px] text-emerald-900 bg-emerald-50 p-3 rounded-xl border border-emerald-200 space-y-1">
-                <div className="font-bold text-emerald-800 flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Grounded in Verified Incident History
+              <div className="text-[11px] text-emerald-900 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30 p-3 rounded-xl border border-emerald-200 dark:border-emerald-900/60 space-y-1">
+                <div className="font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> Grounded in Verified Incident History
                 </div>
                 <div>{investigation?.confidence_rationale}</div>
               </div>
 
               <div className="pt-1">
-                <span className="text-xs font-bold text-[#4F46E5] block mb-1.5">Confirmed Root Cause & Runbook:</span>
+                <span className="text-xs font-bold text-[#4F46E5] dark:text-indigo-400 block mb-1.5">Confirmed Root Cause & Runbook:</span>
                 <div className="space-y-1.5 text-xs font-mono">
                   {investigation?.hypotheses.map((h, i) => (
-                    <div key={i} className="p-2.5 rounded-xl bg-white border border-indigo-200 flex items-center justify-between">
-                      <span className="text-[#172033] font-medium">{h.cause}</span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
+                    <div key={i} className="p-2.5 rounded-xl bg-white dark:bg-[#141820] border border-indigo-200 dark:border-indigo-900/50 flex items-center justify-between">
+                      <span className="text-[#172033] dark:text-[#F1F5F9] font-medium">{h.cause}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900 font-bold">
                         {h.status}
                       </span>
                     </div>
@@ -363,21 +363,21 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
           <Card className="p-5 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#4F46E5]" />
-                <h3 className="text-sm font-semibold text-[#172033]">Agentic Investigation Synthesis</h3>
+                <Sparkles className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
+                <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Agentic Investigation Synthesis</h3>
               </div>
               <HindsightBadge label="Institutional Memory" />
             </div>
 
-            <p className="text-xs text-[#172033] leading-relaxed font-sans">
+            <p className="text-xs text-[#172033] dark:text-[#F1F5F9] leading-relaxed font-sans">
               {investigation?.summary || 'Synthesizing investigation findings...'}
             </p>
 
-            <div className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs space-y-1">
-              <div className="font-semibold text-[#172033] flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#4F46E5]" /> Evidence & Confidence Grounding:
+            <div className="p-3.5 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] text-xs space-y-1">
+              <div className="font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-[#4F46E5] dark:text-indigo-400" /> Evidence & Confidence Grounding:
               </div>
-              <p className="text-[#64748B] font-mono text-[11px] leading-relaxed">
+              <p className="text-[#64748B] dark:text-[#94A3B8] font-mono text-[11px] leading-relaxed">
                 {investigation?.confidence_rationale}
               </p>
             </div>
@@ -386,8 +386,8 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
           {/* Root Cause Hypotheses */}
           <Card className="p-5 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-[#172033]">Root Cause Hypotheses (Grounded vs Suspected)</h3>
-              <span className="text-[11px] text-[#64748B] font-mono">Evidence-Ranked</span>
+              <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Root Cause Hypotheses (Grounded vs Suspected)</h3>
+              <span className="text-[11px] text-[#64748B] dark:text-[#94A3B8] font-mono">Evidence-Ranked</span>
             </div>
 
             <div className="space-y-3">
@@ -400,10 +400,10 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                     key={idx} 
                     className={`p-4 rounded-xl border text-xs space-y-2 transition-colors ${
                       isConfirmed 
-                        ? 'bg-emerald-50/50 border-emerald-200' 
+                        ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/50' 
                         : isSuspected 
-                        ? 'bg-[#FEF3C7]/40 border-[#FDE68A]' 
-                        : 'bg-[#F8FAFC] border-[#E2E8F0]'
+                        ? 'bg-[#FEF3C7]/40 dark:bg-amber-950/20 border-[#FDE68A] dark:border-amber-900/50' 
+                        : 'bg-[#F8FAFC] dark:bg-[#181D26] border-[#E2E8F0] dark:border-[#222834]'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -411,35 +411,35 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                         <div className="flex items-center gap-2">
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold border ${
                             isConfirmed 
-                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                              ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800' 
                               : isSuspected 
-                              ? 'bg-[#FEF3C7] text-[#92400E] border-[#FDE68A]' 
-                              : 'bg-slate-100 text-slate-700 border-slate-200'
+                              ? 'bg-[#FEF3C7] dark:bg-amber-950/60 text-[#92400E] dark:text-amber-300 border-[#FDE68A] dark:border-amber-800' 
+                              : 'bg-slate-100 dark:bg-[#1E2536] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-[#2D3545]'
                           }`}>
                             {hypo.status}
                           </span>
-                          <span className="font-bold text-[#172033] text-xs">{hypo.cause}</span>
+                          <span className="font-bold text-[#172033] dark:text-[#F1F5F9] text-xs">{hypo.cause}</span>
                         </div>
-                        {hypo.notes && <p className="text-[#64748B] text-[11px]">{hypo.notes}</p>}
+                        {hypo.notes && <p className="text-[#64748B] dark:text-[#94A3B8] text-[11px]">{hypo.notes}</p>}
                       </div>
 
                       <span className={`text-[10px] font-mono px-2 py-0.5 rounded-lg border flex-shrink-0 ${
                         hypo.risk_level === 'Medium'
-                          ? 'text-[#92400E] bg-[#FEF3C7] border-[#FDE68A]'
+                          ? 'text-[#92400E] dark:text-amber-300 bg-[#FEF3C7] dark:bg-amber-950/50 border-[#FDE68A] dark:border-amber-800'
                           : hypo.risk_level === 'High'
-                          ? 'text-orange-700 bg-orange-50 border-orange-200'
-                          : 'text-[#64748B] bg-white border-[#E2E8F0]'
+                          ? 'text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/50 border-orange-200 dark:border-orange-800'
+                          : 'text-[#64748B] dark:text-[#94A3B8] bg-white dark:bg-[#141820] border-[#E2E8F0] dark:border-[#222834]'
                       }`}>
                         Risk: <span className="font-semibold">{hypo.risk_level}</span>
                       </span>
                     </div>
 
                     {hypo.evidence_supporting && hypo.evidence_supporting.length > 0 && (
-                      <div className="pt-2 border-t border-[#E2E8F0] text-[11px] font-mono space-y-1">
-                        <div className="text-[#64748B] font-semibold text-[10px]">Supporting Grounding Evidence:</div>
+                      <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#222834] text-[11px] font-mono space-y-1">
+                        <div className="text-[#64748B] dark:text-[#94A3B8] font-semibold text-[10px]">Supporting Grounding Evidence:</div>
                         {hypo.evidence_supporting.map((ev, i) => (
-                          <div key={i} className="flex items-center gap-2 text-[#172033]">
-                            <span className="text-[#4F46E5]">✓</span> {ev}
+                          <div key={i} className="flex items-center gap-2 text-[#172033] dark:text-[#F1F5F9]">
+                            <span className="text-[#4F46E5] dark:text-indigo-400">✓</span> {ev}
                           </div>
                         ))}
                       </div>
@@ -454,13 +454,13 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
           <Card className="p-5 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+                <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
                   <span>Safe, Reversible Diagnostic Sequence</span>
-                  <span className="text-[10px] font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-medium">Non-Destructive</span>
+                  <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full font-medium">Non-Destructive</span>
                 </h3>
-                <p className="text-xs text-[#64748B] mt-0.5">Click step checkboxes to track live triage execution</p>
+                <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5">Click step checkboxes to track live triage execution</p>
               </div>
-              <span className="text-[11px] text-[#64748B] font-mono">
+              <span className="text-[11px] text-[#64748B] dark:text-[#94A3B8] font-mono">
                 {Object.values(checkedSteps).filter(Boolean).length} / {investigation?.diagnostic_steps.length || 0} Executed
               </span>
             </div>
@@ -474,21 +474,21 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                     key={idx} 
                     className={`p-4 rounded-xl border text-xs space-y-2.5 transition-colors ${
                       isChecked 
-                        ? 'bg-emerald-50/40 border-emerald-200' 
-                        : 'bg-[#F8FAFC] border-[#E2E8F0] hover:border-slate-300'
+                        ? 'bg-emerald-50/40 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900/50' 
+                        : 'bg-[#F8FAFC] dark:bg-[#181D26] border-[#E2E8F0] dark:border-[#222834] hover:border-slate-300 dark:hover:border-slate-700'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div 
-                        className="flex items-center gap-2.5 font-medium text-[#172033] cursor-pointer select-none"
+                        className="flex items-center gap-2.5 font-medium text-[#172033] dark:text-[#F1F5F9] cursor-pointer select-none"
                         onClick={() => toggleStep(step.step_number)}
                       >
                         {isChecked ? (
-                          <CheckSquare className="w-4 h-4 text-emerald-600" />
+                          <CheckSquare className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                         ) : (
-                          <Square className="w-4 h-4 text-[#94A3B8] hover:text-[#172033]" />
+                          <Square className="w-4 h-4 text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]" />
                         )}
-                        <span className={`text-xs ${isChecked ? 'line-through text-[#64748B]' : 'text-[#172033]'}`}>
+                        <span className={`text-xs ${isChecked ? 'line-through text-[#64748B] dark:text-[#64748B]' : 'text-[#172033] dark:text-[#F1F5F9]'}`}>
                           Step {step.step_number}: {step.action}
                         </span>
                       </div>
@@ -496,24 +496,24 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                       <div className="flex items-center gap-2 text-[10px] font-mono">
                         <span className={`px-2 py-0.5 rounded-full border ${
                           step.is_reversible 
-                            ? 'text-emerald-700 bg-emerald-50 border-emerald-200' 
-                            : 'text-red-700 bg-red-50 border-red-200'
+                            ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800' 
+                            : 'text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/60 border-red-200 dark:border-red-800'
                         }`}>
                           {step.is_reversible ? 'Reversible' : 'Irreversible'}
                         </span>
                         <span className={`px-2 py-0.5 rounded-full border ${
                           step.risk === 'Medium'
-                            ? 'text-[#92400E] bg-[#FEF3C7] border-[#FDE68A]'
+                            ? 'text-[#92400E] dark:text-amber-300 bg-[#FEF3C7] dark:bg-amber-950/50 border-[#FDE68A] dark:border-amber-800'
                             : step.risk === 'High'
-                            ? 'text-orange-700 bg-orange-50 border-orange-200'
-                            : 'text-[#64748B] bg-white border-[#E2E8F0]'
+                            ? 'text-orange-700 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/50 border-orange-200 dark:border-orange-800'
+                            : 'text-[#64748B] dark:text-[#94A3B8] bg-white dark:bg-[#141820] border-[#E2E8F0] dark:border-[#222834]'
                         }`}>
                           Risk: {step.risk}
                         </span>
                       </div>
                     </div>
 
-                    <p className="text-[#64748B] text-[11px] pl-6">{step.rationale}</p>
+                    <p className="text-[#64748B] dark:text-[#94A3B8] text-[11px] pl-6">{step.rationale}</p>
 
                     {step.command_or_query && (
                       <div className="ml-6">
@@ -529,16 +529,16 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
           {/* SRE Copilot Q&A */}
           <Card className="p-5 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
-                <BrainCircuit className="w-4 h-4 text-[#4F46E5]" />
+              <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
+                <BrainCircuit className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
                 <span>Contextual SRE Copilot Q&A</span>
               </h3>
-              <span className="text-[10px] font-mono text-[#4F46E5] bg-[#EEF2FF] border border-indigo-100 px-2 py-0.5 rounded-full font-medium">
+              <span className="text-[10px] font-mono text-[#4F46E5] dark:text-indigo-400 bg-[#EEF2FF] dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60 px-2 py-0.5 rounded-full font-medium">
                 Grounded in Incident Dossier
               </span>
             </div>
 
-            <p className="text-xs text-[#64748B]">
+            <p className="text-xs text-[#64748B] dark:text-[#94A3B8]">
               Ask follow-up questions bounded strictly to this incident's telemetry and verified historical memories.
             </p>
 
@@ -549,7 +549,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                   key={i}
                   onClick={() => handleAsk(sug)}
                   disabled={asking}
-                  className="text-[11px] text-[#4F46E5] bg-[#EEF2FF] hover:bg-indigo-100 px-3 py-1 rounded-full border border-indigo-100 transition-colors font-mono text-left cursor-pointer"
+                  className="text-[11px] text-[#4F46E5] dark:text-indigo-300 bg-[#EEF2FF] dark:bg-indigo-950/60 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-800/60 transition-colors font-mono text-left cursor-pointer"
                 >
                   ⚡ {sug}
                 </button>
@@ -561,20 +561,20 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
               <div className="space-y-3 max-h-72 overflow-y-auto pr-1 text-xs pt-2">
                 {chatLog.map((chat, i) => (
                   <div key={i} className="space-y-2">
-                    <div className="p-3 rounded-xl bg-[#EEF2FF] text-[#172033] font-mono text-xs border border-indigo-100 flex items-start justify-between">
+                    <div className="p-3 rounded-xl bg-[#EEF2FF] dark:bg-indigo-950/50 text-[#172033] dark:text-[#F1F5F9] font-mono text-xs border border-indigo-100 dark:border-indigo-800/60 flex items-start justify-between">
                       <div>
-                        <span className="text-[#4F46E5] font-bold mr-2">Q:</span>
+                        <span className="text-[#4F46E5] dark:text-indigo-400 font-bold mr-2">Q:</span>
                         {chat.q}
                       </div>
-                      <span className="text-[10px] text-[#64748B] ml-2">{chat.time}</span>
+                      <span className="text-[10px] text-[#64748B] dark:text-[#94A3B8] ml-2">{chat.time}</span>
                     </div>
 
-                    <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#172033] leading-relaxed space-y-1 shadow-xs">
-                      <div className="flex items-center gap-1.5 text-[#4F46E5] font-mono text-[11px] font-semibold">
+                    <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] text-[#172033] dark:text-[#F1F5F9] leading-relaxed space-y-1 shadow-xs">
+                      <div className="flex items-center gap-1.5 text-[#4F46E5] dark:text-indigo-400 font-mono text-[11px] font-semibold">
                         <BrainCircuit className="w-3.5 h-3.5" />
                         <span>IncidentMind Copilot:</span>
                       </div>
-                      <div className="text-xs text-[#172033] whitespace-pre-wrap pl-5">
+                      <div className="text-xs text-[#172033] dark:text-[#F1F5F9] whitespace-pre-wrap pl-5">
                         {chat.a}
                       </div>
                     </div>
@@ -593,7 +593,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                 placeholder="Ask about root cause evidence, SQL commands, or runbook steps..."
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                className="flex-1 bg-white border border-[#E2E8F0] rounded-xl px-3.5 py-2 text-xs text-[#172033] placeholder-[#94A3B8] focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-indigo-100"
+                className="flex-1 bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-xl px-3.5 py-2 text-xs text-[#172033] dark:text-[#F1F5F9] placeholder-[#94A3B8] dark:placeholder-[#64748B] focus:outline-none focus:border-[#4F46E5] focus:ring-1 focus:ring-indigo-100"
               />
               <Button
                 type="submit"
@@ -614,12 +614,12 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
           <Card className="p-5 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Database className="w-4 h-4 text-[#4F46E5]" />
-                <h3 className="text-sm font-semibold text-[#172033]">Recalled Past Incidents</h3>
+                <Database className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
+                <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Recalled Past Incidents</h3>
               </div>
               <button
                 onClick={onOpenExplorer}
-                className="text-[11px] font-mono text-[#4F46E5] hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-[11px] font-mono text-[#4F46E5] dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
               >
                 Explorer <ExternalLink className="w-3 h-3" />
               </button>
@@ -630,28 +630,28 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                 {investigation.recalled_memories.map((mem, idx) => (
                   <div 
                     key={idx} 
-                    className="p-4 rounded-xl bg-white border border-[#E2E8F0] hover:border-indigo-200 hover:bg-[#EEF2FF]/20 transition-colors text-xs space-y-2.5 shadow-xs"
+                    className="p-4 rounded-xl bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] hover:border-indigo-200 dark:hover:border-indigo-800 hover:bg-[#EEF2FF]/20 dark:hover:bg-[#1E2536] transition-colors text-xs space-y-2.5 shadow-xs"
                   >
                     <div className="flex items-center justify-between font-mono text-[10px]">
-                      <span className="text-[#4F46E5] font-bold">{mem.source_incident_id || mem.memory_id}</span>
-                      <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-bold">
+                      <span className="text-[#4F46E5] dark:text-indigo-400 font-bold">{mem.source_incident_id || mem.memory_id}</span>
+                      <span className="text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800 font-bold">
                         {String(Math.round((mem.similarity_score || 0.85) * 100))}% Match
                       </span>
                     </div>
 
-                    <p className="text-[#172033] text-xs font-sans leading-snug">{mem.summary}</p>
+                    <p className="text-[#172033] dark:text-[#F1F5F9] text-xs font-sans leading-snug">{mem.summary}</p>
 
                     {mem.verified_root_cause && (
-                      <div className="pt-2 border-t border-[#E2E8F0] text-[11px] font-mono space-y-1">
-                        <span className="text-[#64748B] font-semibold block text-[10px]">Historical Confirmed Fix:</span>
-                        <span className="text-emerald-700">{mem.resolution_applied}</span>
+                      <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#222834] text-[11px] font-mono space-y-1">
+                        <span className="text-[#64748B] dark:text-[#94A3B8] font-semibold block text-[10px]">Historical Confirmed Fix:</span>
+                        <span className="text-emerald-700 dark:text-emerald-400">{mem.resolution_applied}</span>
                       </div>
                     )}
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-center text-xs text-[#64748B] font-mono">
+              <div className="p-5 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] text-center text-xs text-[#64748B] dark:text-[#94A3B8] font-mono">
                 No prior memories recalled for this signature yet.
               </div>
             )}
@@ -659,12 +659,12 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
 
           {/* Suggested Runbooks */}
           <Card className="p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-[#172033]">Suggested Runbooks</h3>
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Suggested Runbooks</h3>
             <div className="space-y-2">
               {investigation?.suggested_runbooks?.map((rb, idx) => (
-                <div key={idx} className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs flex items-center justify-between">
-                  <span className="text-[#172033] font-medium">{rb.title}</span>
-                  <span className="text-[#64748B] font-mono text-[10px] bg-white px-2 py-0.5 rounded-md border border-[#E2E8F0]">
+                <div key={idx} className="p-3 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] text-xs flex items-center justify-between">
+                  <span className="text-[#172033] dark:text-[#F1F5F9] font-medium">{rb.title}</span>
+                  <span className="text-[#64748B] dark:text-[#94A3B8] font-mono text-[10px] bg-white dark:bg-[#141820] px-2 py-0.5 rounded-md border border-[#E2E8F0] dark:border-[#222834]">
                     {rb.url_or_ref}
                   </span>
                 </div>
@@ -674,10 +674,10 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
 
           {/* Incident Symptoms & Logs */}
           <Card className="p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-[#172033]">Observed Telemetry & Symptoms</h3>
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Observed Telemetry & Symptoms</h3>
             <div className="space-y-1.5">
               {incident.symptoms.map((s, i) => (
-                <div key={i} className="p-2.5 rounded-xl bg-[#F8FAFC] text-[11px] font-mono text-[#172033] border border-[#E2E8F0] flex items-center gap-2">
+                <div key={i} className="p-2.5 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] text-[11px] font-mono text-[#172033] dark:text-[#F1F5F9] border border-[#E2E8F0] dark:border-[#222834] flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-600"></span>
                   <span>{s}</span>
                 </div>
@@ -686,9 +686,9 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
 
             {incident.logs_excerpt && (
               <div className="pt-2">
-                <div className="text-[11px] text-[#64748B] font-mono mb-1.5 flex items-center justify-between">
+                <div className="text-[11px] text-[#64748B] dark:text-[#94A3B8] font-mono mb-1.5 flex items-center justify-between">
                   <span>Log Stream Excerpt:</span>
-                  <span className="text-[#4F46E5] text-[10px]">raw output</span>
+                  <span className="text-[#4F46E5] dark:text-indigo-400 text-[10px]">raw output</span>
                 </div>
                 <CodeBlock code={incident.logs_excerpt} language="error-trace" />
               </div>

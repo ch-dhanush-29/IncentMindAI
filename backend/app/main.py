@@ -21,12 +21,12 @@ logger = logging.getLogger("incidentmind")
 async def lifespan(app: FastAPI):
     logger.info("Initializing IncidentMind AI unified server...")
     await incident_repo.connect()
-    existing = await incident_repo.list_all()
-    if not existing or settings.DEMO_MODE:
-        logger.info("Populating realistic incident data and memory grounding...")
-        await seed_realistic_incidents()
+    # Real-data only: do not auto-seed synthetic data on startup
+    count = len(await incident_repo.list_all())
+    logger.info(f"System ready with {count} active persisted incidents.")
     yield
     logger.info("Shutting down IncidentMind AI unified server...")
+
 
 app = FastAPI(
     title="IncidentMind AI - Unified Incident Platform",
@@ -58,6 +58,10 @@ if os.path.exists(frontend_dist_dir):
     assets_dir = os.path.join(frontend_dist_dir, "assets")
     if os.path.exists(assets_dir):
         app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    images_dir = os.path.join(frontend_dist_dir, "images")
+    if os.path.exists(images_dir):
+        app.mount("/images", StaticFiles(directory=images_dir), name="images")
 
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):

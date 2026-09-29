@@ -1,5 +1,5 @@
-import type React from 'react';
-import { Search, Database, Menu, Plus, LayoutGrid, Bell } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Database, Menu, Plus, LayoutGrid, Bell, HelpCircle } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { ClerkAuthControl } from './ClerkAuth';
 
@@ -9,6 +9,7 @@ interface NavbarProps {
   currentTab: string;
   onToggleMobileSidebar?: () => void;
   onNavigateLanding?: () => void;
+  onOpenHelp?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ 
@@ -16,8 +17,59 @@ export const Navbar: React.FC<NavbarProps> = ({
   openCreateModal, 
   currentTab,
   onToggleMobileSidebar,
-  onNavigateLanding
+  onNavigateLanding,
+  onOpenHelp
 }) => {
+  const [sseStatus, setSseStatus] = useState<'connected' | 'connecting' | 'error'>('connecting');
+  const [lastEvent, setLastEvent] = useState<string | null>(null);
+
+  useEffect(() => {
+    let eventSource: EventSource | null = null;
+    let reconnectTimeout: any = null;
+
+    const connectSSE = () => {
+      try {
+        eventSource = new EventSource('/api/events/stream');
+
+        eventSource.onopen = () => {
+          setSseStatus('connected');
+        };
+
+        eventSource.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type !== 'PING') {
+              setLastEvent(`${data.type}`);
+              // Broadcast custom window event so all active views refresh immediately in real time
+              window.dispatchEvent(new CustomEvent('incident_stream_update', { detail: data }));
+            }
+          } catch (e) {
+            // heartbeats
+          }
+        };
+
+        eventSource.onerror = () => {
+          setSseStatus('connecting');
+          if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+          }
+          // Reconnect after 4s
+          reconnectTimeout = setTimeout(connectSSE, 4000);
+        };
+      } catch (e) {
+        setSseStatus('error');
+      }
+    };
+
+    connectSSE();
+
+    return () => {
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      if (eventSource) eventSource.close();
+    };
+  }, []);
+
   const tabTitles: Record<string, string> = {
     dashboard: 'Dashboard',
     incidents: 'Incidents',
@@ -75,10 +127,22 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Right Actions */}
       <div className="flex items-center gap-3">
-        {/* System Status Indicator */}
-        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>Operational</span>
+        {/* Live SSE Telemetry Status Indicator */}
+        <div 
+          className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl border text-[11px] font-medium font-mono ${
+            sseStatus === 'connected'
+              ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-400'
+              : 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800/50 text-amber-700 dark:text-amber-400'
+          }`}
+          title={lastEvent ? `Last SSE Event: ${lastEvent}` : 'Live Real-time Event Stream'}
+        >
+          <span className={`w-2 h-2 rounded-full ${sseStatus === 'connected' ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500 animate-ping'}`} />
+          <span>{sseStatus === 'connected' ? 'SSE Live' : 'SSE Connecting'}</span>
+          {lastEvent && (
+            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-sans hidden 2xl:inline">
+              • {lastEvent}
+            </span>
+          )}
         </div>
 
         {/* Notifications Icon */}
@@ -89,6 +153,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           <Bell className="w-4 h-4" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
         </button>
+
+        {/* Operational Guide & Help Button */}
+        {onOpenHelp && (
+          <button 
+            onClick={onOpenHelp}
+            className="p-2 rounded-xl text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] dark:hover:text-indigo-400 hover:bg-[#EEF2FF] dark:hover:bg-[#1E2536] border border-[#E2E8F0] dark:border-[#222834] transition-colors relative cursor-pointer"
+            title="Operational User Guide & Live Manual"
+          >
+            <HelpCircle className="w-4 h-4" />
+          </button>
+        )}
 
         {/* Theme Mode Toggle */}
         <ThemeToggle />

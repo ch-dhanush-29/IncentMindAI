@@ -51,7 +51,18 @@ class IncidentService:
         except Exception as e:
             logger.warning(f"Could not dispatch Slack investigation update: {e}")
 
+        # Real-time event broadcast
+        from app.core.events import event_hub
+        await event_hub.broadcast("INVESTIGATION_COMPLETED", {
+            "incident_id": incident_id,
+            "summary": investigation.summary,
+            "hypotheses_count": len(investigation.hypotheses),
+            "recalled_memories_count": len(recalled_memories),
+            "is_memory_enabled": use_memory
+        })
+
         return investigation
+
 
     async def answer_question(self, incident_id: str, question: str) -> Dict[str, Any]:
         incident = await incident_repo.get_by_id(incident_id)
@@ -137,6 +148,18 @@ class IncidentService:
         except Exception as e:
             logger.warning(f"Could not dispatch Slack resolution update: {e}")
 
+        # Real-time event broadcast
+        from app.core.events import event_hub
+        await event_hub.broadcast("INCIDENT_RESOLVED", {
+            "incident_id": incident.id,
+            "title": incident.title,
+            "service": incident.service,
+            "verified_root_cause": req.verified_root_cause,
+            "retained_in_hindsight": True,
+            "resolved_at": incident.resolved_at.isoformat() if incident.resolved_at else datetime.utcnow().isoformat()
+        })
+
         return incident
+
 
 incident_service = IncidentService()

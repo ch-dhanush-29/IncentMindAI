@@ -55,6 +55,37 @@ async def get_settings():
         "db_mode": "MongoDB" if incident_repo._is_mongo_connected else "In-Memory Store"
     }
 
+from fastapi.responses import StreamingResponse
+from app.core.events import event_hub
+from app.core.seed import seed_realistic_incidents
+
 @router.get("/audit")
 async def get_system_audit():
     return incident_repo.get_audit_trail()
+
+@router.get("/events/stream")
+async def stream_realtime_events():
+    """
+    Server-Sent Events (SSE) endpoint providing genuine real-time updates
+    for new incidents, status updates, notes, and Hindsight knowledge writes.
+    """
+    return StreamingResponse(
+        event_hub.subscribe(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
+
+@router.post("/system/seed-demo")
+async def explicit_seed_demo():
+    """
+    Explicit endpoint for intentionally loading synthetic demo records when needed for evaluation.
+    Never called automatically in production.
+    """
+    await seed_realistic_incidents()
+    await event_hub.broadcast("DEMO_SEEDED", {"message": "Synthetic demonstration records populated."})
+    return {"status": "ok", "message": "Demo incidents loaded."}
+

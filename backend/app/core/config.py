@@ -36,7 +36,8 @@ class Settings(BaseSettings):
     
     # Application Security
     SECRET_KEY: str = "incidentmind-super-secure-production-key-2026"
-    DEMO_MODE: bool = True
+    DEMO_MODE: bool = False
+
 
     model_config = SettingsConfigDict(env_file=(".env", "../.env"), extra="allow")
 

@@ -223,94 +223,94 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6">
           <div className="space-y-3 max-w-3xl">
             <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
-              <span className="font-bold text-[#4F46E5] text-sm px-2 py-0.5 rounded-lg bg-[#EEF2FF] border border-indigo-100">
+              <span className="font-bold text-[#4F46E5] dark:text-indigo-400 text-sm px-2 py-0.5 rounded-lg bg-[#EEF2FF] dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/60">
                 {incident.id}
               </span>
               <SeverityBadge severity={incident.severity} />
               <StatusBadge status={incident.status} />
-              <span className="text-[#64748B] flex items-center gap-1">
+              <span className="text-[#64748B] dark:text-[#94A3B8] flex items-center gap-1">
                 <Server className="w-3 h-3 text-[#94A3B8]" />
                 [{incident.service}]
               </span>
-              <span className="text-[#64748B]">• env: {incident.environment}</span>
+              <span className="text-[#64748B] dark:text-[#94A3B8]">• env: {incident.environment}</span>
             </div>
 
-            <h1 className="text-2xl font-extrabold text-[#172033] tracking-tight leading-snug">
+            <h1 className="text-2xl font-extrabold text-[#172033] dark:text-[#F1F5F9] tracking-tight leading-snug">
               {incident.title}
             </h1>
-            <p className="text-xs text-[#64748B] leading-relaxed font-sans max-w-2xl">
+            <p className="text-xs text-[#64748B] dark:text-[#94A3B8] leading-relaxed font-sans max-w-2xl">
               {incident.description}
             </p>
 
             {/* Quick Field Controls Toolbar */}
-            <div className="pt-3 border-t border-[#E2E8F0] flex flex-wrap items-center gap-4 text-xs font-mono">
+            <div className="pt-3 border-t border-[#E2E8F0] dark:border-[#222834] flex flex-wrap items-center gap-4 text-xs font-mono">
               <div className="flex items-center gap-2">
-                <span className="text-[#64748B]">Status:</span>
+                <span className="text-[#64748B] dark:text-[#94A3B8]">Status:</span>
                 <select
                   disabled={isUpdatingField}
                   value={incident.status}
                   onChange={(e) => handleStatusChange(e.target.value as IncidentStatus)}
-                  className="bg-white border border-[#E2E8F0] rounded-lg px-2 py-1 text-xs text-[#172033] font-semibold focus:outline-none focus:border-[#4F46E5] cursor-pointer"
+                  className="bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-lg px-2 py-1 text-xs text-[#172033] dark:text-[#F1F5F9] font-semibold focus:outline-none focus:border-[#4F46E5] cursor-pointer"
                 >
-                  <option value="New">New</option>
-                  <option value="Investigating">Investigating</option>
-                  <option value="Mitigated">Mitigated</option>
-                  <option value="Resolved">Resolved</option>
-                  <option value="Closed">Closed</option>
+                  <option value="New" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">New</option>
+                  <option value="Investigating" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Investigating</option>
+                  <option value="Mitigated" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Mitigated</option>
+                  <option value="Resolved" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Resolved</option>
+                  <option value="Closed" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Closed</option>
                 </select>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[#64748B]">Severity:</span>
+                <span className="text-[#64748B] dark:text-[#94A3B8]">Severity:</span>
                 <select
                   disabled={isUpdatingField}
                   value={incident.severity}
                   onChange={(e) => handleSeverityChange(e.target.value as Severity)}
-                  className="bg-white border border-[#E2E8F0] rounded-lg px-2 py-1 text-xs text-[#172033] font-semibold focus:outline-none focus:border-[#4F46E5] cursor-pointer"
+                  className="bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-lg px-2 py-1 text-xs text-[#172033] dark:text-[#F1F5F9] font-semibold focus:outline-none focus:border-[#4F46E5] cursor-pointer"
                 >
-                  <option value="Critical">Critical</option>
-                  <option value="High">High</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
+                  <option value="Critical" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Critical</option>
+                  <option value="High" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">High</option>
+                  <option value="Medium" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Medium</option>
+                  <option value="Low" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Low</option>
                 </select>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-[#64748B]">Assignee:</span>
+                <span className="text-[#64748B] dark:text-[#94A3B8]">Assignee:</span>
                 <select
                   disabled={isUpdatingField}
                   value={incident.assignee || 'unassigned'}
                   onChange={(e) => handleAssigneeChange(e.target.value)}
-                  className="bg-white border border-[#E2E8F0] rounded-lg px-2 py-1 text-xs text-[#172033] focus:outline-none focus:border-[#4F46E5] cursor-pointer"
+                  className="bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-lg px-2 py-1 text-xs text-[#172033] dark:text-[#F1F5F9] focus:outline-none focus:border-[#4F46E5] cursor-pointer"
                 >
-                  <option value="unassigned">Unassigned</option>
-                  <option value="Ryan Cox Administrator">Ryan Cox Administrator</option>
-                  <option value="Carlos Ruiz (Infra Lead)">Carlos Ruiz (Infra Lead)</option>
-                  <option value="Elena Rostova (Principal SRE)">Elena Rostova (Principal SRE)</option>
-                  <option value="Jane Smith (DBA)">Jane Smith (DBA)</option>
-                  <option value="sre-oncall">sre-oncall</option>
+                  <option value="unassigned" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Unassigned</option>
+                  <option value="Ryan Cox Administrator" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Ryan Cox Administrator</option>
+                  <option value="Carlos Ruiz (Infra Lead)" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Carlos Ruiz (Infra Lead)</option>
+                  <option value="Elena Rostova (Principal SRE)" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Elena Rostova (Principal SRE)</option>
+                  <option value="Jane Smith (DBA)" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Jane Smith (DBA)</option>
+                  <option value="sre-oncall" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">sre-oncall</option>
                 </select>
               </div>
             </div>
           </div>
 
           {/* Quick Meta Card */}
-          <div className="p-4 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs font-mono text-[#64748B] space-y-2 self-start min-w-[240px] shadow-xs">
+          <div className="p-4 rounded-2xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] text-xs font-mono text-[#64748B] dark:text-[#94A3B8] space-y-2 self-start min-w-[240px] shadow-xs">
             <div className="flex items-center justify-between">
               <span>Declared:</span>
-              <span className="text-[#172033]">{new Date(incident.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+              <span className="text-[#172033] dark:text-[#F1F5F9]">{new Date(incident.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
             <div className="flex items-center justify-between">
               <span>Service:</span>
-              <span className="text-[#172033] font-semibold">{incident.service}</span>
+              <span className="text-[#172033] dark:text-[#F1F5F9] font-semibold">{incident.service}</span>
             </div>
             <div className="flex items-center justify-between">
               <span>Assignee:</span>
-              <span className="text-[#172033] font-medium truncate max-w-[130px]">{incident.assignee || 'Unassigned'}</span>
+              <span className="text-[#172033] dark:text-[#F1F5F9] font-medium truncate max-w-[130px]">{incident.assignee || 'Unassigned'}</span>
             </div>
-            <div className="pt-1 border-t border-[#E2E8F0] flex items-center justify-between">
+            <div className="pt-1 border-t border-[#E2E8F0] dark:border-[#222834] flex items-center justify-between">
               <span>Hindsight:</span>
-              <span className={incident.resolution?.retained_in_hindsight ? 'text-[#4F46E5] font-bold' : 'text-[#94A3B8]'}>
+              <span className={incident.resolution?.retained_in_hindsight ? 'text-[#4F46E5] dark:text-indigo-400 font-bold' : 'text-[#94A3B8]'}>
                 {incident.resolution?.retained_in_hindsight ? 'RETAINED' : 'PENDING POSTMORTEM'}
               </span>
             </div>
@@ -318,13 +318,13 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-2 border-b border-[#E2E8F0] pt-2 text-xs font-mono overflow-x-auto">
+        <div className="flex items-center gap-2 border-b border-[#E2E8F0] dark:border-[#222834] pt-2 text-xs font-mono overflow-x-auto">
           <button
             onClick={() => setActiveTab('timeline')}
             className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'timeline'
-                ? 'border-[#4F46E5] text-[#4F46E5]'
-                : 'border-transparent text-[#64748B] hover:text-[#172033]'
+                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
+                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
             }`}
           >
             Lifecycle Stepper
@@ -333,8 +333,8 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
             onClick={() => setActiveTab('symptoms')}
             className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'symptoms'
-                ? 'border-[#4F46E5] text-[#4F46E5]'
-                : 'border-transparent text-[#64748B] hover:text-[#172033]'
+                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
+                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
             }`}
           >
             Symptoms & Raw Logs
@@ -343,8 +343,8 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
             onClick={() => setActiveTab('investigation')}
             className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'investigation'
-                ? 'border-[#4F46E5] text-[#4F46E5]'
-                : 'border-transparent text-[#64748B] hover:text-[#172033]'
+                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
+                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
             }`}
           >
             Investigation Findings
@@ -353,8 +353,8 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
             onClick={() => setActiveTab('resolution')}
             className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap ${
               activeTab === 'resolution'
-                ? 'border-[#4F46E5] text-[#4F46E5]'
-                : 'border-transparent text-[#64748B] hover:text-[#172033]'
+                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
+                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
             }`}
           >
             Confirmed Postmortem
@@ -363,8 +363,8 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
             onClick={() => setActiveTab('notes')}
             className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'notes'
-                ? 'border-[#4F46E5] text-[#4F46E5]'
-                : 'border-transparent text-[#64748B] hover:text-[#172033]'
+                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
+                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5" />
@@ -374,8 +374,8 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
             onClick={() => setActiveTab('audit')}
             className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'audit'
-                ? 'border-[#4F46E5] text-[#4F46E5]'
-                : 'border-transparent text-[#64748B] hover:text-[#172033]'
+                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
+                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
             }`}
           >
             <History className="w-3.5 h-3.5" />
@@ -386,21 +386,21 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
 
       {/* Reopen Prompt Modal */}
       {showReopenPrompt && (
-        <div className="p-5 rounded-2xl bg-amber-50 border border-amber-300 space-y-3 text-xs">
-          <div className="flex items-center gap-2 font-bold text-amber-900">
-            <RotateCcw className="w-4 h-4 text-amber-700" />
+        <div className="p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-900/60 space-y-3 text-xs">
+          <div className="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-300">
+            <RotateCcw className="w-4 h-4 text-amber-700 dark:text-amber-400" />
             <span>Reopen Incident {incident.id}</span>
           </div>
-          <p className="text-amber-800">
+          <p className="text-amber-800 dark:text-amber-300/80">
             Reopening this incident will set its status back to <strong>Investigating</strong> and clear the resolved timestamp, allowing engineers to append new evidence and re-evaluate hypotheses.
           </p>
           <div className="space-y-1">
-            <label className="text-[11px] font-mono text-amber-900 font-semibold">Reason for reopening:</label>
+            <label className="text-[11px] font-mono text-amber-900 dark:text-amber-300 font-semibold">Reason for reopening:</label>
             <input
               type="text"
               value={reopenReason}
               onChange={(e) => setReopenReason(e.target.value)}
-              className="w-full bg-white border border-amber-300 rounded-xl px-3 py-2 text-xs text-[#172033] focus:outline-none focus:ring-1 focus:ring-amber-500"
+              className="w-full bg-white dark:bg-[#181D26] border border-amber-300 dark:border-amber-800 rounded-xl px-3 py-2 text-xs text-[#172033] dark:text-[#F1F5F9] focus:outline-none focus:ring-1 focus:ring-amber-500"
             />
           </div>
           <div className="flex items-center gap-2 pt-1">
@@ -414,62 +414,61 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
         </div>
       )}
 
-
       {/* Tab 1: Timeline */}
       {activeTab === 'timeline' && (
         <Card className="p-6 space-y-6">
-          <h3 className="text-sm font-semibold text-[#172033]">Incident Lifecycle Progression</h3>
+          <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Incident Lifecycle Progression</h3>
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <div className="p-4 rounded-2xl bg-red-50 border border-red-200 space-y-2">
-              <div className="flex items-center justify-between text-xs font-mono font-bold text-red-700">
+            <div className="p-4 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 space-y-2">
+              <div className="flex items-center justify-between text-xs font-mono font-bold text-red-700 dark:text-red-400">
                 <span>1. TRIGGERED</span>
                 <Flame className="w-4 h-4" />
               </div>
-              <div className="text-xs text-[#172033]">Automated monitor tripped on {incident.service}</div>
-              <div className="text-[10px] text-[#64748B] font-mono">{new Date(incident.created_at).toLocaleTimeString()}</div>
+              <div className="text-xs text-[#172033] dark:text-[#F1F5F9]">Automated monitor tripped on {incident.service}</div>
+              <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] font-mono">{new Date(incident.created_at).toLocaleTimeString()}</div>
             </div>
 
             <div className={`p-4 rounded-2xl border space-y-2 ${
-              incident.investigation ? 'bg-indigo-50 border-indigo-200' : 'bg-[#F8FAFC] border-[#E2E8F0]'
+              incident.investigation ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-900/50' : 'bg-[#F8FAFC] dark:bg-[#181D26] border-[#E2E8F0] dark:border-[#222834]'
             }`}>
               <div className={`flex items-center justify-between text-xs font-mono font-bold ${
-                incident.investigation ? 'text-[#4F46E5]' : 'text-[#64748B]'
+                incident.investigation ? 'text-[#4F46E5] dark:text-indigo-400' : 'text-[#64748B] dark:text-[#94A3B8]'
               }`}>
                 <span>2. INVESTIGATING</span>
                 <BrainCircuit className="w-4 h-4" />
               </div>
-              <div className="text-xs text-[#172033]">AI Agent querying Hindsight memory bank</div>
-              <div className="text-[10px] text-[#64748B] font-mono">
+              <div className="text-xs text-[#172033] dark:text-[#F1F5F9]">AI Agent querying Hindsight memory bank</div>
+              <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] font-mono">
                 {incident.investigation ? 'Diagnosis synthesized' : 'Awaiting triage'}
               </div>
             </div>
 
             <div className={`p-4 rounded-2xl border space-y-2 ${
-              incident.status === 'Mitigated' || incident.status === 'Resolved' ? 'bg-blue-50 border-blue-200' : 'bg-[#F8FAFC] border-[#E2E8F0]'
+              incident.status === 'Mitigated' || incident.status === 'Resolved' ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900/50' : 'bg-[#F8FAFC] dark:bg-[#181D26] border-[#E2E8F0] dark:border-[#222834]'
             }`}>
               <div className={`flex items-center justify-between text-xs font-mono font-bold ${
-                incident.status === 'Mitigated' || incident.status === 'Resolved' ? 'text-blue-700' : 'text-[#64748B]'
+                incident.status === 'Mitigated' || incident.status === 'Resolved' ? 'text-blue-700 dark:text-blue-400' : 'text-[#64748B] dark:text-[#94A3B8]'
               }`}>
                 <span>3. MITIGATED</span>
                 <CheckCircle2 className="w-4 h-4" />
               </div>
-              <div className="text-xs text-[#172033]">Initial mitigation steps executed</div>
-              <div className="text-[10px] text-[#64748B] font-mono">
+              <div className="text-xs text-[#172033] dark:text-[#F1F5F9]">Initial mitigation steps executed</div>
+              <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] font-mono">
                 {incident.resolution ? 'Applied' : 'Pending action'}
               </div>
             </div>
 
             <div className={`p-4 rounded-2xl border space-y-2 ${
-              incident.status === 'Resolved' ? 'bg-emerald-50 border-emerald-200' : 'bg-[#F8FAFC] border-[#E2E8F0]'
+              incident.status === 'Resolved' ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900/50' : 'bg-[#F8FAFC] dark:bg-[#181D26] border-[#E2E8F0] dark:border-[#222834]'
             }`}>
               <div className={`flex items-center justify-between text-xs font-mono font-bold ${
-                incident.status === 'Resolved' ? 'text-emerald-700' : 'text-[#64748B]'
+                incident.status === 'Resolved' ? 'text-emerald-700 dark:text-emerald-400' : 'text-[#64748B] dark:text-[#94A3B8]'
               }`}>
                 <span>4. RESOLVED</span>
                 <FileCheck2 className="w-4 h-4" />
               </div>
-              <div className="text-xs text-[#172033]">Root cause confirmed & retained in Hindsight</div>
-              <div className="text-[10px] text-[#64748B] font-mono">
+              <div className="text-xs text-[#172033] dark:text-[#F1F5F9]">Root cause confirmed & retained in Hindsight</div>
+              <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] font-mono">
                 {incident.resolved_at ? new Date(incident.resolved_at).toLocaleTimeString() : 'In Progress'}
               </div>
             </div>
@@ -481,20 +480,20 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
       {activeTab === 'symptoms' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-[#172033]">Observed Symptoms & Anomalies</h3>
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Observed Symptoms & Anomalies</h3>
             <div className="space-y-2">
               {incident.symptoms.map((s, idx) => (
-                <div key={idx} className="p-3 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] font-mono text-xs text-[#172033] flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#4F46E5]" />
+                <div key={idx} className="p-3 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] font-mono text-xs text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#4F46E5] dark:bg-indigo-400" />
                   <span>{s}</span>
                 </div>
               ))}
             </div>
 
-            <h3 className="text-sm font-semibold text-[#172033] pt-2">Captured Error Messages</h3>
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9] pt-2">Captured Error Messages</h3>
             <div className="space-y-2">
               {incident.error_messages.map((e, idx) => (
-                <div key={idx} className="p-3 rounded-xl bg-red-50 border border-red-200 font-mono text-xs text-red-700">
+                <div key={idx} className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 font-mono text-xs text-red-700 dark:text-red-400">
                   {e}
                 </div>
               ))}
@@ -502,11 +501,11 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
           </Card>
 
           <Card className="p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-[#172033]">Sanitized Diagnostic Telemetry Log Stream</h3>
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Sanitized Diagnostic Telemetry Log Stream</h3>
             {incident.logs_excerpt ? (
               <CodeBlock code={incident.logs_excerpt} language="log" />
             ) : (
-              <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs text-[#64748B]">
+              <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] text-xs text-[#64748B] dark:text-[#94A3B8]">
                 No raw telemetry traces attached to this incident.
               </div>
             )}
@@ -518,7 +517,7 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
       {activeTab === 'investigation' && (
         <Card className="p-6 space-y-5">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-[#172033]">Hindsight AI Synthesis & Hypotheses</h3>
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Hindsight AI Synthesis & Hypotheses</h3>
             <Button size="sm" variant="primary" onClick={() => onStartInvestigation(incident.id)}>
               Open Full AI Studio
             </Button>
@@ -526,20 +525,20 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
 
           {incident.investigation ? (
             <div className="space-y-4">
-              <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-200 text-xs text-[#172033] leading-relaxed">
-                <span className="font-bold text-[#4F46E5] block mb-1">Executive AI Summary:</span>
+              <div className="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 text-xs text-[#172033] dark:text-[#F1F5F9] leading-relaxed">
+                <span className="font-bold text-[#4F46E5] dark:text-indigo-400 block mb-1">Executive AI Summary:</span>
                 {incident.investigation.summary}
               </div>
 
               <div className="space-y-3 pt-2">
-                <h4 className="text-xs font-semibold text-[#172033]">Ranked Hypotheses:</h4>
+                <h4 className="text-xs font-semibold text-[#172033] dark:text-[#F1F5F9]">Ranked Hypotheses:</h4>
                 {incident.investigation.hypotheses.map((h, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+                  <div key={i} className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-xs text-[#172033]">{h.cause}</span>
+                      <span className="font-bold text-xs text-[#172033] dark:text-[#F1F5F9]">{h.cause}</span>
                       <Badge variant={h.status === 'Confirmed' ? 'success' : 'high'}>{h.status}</Badge>
                     </div>
-                    <ul className="list-disc list-inside text-xs text-[#64748B] space-y-1">
+                    <ul className="list-disc list-inside text-xs text-[#64748B] dark:text-[#94A3B8] space-y-1">
                       {h.evidence_supporting.map((ev, ei) => (
                         <li key={ei}>{ev}</li>
                       ))}
@@ -549,7 +548,7 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
               </div>
             </div>
           ) : (
-            <div className="p-8 text-center text-[#64748B] text-xs space-y-3">
+            <div className="p-8 text-center text-[#64748B] dark:text-[#94A3B8] text-xs space-y-3">
               <p>No automated investigation results generated yet.</p>
               <Button size="sm" variant="primary" onClick={() => onStartInvestigation(incident.id)}>
                 Run Hindsight Investigation Now
@@ -563,7 +562,7 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
       {activeTab === 'resolution' && (
         <Card className="p-6 space-y-5">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-[#172033]">Confirmed Root Cause & Resolution Record</h3>
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9]">Confirmed Root Cause & Resolution Record</h3>
             {incident.status !== 'Resolved' && (
               <Button size="sm" variant="primary" onClick={() => onNavigateToResolve(incident.id)}>
                 Edit & Resolve
@@ -573,32 +572,32 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
 
           {incident.resolution ? (
             <div className="space-y-4 text-xs">
-              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2">
+              <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-emerald-800 text-sm">Verified Root Cause:</span>
+                  <span className="font-bold text-emerald-800 dark:text-emerald-400 text-sm">Verified Root Cause:</span>
                   <HindsightBadge label="Retained in Hindsight" />
                 </div>
-                <p className="text-emerald-950 font-medium leading-relaxed">
+                <p className="text-emerald-950 dark:text-emerald-300 font-medium leading-relaxed">
                   {incident.resolution.verified_root_cause}
                 </p>
-                <div className="text-[11px] text-emerald-700">
+                <div className="text-[11px] text-emerald-700 dark:text-emerald-400">
                   Verified by: <span className="font-semibold">{incident.resolution.verified_by_user}</span>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5">
-                  <span className="font-semibold text-[#172033]">Mitigation Applied:</span>
-                  <p className="text-[#64748B]">{incident.resolution.mitigation_applied}</p>
+                <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] space-y-1.5">
+                  <span className="font-semibold text-[#172033] dark:text-[#F1F5F9]">Mitigation Applied:</span>
+                  <p className="text-[#64748B] dark:text-[#94A3B8]">{incident.resolution.mitigation_applied}</p>
                 </div>
-                <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5">
-                  <span className="font-semibold text-[#172033]">Permanent Architectural Fix:</span>
-                  <p className="text-[#64748B]">{incident.resolution.permanent_fix}</p>
+                <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] space-y-1.5">
+                  <span className="font-semibold text-[#172033] dark:text-[#F1F5F9]">Permanent Architectural Fix:</span>
+                  <p className="text-[#64748B] dark:text-[#94A3B8]">{incident.resolution.permanent_fix}</p>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-8 text-center text-[#64748B] text-xs space-y-3">
+            <div className="p-8 text-center text-[#64748B] dark:text-[#94A3B8] text-xs space-y-3">
               <p>This incident is still open and has not yet been resolved or retained.</p>
               <Button size="sm" variant="primary" onClick={() => onNavigateToResolve(incident.id)}>
                 Verify & Submit Postmortem
@@ -612,8 +611,8 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
       {activeTab === 'notes' && (
         <div className="space-y-6">
           <Card className="p-6 space-y-4">
-            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
-              <MessageSquare className="w-4 h-4 text-[#4F46E5]" />
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
               <span>Log Investigation Note or Telemetry Evidence</span>
             </h3>
 
@@ -624,7 +623,7 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
                 value={newNote}
                 onChange={(e) => setNewNote(e.target.value)}
                 placeholder="Log observation, diagnostic findings, pprof profile results, or runbook execution notes..."
-                className="w-full bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl p-3 text-xs text-[#172033] placeholder-[#94A3B8] focus:outline-none focus:border-[#4F46E5] font-mono"
+                className="w-full bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-xl p-3 text-xs text-[#172033] dark:text-[#F1F5F9] placeholder-[#94A3B8] dark:placeholder-[#64748B] focus:outline-none focus:border-[#4F46E5] font-mono"
               />
 
               <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
@@ -636,18 +635,18 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
                       value={authorName}
                       onChange={(e) => setAuthorName(e.target.value)}
                       placeholder="Engineer alias"
-                      className="bg-white border border-[#E2E8F0] rounded-lg px-2.5 py-1 text-xs text-[#172033] font-mono focus:outline-none focus:border-[#4F46E5] w-36"
+                      className="bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-lg px-2.5 py-1 text-xs text-[#172033] dark:text-[#F1F5F9] font-mono focus:outline-none focus:border-[#4F46E5] w-36"
                     />
                   </div>
 
                   <select
                     value={noteType}
                     onChange={(e) => setNoteType(e.target.value)}
-                    className="bg-white border border-[#E2E8F0] rounded-lg px-2.5 py-1 text-xs text-[#172033] font-mono focus:outline-none focus:border-[#4F46E5] cursor-pointer"
+                    className="bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] rounded-lg px-2.5 py-1 text-xs text-[#172033] dark:text-[#F1F5F9] font-mono focus:outline-none focus:border-[#4F46E5] cursor-pointer"
                   >
-                    <option value="investigation_note">Investigation Note</option>
-                    <option value="evidence">Diagnostic Evidence</option>
-                    <option value="hypothesis">Hypothesis Refinement</option>
+                    <option value="investigation_note" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Investigation Note</option>
+                    <option value="evidence" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Diagnostic Evidence</option>
+                    <option value="hypothesis" className="bg-white dark:bg-[#141820] text-[#172033] dark:text-[#F1F5F9]">Hypothesis Refinement</option>
                   </select>
                 </div>
 
@@ -666,24 +665,24 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
 
           {/* Notes List */}
           <div className="space-y-3">
-            <h4 className="text-xs font-mono font-bold text-[#64748B] uppercase tracking-wider">
+            <h4 className="text-xs font-mono font-bold text-[#64748B] dark:text-[#94A3B8] uppercase tracking-wider">
               Chronological Investigation Notes ({incident.notes?.length || 0})
             </h4>
 
             {(!incident.notes || incident.notes.length === 0) ? (
-              <div className="p-8 text-center text-[#64748B] text-xs bg-white rounded-2xl border border-[#E2E8F0]">
+              <div className="p-8 text-center text-[#64748B] dark:text-[#94A3B8] text-xs bg-white dark:bg-[#141820] rounded-2xl border border-[#E2E8F0] dark:border-[#222834]">
                 No investigation notes logged yet. Use the form above to record diagnostic observations.
               </div>
             ) : (
               [...incident.notes].reverse().map((n: any, idx: number) => (
-                <div key={n.id || idx} className="p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-xs space-y-2 text-xs">
+                <div key={n.id || idx} className="p-4 rounded-xl bg-white dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] shadow-xs space-y-2 text-xs">
                   <div className="flex items-center justify-between flex-wrap gap-2 text-xs font-mono">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-[#172033] flex items-center gap-1">
-                        <User className="w-3.5 h-3.5 text-[#4F46E5]" />
+                      <span className="font-bold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-1">
+                        <User className="w-3.5 h-3.5 text-[#4F46E5] dark:text-indigo-400" />
                         {n.author || 'sre-engineer'}
                       </span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#EEF2FF] text-[#4F46E5] border border-indigo-100 font-semibold">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] bg-[#EEF2FF] dark:bg-indigo-950/60 text-[#4F46E5] dark:text-indigo-300 border border-indigo-100 dark:border-indigo-800 font-semibold">
                         {n.note_type || 'note'}
                       </span>
                     </div>
@@ -691,7 +690,7 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
                       {n.timestamp ? new Date(n.timestamp).toLocaleString() : 'Just now'}
                     </span>
                   </div>
-                  <p className="text-[#172033] font-mono whitespace-pre-wrap leading-relaxed">
+                  <p className="text-[#172033] dark:text-[#F1F5F9] font-mono whitespace-pre-wrap leading-relaxed">
                     {n.content}
                   </p>
                 </div>
@@ -705,31 +704,31 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
       {activeTab === 'audit' && (
         <Card className="p-6 space-y-4">
           <div>
-            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
-              <History className="w-4 h-4 text-[#4F46E5]" />
+            <h3 className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
+              <History className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400" />
               <span>Immutable Operational Audit Trail</span>
             </h3>
-            <p className="text-xs text-[#64748B] mt-0.5">
+            <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5">
               Tracks all lifecycle transitions, evidence additions, and Hindsight knowledge retentions.
             </p>
           </div>
 
           <div className="space-y-2 pt-2">
             {(!incident.audit_trail || incident.audit_trail.length === 0) ? (
-              <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-xs text-[#64748B] font-mono">
+              <div className="p-4 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] text-xs text-[#64748B] dark:text-[#94A3B8] font-mono">
                 No local audit entries recorded.
               </div>
             ) : (
               [...incident.audit_trail].reverse().map((a: any, idx: number) => (
-                <div key={idx} className="p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-start justify-between gap-4 font-mono text-xs">
+                <div key={idx} className="p-3.5 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] flex items-start justify-between gap-4 font-mono text-xs">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded-md bg-white border border-[#E2E8F0] font-bold text-[#172033] text-[11px]">
+                      <span className="px-2 py-0.5 rounded-md bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] font-bold text-[#172033] dark:text-[#F1F5F9] text-[11px]">
                         {a.action}
                       </span>
-                      <span className="text-[#64748B] text-[11px]">• by {a.user || 'system'}</span>
+                      <span className="text-[#64748B] dark:text-[#94A3B8] text-[11px]">• by {a.user || 'system'}</span>
                     </div>
-                    <p className="text-[#172033] text-[11px]">{a.details}</p>
+                    <p className="text-[#172033] dark:text-[#F1F5F9] text-[11px]">{a.details}</p>
                   </div>
                   <span className="text-[#94A3B8] text-[10px] whitespace-nowrap">
                     {a.timestamp ? new Date(a.timestamp).toLocaleTimeString() : ''}

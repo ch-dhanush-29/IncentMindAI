@@ -1,4 +1,4 @@
-﻿# IncidentMind AI
+# IncidentMind AI
 
 > Persistent-memory SRE and incident response copilot powered by Vectorize Hindsight biomimetic memory and Groq LLM inference.
 
@@ -20,6 +20,8 @@ Instead of generic suggestions, IncidentMind AI:
 2. **Grounds LLM Hypotheses**: Passes recalled root causes, telemetry traces, and verified runbooks directly into Groq’s high-speed inference pipeline.
 3. **Retains Confirmed Knowledge**: When a human SRE marks a root cause as verified, the postmortem outcome is retained in the Hindsight bank with complete evidence provenance.
 4. **Demonstrable Before-vs-After**: Shows a live comparison of the investigation with persistent memory vs a baseline stateless LLM.
+
+📖 **[Read the Complete End-to-End User Manual & Live Real-Time Demo Guide](docs/USER_GUIDE.md)**
 
 ---
 

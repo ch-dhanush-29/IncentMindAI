@@ -30,6 +30,7 @@ export const Dashboard: React.FC<{
   const [incidents, setIncidents] = useState<any[]>([]);
   const [summary, setSummary] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [lastSynced, setLastSynced] = useState<Date>(new Date());
   const [irRole, setIrRole] = useState<'lead' | 'second'>('lead');
   const [leaderRole, setLeaderRole] = useState<'lead' | 'second'>('lead');
   const [activeVisualTab, setActiveVisualTab] = useState<'dashboard' | 'memory' | 'analysis'>('dashboard');
@@ -45,6 +46,7 @@ export const Dashboard: React.FC<{
         ]);
         setIncidents(incRes);
         setSummary(sumRes);
+        setLastSynced(new Date());
       } catch (e) {
         console.error('Failed to load dashboard data', e);
       } finally {
@@ -52,6 +54,13 @@ export const Dashboard: React.FC<{
       }
     }
     loadData();
+
+    // Listen to real-time SSE broadcasts
+    const handleStreamUpdate = () => {
+      loadData();
+    };
+    window.addEventListener('incident_stream_update', handleStreamUpdate);
+    return () => window.removeEventListener('incident_stream_update', handleStreamUpdate);
   }, []);
 
   const scrollCarousel = (direction: 'left' | 'right') => {
@@ -88,43 +97,8 @@ export const Dashboard: React.FC<{
     };
   });
 
-  // Synthetic demo fallback cards if fewer than 3 incidents exist
-  const syntheticCards = [
-    {
-      id: 'INC-SEC-019',
-      title: 'Generic Phishing Incident (Synthetic Demo)',
-      category: 'Incident',
-      type: 'Phishing',
-      severity: 'Critical',
-      severityColor: 'border-red-500 text-red-500',
-      leftStripe: 'border-l-4 border-l-red-500',
-      status: 'Resolved',
-      statusStyle: 'border-emerald-500/60 text-emerald-600 bg-emerald-500/10',
-      assignee: 'Ryan Cox Administrator',
-      timeAgo: '116d ago',
-      date: '5/17/2025',
-      service: 'identity-gateway',
-      isSynthetic: true
-    },
-    {
-      id: 'INC-SEC-034',
-      title: 'Data Leak Suspected (Synthetic Demo)',
-      category: 'Incident',
-      type: 'Data Breach',
-      severity: 'High',
-      severityColor: 'border-orange-500 text-orange-500',
-      leftStripe: 'border-l-4 border-l-orange-500',
-      status: 'Responding',
-      statusStyle: 'border-orange-500/60 text-orange-600 bg-orange-500/10',
-      assignee: 'Ryan Cox Administrator',
-      timeAgo: '44d ago',
-      date: '7/28/2025',
-      service: 'marketing-portal',
-      isSynthetic: true
-    }
-  ];
-
-  const myIncidents = liveCards.length >= 3 ? liveCards : [...liveCards, ...syntheticCards.slice(0, 3 - liveCards.length)];
+  // Strictly genuine incidents - zero synthetic fallbacks
+  const myIncidents = liveCards;
 
   // Active Incidents Metric Cards dynamically derived from backend data
   const critCount = summary?.by_severity?.Critical ?? incidents.filter(i => i.severity === 'Critical').length;
@@ -134,15 +108,15 @@ export const Dashboard: React.FC<{
   const totalCount = summary?.total_incidents ?? incidents.length;
 
   const activeMetrics = [
-    { label: 'Total', count: totalCount, border: '', bg: 'bg-[#161B22] dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
-    { label: 'Info', count: 0, border: 'border-l-4 border-l-slate-400', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
+    { label: 'Total', count: totalCount, border: 'border-l-4 border-l-slate-800 dark:border-l-slate-300', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
+    { label: 'Info', count: 0, border: 'border-l-4 border-l-slate-400 dark:border-l-slate-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
     { label: 'Low', count: lowCount, border: 'border-l-4 border-l-blue-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
     { label: 'Medium', count: medCount, border: 'border-l-4 border-l-amber-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
     { label: 'High', count: highCount, border: 'border-l-4 border-l-orange-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
     { label: 'Critical', count: critCount, border: 'border-l-4 border-l-red-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' }
   ];
 
-  // Dynamic Incident Matrix rows derived from real services
+  // Dynamic Incident Matrix rows derived strictly from real services
   const serviceGroups: Record<string, { reported: number; investigating: number; responding: number; contained: number; recovering: number; total: number }> = {};
   
   incidents.forEach(inc => {
@@ -158,40 +132,34 @@ export const Dashboard: React.FC<{
     else serviceGroups[svc].responding += 1;
   });
 
-  const matrixRows = Object.keys(serviceGroups).length > 0
-    ? Object.entries(serviceGroups).map(([svc, counts]) => ({
-        category: svc,
-        ...counts
-      }))
-    : [
-        { category: 'payment-api', reported: 0, investigating: 1, responding: 0, contained: 1, recovering: 0, total: 2 },
-        { category: 'auth-service', reported: 1, investigating: 0, responding: 1, contained: 0, recovering: 0, total: 2 },
-        { category: 'checkout-worker', reported: 0, investigating: 1, responding: 0, contained: 0, recovering: 0, total: 1 }
-      ];
+  const matrixRows = Object.entries(serviceGroups).map(([svc, counts]) => ({
+    category: svc,
+    ...counts
+  }));
 
+  // Incident Leaders dynamically derived from real incident responder assignments
+  const leaderMap: Record<string, number> = {};
+  incidents.forEach(inc => {
+    const name = inc.assignee || 'Unassigned';
+    leaderMap[name] = (leaderMap[name] || 0) + 1;
+  });
 
-  // Incident Leaders Table
-  const incidentLeaders = irRole === 'lead' ? [
-    { name: 'Ryan Cox Administrator', title: 'Lead Security Engineer', count: 6 },
-    { name: 'Ryan Cox (Analyst)', title: 'Security Analyst', count: 3 },
-    { name: 'Sam Hassanzadeh', title: 'Sales Engineer', count: 2 },
-    { name: 'Ryan Cox', title: 'IR Lead', count: 1 }
-  ] : [
-    { name: 'Elena Rostova', title: 'Principal SRE', count: 5 },
-    { name: 'Carlos Ruiz', title: 'Infrastructure Lead', count: 4 },
-    { name: 'Jane Smith', title: 'DBA Engineer', count: 2 },
-    { name: 'John Doe', title: 'SecOps Responder', count: 1 }
-  ];
+  const dynamicLeaders = Object.entries(leaderMap)
+    .map(([name, count]) => ({
+      name,
+      title: name === 'Unassigned' ? 'Awaiting Dispatch' : leaderRole === 'lead' ? 'Incident Lead' : 'IR Secondary',
+      count
+    }))
+    .sort((a, b) => b.count - a.count);
 
-  // In Progress Improvements
-  const improvements = [
-    { title: '123 Test', sub: 'Jira Assign ID Test', assignee: 'Ryan Cox (Analyst)' },
-    { title: 'Testing Improvement Items', sub: 'Jira Assign ID Test', assignee: 'Ryan Cox (Analyst)' },
-    { title: '789 improve 10', sub: 'Generic Phishing Incident', assignee: 'Unassigned' },
-    { title: 'Deploy pgbouncer pool buffer', sub: 'PostgreSQL connection saturation', assignee: 'Carlos Ruiz' },
-    { title: 'Add HikariCP thread pool alert', sub: 'Payment API Latency Spike', assignee: 'Jane Smith' },
-    { title: 'Enforce hardware MFA on admin accounts', sub: 'Data Leak from Marketing Account', assignee: 'John Doe' }
-  ];
+  // In Progress Improvements dynamically derived from resolved incidents with root causes or fixes
+  const dynamicImprovements = incidents
+    .filter(inc => inc.resolution || inc.verified_root_cause)
+    .map(inc => ({
+      title: inc.resolution ? (inc.resolution.length > 55 ? inc.resolution.slice(0, 55) + '...' : inc.resolution) : (inc.verified_root_cause || inc.title),
+      sub: `${inc.service} • ${inc.id}`,
+      assignee: inc.assignee || 'Unassigned'
+    }));
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto text-[#172033] dark:text-[#F1F5F9] transition-colors">
@@ -208,6 +176,19 @@ export const Dashboard: React.FC<{
           <Plus className="w-4 h-4 stroke-[2.5]" />
           <span>New Incident</span>
         </button>
+      </div>
+
+      {/* Live Data Provenance Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2 rounded-xl bg-slate-50 dark:bg-[#141820] border border-slate-200 dark:border-[#222834] text-[11px] font-mono text-[#64748B] dark:text-[#94A3B8]">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-semibold text-[#172033] dark:text-[#F1F5F9]">Live Telemetry Stream</span>
+          <span>•</span>
+          <span>Provenance: Persisted Database & Vectorize Hindsight Cloud</span>
+        </div>
+        <div>
+          Last Synced: <span className="text-[#172033] dark:text-[#F1F5F9]">{lastSynced.toLocaleTimeString()}</span>
+        </div>
       </div>
 
       {/* Main Grid: Left Column (~68%) & Right Column (~32%) */}
@@ -270,56 +251,63 @@ export const Dashboard: React.FC<{
               ref={carouselRef}
               className="flex items-stretch gap-4 overflow-x-auto pb-2 scrollbar-none snap-x"
             >
-              {myIncidents.map((inc) => (
-                <div
-                  key={inc.id}
-                  onClick={() => onSelectIncident(inc.id)}
-                  className={`w-72 min-w-[280px] p-4 rounded-xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] ${inc.leftStripe} shadow-xs hover:border-indigo-400 dark:hover:border-indigo-500 transition-all cursor-pointer flex flex-col justify-between gap-3 group snap-start`}
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <h3 className="text-xs font-bold text-[#172033] dark:text-[#F1F5F9] leading-snug group-hover:text-[#4F46E5] dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
-                        {inc.title}
-                      </h3>
-                      <div className="text-right flex-shrink-0">
-                        <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] font-mono leading-none">
-                          {inc.category}
+              {myIncidents.length === 0 ? (
+                <div className="w-full p-8 rounded-xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] text-center space-y-2">
+                  <div className="w-10 h-10 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                    <CheckCircle2 className="w-5 h-5" />
+                  </div>
+                  <div className="text-sm font-bold text-[#172033] dark:text-[#F1F5F9]">All Systems Normal — No Active Incidents</div>
+                  <p className="text-xs text-[#64748B] dark:text-[#94A3B8] max-w-md mx-auto">
+                    No active incidents assigned or reported in this environment. Incidents ingested via API, Webhooks, or Slack will automatically appear in real time.
+                  </p>
+                </div>
+              ) : (
+                myIncidents.map((inc) => (
+                  <div
+                    key={inc.id}
+                    onClick={() => onSelectIncident(inc.id)}
+                    className={`w-72 min-w-[280px] p-4 rounded-xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] ${inc.leftStripe} shadow-xs hover:border-indigo-400 dark:hover:border-indigo-500 transition-all cursor-pointer flex flex-col justify-between gap-3 group snap-start`}
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-xs font-bold text-[#172033] dark:text-[#F1F5F9] leading-snug group-hover:text-[#4F46E5] dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
+                          {inc.title}
+                        </h3>
+                        <div className="text-right flex-shrink-0">
+                          <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] font-mono leading-none">
+                            {inc.category}
+                          </div>
+                          <div className="text-[10px] text-[#DC2626] dark:text-red-400 font-bold font-mono mt-0.5">
+                            {inc.type}
+                          </div>
+                          <div className={`text-[10px] font-mono font-bold mt-0.5 ${
+                            inc.severity === 'Critical' ? 'text-red-600 dark:text-red-400' : 'text-orange-500'
+                          }`}>
+                            {inc.severity}
+                          </div>
                         </div>
-                        <div className="text-[10px] text-[#DC2626] dark:text-red-400 font-bold font-mono mt-0.5">
-                          {inc.type}
-                        </div>
-                        <div className={`text-[10px] font-mono font-bold mt-0.5 ${
-                          inc.severity === 'Critical' ? 'text-red-600 dark:text-red-400' : 'text-orange-500'
-                        }`}>
-                          {inc.severity}
-                        </div>
+                      </div>
+
+                      <div className="pt-1 flex items-center gap-1.5">
+                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${inc.statusStyle}`}>
+                          {inc.status}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="pt-1 flex items-center gap-1.5">
-                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${inc.statusStyle}`}>
-                        {inc.status}
-                      </span>
-                      {inc.isSynthetic && (
-                        <span className="px-1.5 py-0.5 rounded-md text-[9px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700">
-                          Synthetic Demo
-                        </span>
-                      )}
+                    <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#1E2430] text-[11px] text-[#64748B] dark:text-[#94A3B8] space-y-1">
+                      <div className="flex items-center gap-1.5 truncate">
+                        <User className="w-3 h-3 text-[#94A3B8]" />
+                        <span className="truncate">{inc.assignee}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] font-mono">
+                        <span>{inc.timeAgo}</span>
+                        <span>{inc.date}</span>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="pt-2 border-t border-[#E2E8F0] dark:border-[#1E2430] text-[11px] text-[#64748B] dark:text-[#94A3B8] space-y-1">
-                    <div className="flex items-center gap-1.5 truncate">
-                      <User className="w-3 h-3 text-[#94A3B8]" />
-                      <span className="truncate">{inc.assignee}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-[10px] font-mono">
-                      <span>{inc.timeAgo}</span>
-                      <span>{inc.date}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
@@ -367,61 +355,69 @@ export const Dashboard: React.FC<{
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#222834]">
-                    {matrixRows.map((row, idx) => (
-                      <tr key={idx} className="hover:bg-[#F8FAFC] dark:hover:bg-[#181D26]/60 transition-colors">
-                        <td className="py-3 px-4 font-semibold text-[#172033] dark:text-[#F1F5F9]">
-                          {row.category}
-                        </td>
-                        <td className="py-3 px-3 text-center">
-                          {row.reported > 0 ? (
-                            <span className="inline-flex items-center gap-1.5 font-mono font-bold text-red-500">
-                              <span className="w-2 h-2 rounded-full bg-red-500" /> {row.reported}
-                            </span>
-                          ) : (
-                            <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
-                          )}
-                        </td>
-                        <td className="py-3 px-3 text-center">
-                          {row.investigating > 0 ? (
-                            <span className="inline-flex items-center gap-1.5 font-mono font-bold text-amber-500">
-                              <span className="w-2 h-2 rounded-full bg-amber-500" /> {row.investigating}
-                            </span>
-                          ) : (
-                            <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
-                          )}
-                        </td>
-                        <td className="py-3 px-3 text-center">
-                          {row.responding > 0 ? (
-                            <span className="inline-flex items-center gap-1.5 font-mono font-bold text-orange-500">
-                              <span className="w-2 h-2 rounded-full bg-orange-500" /> {row.responding}
-                            </span>
-                          ) : (
-                            <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
-                          )}
-                        </td>
-                        <td className="py-3 px-3 text-center">
-                          {row.contained > 0 ? (
-                            <span className="inline-flex items-center gap-1.5 font-mono font-bold text-purple-500">
-                              <span className="w-2 h-2 rounded-full bg-purple-500" /> {row.contained}
-                            </span>
-                          ) : (
-                            <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
-                          )}
-                        </td>
-                        <td className="py-3 px-3 text-center">
-                          {row.recovering > 0 ? (
-                            <span className="inline-flex items-center gap-1.5 font-mono font-bold text-blue-500">
-                              <span className="w-2 h-2 rounded-full bg-blue-500" /> {row.recovering}
-                            </span>
-                          ) : (
-                            <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-right font-mono font-bold text-[#172033] dark:text-[#F1F5F9]">
-                          {row.total}
+                    {matrixRows.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="py-8 text-center text-xs text-[#64748B] dark:text-[#94A3B8] font-mono">
+                          No service disruptions detected across tracked clusters.
                         </td>
                       </tr>
-                    ))}
+                    ) : (
+                      matrixRows.map((row, idx) => (
+                        <tr key={idx} className="hover:bg-[#F8FAFC] dark:hover:bg-[#181D26]/60 transition-colors">
+                          <td className="py-3 px-4 font-semibold text-[#172033] dark:text-[#F1F5F9]">
+                            {row.category}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            {row.reported > 0 ? (
+                              <span className="inline-flex items-center gap-1.5 font-mono font-bold text-red-500">
+                                <span className="w-2 h-2 rounded-full bg-red-500" /> {row.reported}
+                              </span>
+                            ) : (
+                              <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            {row.investigating > 0 ? (
+                              <span className="inline-flex items-center gap-1.5 font-mono font-bold text-amber-500">
+                                <span className="w-2 h-2 rounded-full bg-amber-500" /> {row.investigating}
+                              </span>
+                            ) : (
+                              <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            {row.responding > 0 ? (
+                              <span className="inline-flex items-center gap-1.5 font-mono font-bold text-orange-500">
+                                <span className="w-2 h-2 rounded-full bg-orange-500" /> {row.responding}
+                              </span>
+                            ) : (
+                              <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            {row.contained > 0 ? (
+                              <span className="inline-flex items-center gap-1.5 font-mono font-bold text-purple-500">
+                                <span className="w-2 h-2 rounded-full bg-purple-500" /> {row.contained}
+                              </span>
+                            ) : (
+                              <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-3 text-center">
+                            {row.recovering > 0 ? (
+                              <span className="inline-flex items-center gap-1.5 font-mono font-bold text-blue-500">
+                                <span className="w-2 h-2 rounded-full bg-blue-500" /> {row.recovering}
+                              </span>
+                            ) : (
+                              <span className="text-[#94A3B8] dark:text-[#475569] font-mono">-</span>
+                            )}
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono font-bold text-[#172033] dark:text-[#F1F5F9]">
+                            {row.total}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -474,19 +470,27 @@ export const Dashboard: React.FC<{
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#222834]">
-                  {incidentLeaders.map((ldr, idx) => (
-                    <tr key={idx} className="hover:bg-[#F8FAFC] dark:hover:bg-[#181D26]/50">
-                      <td className="py-2.5 font-semibold text-[#172033] dark:text-[#F1F5F9]">
-                        {ldr.name}
-                      </td>
-                      <td className="py-2.5 text-[#64748B] dark:text-[#94A3B8] font-sans">
-                        {ldr.title}
-                      </td>
-                      <td className="py-2.5 text-right font-mono font-bold text-[#172033] dark:text-[#F1F5F9]">
-                        {ldr.count}
+                  {dynamicLeaders.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="py-6 text-center text-xs text-[#64748B] dark:text-[#94A3B8] font-mono">
+                        No responder activity logged yet.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    dynamicLeaders.map((ldr, idx) => (
+                      <tr key={idx} className="hover:bg-[#F8FAFC] dark:hover:bg-[#181D26]/50">
+                        <td className="py-2.5 font-semibold text-[#172033] dark:text-[#F1F5F9]">
+                          {ldr.name}
+                        </td>
+                        <td className="py-2.5 text-[#64748B] dark:text-[#94A3B8] font-sans">
+                          {ldr.title}
+                        </td>
+                        <td className="py-2.5 text-right font-mono font-bold text-[#172033] dark:text-[#F1F5F9]">
+                          {ldr.count}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -508,26 +512,34 @@ export const Dashboard: React.FC<{
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#E2E8F0] dark:divide-[#222834]">
-                  {improvements.map((imp, idx) => (
-                    <tr key={idx} className="hover:bg-[#F8FAFC] dark:hover:bg-[#181D26]/50 group">
-                      <td className="py-2.5 pr-2">
-                        <div className="font-semibold text-[#172033] dark:text-[#F1F5F9] leading-snug group-hover:text-[#4F46E5] dark:group-hover:text-indigo-400 cursor-pointer">
-                          {imp.title}
-                        </div>
-                        <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] font-mono mt-0.5">
-                          {imp.sub}
-                        </div>
-                      </td>
-                      <td className="py-2.5 text-[#64748B] dark:text-[#94A3B8] text-[11px] whitespace-nowrap">
-                        {imp.assignee}
-                      </td>
-                      <td className="py-2.5 text-right">
-                        <button className="text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] p-1 cursor-pointer">
-                          <MoreHorizontal className="w-3.5 h-3.5" />
-                        </button>
+                  {dynamicImprovements.length === 0 ? (
+                    <tr>
+                      <td colSpan={3} className="py-6 text-center text-xs text-[#64748B] dark:text-[#94A3B8] font-mono">
+                        No post-incident improvements recorded yet.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    dynamicImprovements.map((imp, idx) => (
+                      <tr key={idx} className="hover:bg-[#F8FAFC] dark:hover:bg-[#181D26]/50 group">
+                        <td className="py-2.5 pr-2">
+                          <div className="font-semibold text-[#172033] dark:text-[#F1F5F9] leading-snug group-hover:text-[#4F46E5] dark:group-hover:text-indigo-400 cursor-pointer">
+                            {imp.title}
+                          </div>
+                          <div className="text-[10px] text-[#64748B] dark:text-[#94A3B8] font-mono mt-0.5">
+                            {imp.sub}
+                          </div>
+                        </td>
+                        <td className="py-2.5 text-[#64748B] dark:text-[#94A3B8] text-[11px] whitespace-nowrap">
+                          {imp.assignee}
+                        </td>
+                        <td className="py-2.5 text-right">
+                          <button className="text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] p-1 cursor-pointer">
+                            <MoreHorizontal className="w-3.5 h-3.5" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

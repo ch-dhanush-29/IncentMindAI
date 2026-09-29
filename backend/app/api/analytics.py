@@ -1,5 +1,7 @@
 from fastapi import APIRouter
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
+from datetime import datetime, timedelta
+from collections import defaultdict
 from app.repositories.incident_repo import incident_repo
 from app.services.hindsight_adapter import hindsight_adapter
 
@@ -24,9 +26,13 @@ async def get_analytics_summary():
         if inc.resolved_at and inc.created_at:
             resolved_count += 1
             duration = (inc.resolved_at - inc.created_at).total_seconds() / 60.0
-            total_duration_minutes += max(duration, 12.0)  # Realistic SRE MTTR floor
+            total_duration_minutes += duration
 
-    mttr_minutes = round(total_duration_minutes / resolved_count, 1) if resolved_count > 0 else 24.5
+    # Real MTTR: None if no incidents have been resolved yet
+    mttr_minutes = round(total_duration_minutes / resolved_count, 1) if resolved_count > 0 else None
+
+    # Fetch live Hindsight memory count
+    memories = await hindsight_adapter.get_all_memories_async()
 
     return {
         "total_incidents": len(incidents),
@@ -36,22 +42,23 @@ async def get_analytics_summary():
         "by_status": by_status,
         "by_severity": by_severity,
         "by_service": by_service,
-        "total_hindsight_memories": len(hindsight_adapter.get_all_memories())
+        "total_hindsight_memories": len(memories),
+        "provenance": {
+            "source": "persisted_database_records",
+            "calculated_at": datetime.utcnow().isoformat(),
+            "has_data": len(incidents) > 0
+        }
     }
-
-from datetime import datetime, timedelta
-from collections import defaultdict
 
 @router.get("/trends")
 async def get_analytics_trends():
     incidents = await incident_repo.list_all()
-    memories = hindsight_adapter.get_all_memories()
+    memories = await hindsight_adapter.get_all_memories_async()
 
-    # Build rolling daily volume from actual incidents
     now = datetime.utcnow()
     day_counts = defaultdict(lambda: {"incidents": 0, "recalled_assists": 0})
     
-    # Initialize past 5 days
+    # Rolling 5 calendar days
     date_keys = [(now - timedelta(days=i)).strftime("%b %d") for i in range(4, -1, -1)]
     for dk in date_keys:
         day_counts[dk] = {"incidents": 0, "recalled_assists": 0}
@@ -72,47 +79,25 @@ async def get_analytics_trends():
         for dk in date_keys
     ]
 
-    is_synthetic = False
-    total_volume_sum = sum(d["incidents"] for d in daily_volume)
-    if total_volume_sum == 0 and len(incidents) == 0:
-        is_synthetic = True
-        daily_volume = [
-            {"date": "Day 1", "incidents": 4, "recalled_assists": 1},
-            {"date": "Day 2", "incidents": 6, "recalled_assists": 3},
-            {"date": "Day 3", "incidents": 3, "recalled_assists": 2},
-            {"date": "Day 4", "incidents": 7, "recalled_assists": 5},
-            {"date": "Day 5", "incidents": 2, "recalled_assists": 2},
-        ]
-    elif total_volume_sum == 0 and len(incidents) > 0:
-        # Group by whatever days incidents exist on
-        for inc in incidents:
-            dk = inc.created_at.strftime("%b %d")
-            day_counts[dk]["incidents"] += 1
-            if inc.investigation and inc.investigation.recalled_memories:
-                day_counts[dk]["recalled_assists"] += 1
-        daily_volume = [
-            {"date": k, "incidents": v["incidents"], "recalled_assists": v["recalled_assists"]}
-            for k, v in list(day_counts.items())[-5:]
-        ]
-
-    # Recurring signatures derived from real memories & incidents
+    # Genuine recurring failure signatures derived from real incidents and verified memories
     recurring = []
     service_patterns = defaultdict(lambda: {"occurrences": 0, "pattern": "", "status": "Knowledge Retained"})
     
     # From memories
     for m in memories:
-        svc = m.get("service") or "system"
-        root_cause = m.get("verified_root_cause") or m.get("summary") or "Configuration defect"
-        service_patterns[svc]["occurrences"] += 1
-        service_patterns[svc]["pattern"] = root_cause[:60]
-        service_patterns[svc]["status"] = "Retained in Hindsight"
+        svc = m.get("service") or m.get("metadata", {}).get("service") or "system"
+        root_cause = m.get("verified_root_cause") or m.get("metadata", {}).get("verified_root_cause") or m.get("summary") or m.get("content")
+        if root_cause:
+            service_patterns[svc]["occurrences"] += 1
+            service_patterns[svc]["pattern"] = str(root_cause)[:70]
+            service_patterns[svc]["status"] = "Retained in Hindsight"
 
     # From incidents
     for inc in incidents:
         svc = inc.service
         service_patterns[svc]["occurrences"] += 1
         if not service_patterns[svc]["pattern"]:
-            service_patterns[svc]["pattern"] = inc.title[:60]
+            service_patterns[svc]["pattern"] = inc.title[:70]
         if inc.status.value == "Resolved":
             service_patterns[svc]["status"] = "Remediated with Hindsight"
         elif inc.status.value == "Investigating":
@@ -126,17 +111,16 @@ async def get_analytics_trends():
             "status": info["status"]
         })
 
-    if not recurring:
-        recurring = [
-            {"service": "payment-api", "pattern": "PostgreSQL Connection Pool Exhaustion", "occurrences": 3, "status": "Remediated with Hindsight"},
-            {"service": "auth-service", "pattern": "Redis Token Cache Eviction Spike", "occurrences": 2, "status": "Knowledge Retained"},
-            {"service": "checkout-worker", "pattern": "OOMKilled Background Consumer", "occurrences": 2, "status": "Investigating"}
-        ]
-        is_synthetic = True
-
     return {
         "daily_volume": daily_volume,
         "recurring_signatures": recurring,
-        "is_synthetic": is_synthetic
+        "provenance": {
+            "source": "live_persisted_incidents_and_hindsight_cloud",
+            "calculated_at": datetime.utcnow().isoformat(),
+            "total_incidents_analyzed": len(incidents),
+            "total_memories_analyzed": len(memories),
+            "has_data": len(incidents) > 0 or len(memories) > 0
+        }
     }
+
 
