@@ -155,11 +155,21 @@ export const Dashboard: React.FC<{
   // In Progress Improvements dynamically derived from resolved incidents with root causes or fixes
   const dynamicImprovements = incidents
     .filter(inc => inc.resolution || inc.verified_root_cause)
-    .map(inc => ({
-      title: inc.resolution ? (inc.resolution.length > 55 ? inc.resolution.slice(0, 55) + '...' : inc.resolution) : (inc.verified_root_cause || inc.title),
-      sub: `${inc.service} • ${inc.id}`,
-      assignee: inc.assignee || 'Unassigned'
-    }));
+    .map(inc => {
+      let titleStr = '';
+      if (typeof inc.resolution === 'string') {
+        titleStr = inc.resolution;
+      } else if (inc.resolution && typeof inc.resolution === 'object') {
+        titleStr = inc.resolution.permanent_fix || inc.resolution.verified_root_cause || inc.title;
+      } else {
+        titleStr = inc.verified_root_cause || inc.title || 'System Improvement';
+      }
+      return {
+        title: titleStr.length > 55 ? titleStr.slice(0, 55) + '...' : titleStr,
+        sub: `${inc.service} • ${inc.id}`,
+        assignee: inc.assignee || 'Unassigned'
+      };
+    });
 
   return (
     <div className="space-y-6 max-w-[1600px] mx-auto text-[#172033] dark:text-[#F1F5F9] transition-colors">
