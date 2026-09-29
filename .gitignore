@@ -103,7 +103,9 @@ lerna-debug.log*
 # ==========================================
 # IDEs & System Files
 # ==========================================
-.vscode/
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
 .idea/
 *.swp
 *.swo

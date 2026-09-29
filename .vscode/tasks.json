@@ -1,0 +1,55 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Backend (FastAPI)",
+      "type": "shell",
+      "command": "python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "incidentmind"
+      }
+    },
+    {
+      "label": "Run Frontend (Vite Dev Server)",
+      "type": "shell",
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/frontend"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^$"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "incidentmind"
+      }
+    },
+    {
+      "label": "Run IncidentMind (Full Stack)",
+      "dependsOn": [
+        "Run Backend (FastAPI)",
+        "Run Frontend (Vite Dev Server)"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
