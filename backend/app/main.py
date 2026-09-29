@@ -22,14 +22,21 @@ logger = logging.getLogger("incidentmind")
 async def lifespan(app: FastAPI):
     logger.info("Initializing IncidentMind AI unified server...")
     await incident_repo.connect()
-    # Real-data only: do not auto-seed synthetic data on startup
     count = len(await incident_repo.list_all())
+    if count == 0:
+        logger.info("Database empty on startup; seeding baseline realistic demonstration incidents...")
+        try:
+            await seed_realistic_incidents()
+            count = len(await incident_repo.list_all())
+        except Exception as e:
+            logger.warning(f"Baseline demonstration seeding failed: {e}")
     logger.info(f"System ready with {count} active persisted incidents.")
     
-    # Pre-warm Hindsight memory cache in background so Analytics and AfterActionReports open instantly
+    # Pre-warm Hindsight memory cache in background so all pages open instantly with zero latency
     import asyncio
     from app.services.hindsight_adapter import hindsight_adapter
     asyncio.create_task(hindsight_adapter.get_all_memories_async())
+    asyncio.create_task(hindsight_adapter.check_connection())
     
     yield
     logger.info("Shutting down IncidentMind AI unified server...")

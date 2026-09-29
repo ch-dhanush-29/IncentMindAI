@@ -154,13 +154,20 @@ export function App() {
             <ImprovementItems />
           )}
 
-          {currentTab === 'incident-detail' && selectedIncidentId && (
-            <IncidentDetail
-              incidentId={selectedIncidentId}
-              onBack={() => setCurrentTab('incidents')}
-              onStartInvestigation={handleStartInvestigation}
-              onNavigateToResolve={handleNavigateToResolve}
-            />
+          {currentTab === 'incident-detail' && (
+            selectedIncidentId ? (
+              <IncidentDetail
+                incidentId={selectedIncidentId}
+                onBack={() => setCurrentTab('incidents')}
+                onStartInvestigation={handleStartInvestigation}
+                onNavigateToResolve={handleNavigateToResolve}
+              />
+            ) : (
+              <IncidentList 
+                onSelectIncident={handleSelectIncidentDetail} 
+                openCreateModal={() => setIsCreateModalOpen(true)} 
+              />
+            )
           )}
 
           {currentTab === 'investigation' && (

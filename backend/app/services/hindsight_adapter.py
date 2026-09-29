@@ -26,24 +26,36 @@ class HindsightMemoryAdapter:
         self._memories_cache: Optional[List[Dict[str, Any]]] = None
         self._memories_cache_time: float = 0.0
         self._cache_ttl_seconds: float = 300.0
+        # Ultra-fast in-memory cache for Hindsight connection check (120s TTL)
+        self._connection_check_cache: Optional[Dict[str, Any]] = None
+        self._connection_check_cache_time: float = 0.0
+        self._connection_check_ttl_seconds: float = 120.0
 
     async def check_connection(self) -> Dict[str, Any]:
-        """Verify Hindsight connectivity or report sandbox mode."""
+        """Verify Hindsight connectivity or report sandbox mode with 120s TTL caching."""
+        import time
+        now = time.time()
+        if self._connection_check_cache is not None and (now - self._connection_check_cache_time) < self._connection_check_ttl_seconds:
+            return dict(self._connection_check_cache)
+
         if not self.is_cloud_connected:
-            return {
+            res = {
                 "status": "connected_local_sandbox",
                 "bank_id": self.bank_id,
                 "message": "Running in Local Hindsight Sandbox Mode. Provide HINDSIGHT_API_KEY to connect to Hindsight Cloud / Self-Hosted.",
                 "total_memories": len(self._local_sandbox_memories)
             }
+            self._connection_check_cache = res
+            self._connection_check_cache_time = now
+            return res
         
         try:
-            async with httpx.AsyncClient(timeout=8.0) as client:
+            async with httpx.AsyncClient(timeout=4.0) as client:
                 headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
                 # Check bank stats
                 resp = await client.get(f"{self.base_url}/v1/default/banks/{self.bank_id}/stats", headers=headers)
                 if resp.status_code == 200:
-                    return {
+                    res = {
                         "status": "connected_remote",
                         "bank_id": self.bank_id,
                         "endpoint": self.base_url,
@@ -53,27 +65,33 @@ class HindsightMemoryAdapter:
                 elif resp.status_code == 404:
                     # Auto-provision memory bank if not found
                     await client.put(f"{self.base_url}/v1/default/banks/{self.bank_id}", json={"name": "IncidentMind AI Bank"}, headers=headers)
-                    return {
+                    res = {
                         "status": "connected_remote",
                         "bank_id": self.bank_id,
                         "endpoint": self.base_url,
                         "response_code": 200
                     }
                 else:
-                    return {
+                    res = {
                         "status": "connected_remote",
                         "bank_id": self.bank_id,
                         "endpoint": self.base_url,
                         "response_code": resp.status_code
                     }
+                self._connection_check_cache = res
+                self._connection_check_cache_time = now
+                return res
         except Exception as e:
             logger.warning(f"Hindsight connection check failed: {e}. Falling back to sandbox.")
-            return {
+            res = {
                 "status": "error_fallback_sandbox",
                 "bank_id": self.bank_id,
                 "error": str(e),
                 "total_memories": len(self._local_sandbox_memories)
             }
+            self._connection_check_cache = res
+            self._connection_check_cache_time = now
+            return res
 
     async def retain(
         self,

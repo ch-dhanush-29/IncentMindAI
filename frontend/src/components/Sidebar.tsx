@@ -12,7 +12,10 @@ import {
   ChevronRight, 
   Radio, 
   Sparkles,
-  History
+  History,
+  BrainCircuit,
+  FileCheck2,
+  Archive
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { ClerkAuthControl } from './ClerkAuth';
@@ -36,8 +39,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Home', icon: Home },
-    { id: 'incidents', label: 'Incidents', icon: ShieldAlert, badge: 'Active' },
+    { id: 'incidents', label: 'Incidents Feed', icon: ShieldAlert, badge: 'Live' },
+    { id: 'investigation', label: 'AI Investigation', icon: BrainCircuit, badge: 'AI' },
+    { id: 'postmortem', label: 'Resolution & Retain', icon: FileCheck2 },
     { id: 'after-action', label: 'After Action Reports', icon: FileText },
+    { id: 'history', label: 'Incident Archive', icon: Archive },
     { id: 'improvements', label: 'Improvement Items', icon: Lightbulb, badge: '6' },
     { id: 'analytics', label: 'Analytics', icon: BarChart2 },
     { id: 'memory-explorer', label: 'Knowledge Base', icon: Layers },

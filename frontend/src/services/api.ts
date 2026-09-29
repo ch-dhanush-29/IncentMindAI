@@ -6,13 +6,21 @@ const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 let incidentsCache: { data: Incident[]; timestamp: number } | null = null;
 let analyticsSummaryCache: { data: any; timestamp: number } | null = null;
 let analyticsTrendsCache: { data: any; timestamp: number } | null = null;
-const CACHE_TTL_MS = 20000; // 20s TTL
+let memoriesCache: { data: any[]; timestamp: number } | null = null;
+let memoryAuditCache: { data: any[]; timestamp: number } | null = null;
+let healthReadyCache: { data: any; timestamp: number } | null = null;
+let settingsCache: { data: any; timestamp: number } | null = null;
+let auditCache: { data: any[]; timestamp: number } | null = null;
+const CACHE_TTL_MS = 25000; // 25s TTL
 
 if (typeof window !== 'undefined') {
   window.addEventListener('incident_stream_update', () => {
     incidentsCache = null;
     analyticsSummaryCache = null;
     analyticsTrendsCache = null;
+    memoriesCache = null;
+    memoryAuditCache = null;
+    auditCache = null;
   });
 }
 
@@ -21,6 +29,11 @@ export const api = {
     incidentsCache = null;
     analyticsSummaryCache = null;
     analyticsTrendsCache = null;
+    memoriesCache = null;
+    memoryAuditCache = null;
+    healthReadyCache = null;
+    settingsCache = null;
+    auditCache = null;
   },
 
   async getIncidents(service?: string, severity?: string, status?: string, q?: string, assignee?: string, forceRefresh = false): Promise<Incident[]> {
@@ -209,16 +222,26 @@ export const api = {
     return res.json();
   },
 
-  async getMemories(): Promise<any[]> {
+  async getMemories(forceRefresh = false): Promise<any[]> {
+    if (!forceRefresh && memoriesCache && (Date.now() - memoriesCache.timestamp) < CACHE_TTL_MS) {
+      return memoriesCache.data;
+    }
     const res = await fetch(`${BASE_URL}/memory/records`);
     if (!res.ok) throw new Error('Failed to fetch memories');
-    return res.json();
+    const data = await res.json();
+    memoriesCache = { data, timestamp: Date.now() };
+    return data;
   },
 
-  async getMemoryAudit(): Promise<any[]> {
+  async getMemoryAudit(forceRefresh = false): Promise<any[]> {
+    if (!forceRefresh && memoryAuditCache && (Date.now() - memoryAuditCache.timestamp) < CACHE_TTL_MS) {
+      return memoryAuditCache.data;
+    }
     const res = await fetch(`${BASE_URL}/memory/audit`);
     if (!res.ok) throw new Error('Failed to fetch memory audit');
-    return res.json();
+    const data = await res.json();
+    memoryAuditCache = { data, timestamp: Date.now() };
+    return data;
   },
 
   async getAnalyticsSummary(forceRefresh = false): Promise<any> {
@@ -243,22 +266,37 @@ export const api = {
     return data;
   },
 
-  async getHealthReady(): Promise<any> {
+  async getHealthReady(forceRefresh = false): Promise<any> {
+    if (!forceRefresh && healthReadyCache && (Date.now() - healthReadyCache.timestamp) < CACHE_TTL_MS) {
+      return healthReadyCache.data;
+    }
     const res = await fetch(`${BASE_URL}/health/ready`);
     if (!res.ok) throw new Error('Failed to fetch health');
-    return res.json();
+    const data = await res.json();
+    healthReadyCache = { data, timestamp: Date.now() };
+    return data;
   },
 
-  async getSettings(): Promise<any> {
+  async getSettings(forceRefresh = false): Promise<any> {
+    if (!forceRefresh && settingsCache && (Date.now() - settingsCache.timestamp) < CACHE_TTL_MS) {
+      return settingsCache.data;
+    }
     const res = await fetch(`${BASE_URL}/settings`);
     if (!res.ok) throw new Error('Failed to fetch settings');
-    return res.json();
+    const data = await res.json();
+    settingsCache = { data, timestamp: Date.now() };
+    return data;
   },
 
-  async getAudit(): Promise<any[]> {
+  async getAudit(forceRefresh = false): Promise<any[]> {
+    if (!forceRefresh && auditCache && (Date.now() - auditCache.timestamp) < CACHE_TTL_MS) {
+      return auditCache.data;
+    }
     const res = await fetch(`${BASE_URL}/audit`);
     if (!res.ok) throw new Error('Failed to fetch audit');
-    return res.json();
+    const data = await res.json();
+    auditCache = { data, timestamp: Date.now() };
+    return data;
   },
 
   async getSlackStatus(): Promise<any> {
