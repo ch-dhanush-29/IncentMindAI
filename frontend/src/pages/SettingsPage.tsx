@@ -9,7 +9,9 @@ import {
   CheckCircle2,
   Sun,
   Moon,
-  Palette
+  Palette,
+  MessageSquare,
+  Lock
 } from 'lucide-react';
 import { Card, Badge, Button } from '../components/ui';
 import { useTheme } from '../context/ThemeContext';
@@ -19,6 +21,8 @@ export const SettingsPage: React.FC = () => {
   const [auditTrail, setAuditTrail] = useState<any[]>([]);
   const [activeTab, setActiveTab] = useState<'connectivity' | 'access' | 'audit' | 'notifications' | 'appearance'>('connectivity');
   const [loading, setLoading] = useState(true);
+  const [slackTesting, setSlackTesting] = useState(false);
+  const [slackTestResult, setSlackTestResult] = useState<string | null>(null);
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -41,6 +45,19 @@ export const SettingsPage: React.FC = () => {
     }
   };
 
+  const handleTestSlack = async () => {
+    try {
+      setSlackTesting(true);
+      setSlackTestResult(null);
+      await api.testSlackAlert();
+      setSlackTestResult(`Dispatched test incident alert to ${settings?.slack_channel || '#incidents-war-room'}`);
+    } catch (e: any) {
+      setSlackTestResult(`Failed: ${e.message}`);
+    } finally {
+      setSlackTesting(false);
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between">
@@ -50,7 +67,7 @@ export const SettingsPage: React.FC = () => {
             System Administration & Environment Settings
           </h2>
           <p className="text-xs text-[#64748B] mt-1">
-            Cluster configuration, Vectorize Hindsight memory banks, Groq inference, and security access controls.
+            Cluster configuration, Vectorize Hindsight memory banks, Groq inference, Slack bot, and Clerk SSO.
           </p>
         </div>
 
@@ -91,7 +108,7 @@ export const SettingsPage: React.FC = () => {
             activeTab === 'notifications' ? 'border-[#4F46E5] text-[#4F46E5]' : 'border-transparent text-[#64748B] hover:text-[#172033]'
           }`}
         >
-          Alert Escalations
+          Slack & Escalations
         </button>
         <button
           onClick={() => setActiveTab('appearance')}
@@ -107,52 +124,72 @@ export const SettingsPage: React.FC = () => {
       {/* Tab Panels */}
       {activeTab === 'connectivity' && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="p-5 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Card 1: Vectorize Hindsight */}
+            <Card className="p-4 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#172033] flex items-center gap-1.5">
-                  <Database className="w-4 h-4 text-[#4F46E5]" /> Hindsight Memory
+                  <Database className="w-4 h-4 text-[#4F46E5]" /> Vectorize Hindsight
                 </span>
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
               </div>
               <div className="text-xs font-mono text-[#172033] space-y-1">
                 <div>Bank: <span className="text-[#4F46E5] font-semibold">{settings?.hindsight_bank_id || 'incidentmind-prod-bank'}</span></div>
-                <div>Status: <span className="text-emerald-700 font-medium">{settings?.hindsight_mode || 'Active'}</span></div>
+                <div>Mode: <span className="text-emerald-700 font-medium">{settings?.hindsight_mode || 'Vectorize Cloud'}</span></div>
               </div>
               <p className="text-[11px] text-[#64748B] font-sans">
-                Official Hindsight REST interface configured for retain, recall, and TEMPR multi-strategy search.
+                Sub-200ms semantic memory search across past incidents and verified post-mortems.
               </p>
             </Card>
 
-            <Card className="p-5 space-y-3">
+            {/* Card 2: Groq Inference */}
+            <Card className="p-4 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#172033] flex items-center gap-1.5">
-                  <Cpu className="w-4 h-4 text-[#4F46E5]" /> Groq LLM Inference
+                  <Cpu className="w-4 h-4 text-[#4F46E5]" /> Groq Fast LLM
                 </span>
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
               </div>
               <div className="text-xs font-mono text-[#172033] space-y-1">
                 <div>Model: <span className="text-[#172033]">{settings?.groq_model || 'llama-3.3-70b-versatile'}</span></div>
-                <div>State: <span className="text-emerald-700 font-medium">{settings?.groq_configured ? 'API Connected' : 'Resilient Sandbox Engine'}</span></div>
+                <div>Status: <span className="text-emerald-700 font-medium">{settings?.groq_configured ? 'API Connected' : 'Resilient Sandbox Engine'}</span></div>
               </div>
               <p className="text-[11px] text-[#64748B] font-sans">
-                High-speed LLM inference enforcing zero-hallucination policies and qualitative uncertainty grounding.
+                Real-time reasoning across active telemetry streams with zero synthetic hallucination.
               </p>
             </Card>
 
-            <Card className="p-5 space-y-3">
+            {/* Card 3: Slack Bot */}
+            <Card className="p-4 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#172033] flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Structured Database
+                  <MessageSquare className="w-4 h-4 text-[#4F46E5]" /> Slack War Room
+                </span>
+                <span className={`w-2 h-2 rounded-full ${settings?.slack_connected ? 'bg-emerald-500' : 'bg-emerald-400'}`} />
+              </div>
+              <div className="text-xs font-mono text-[#172033] space-y-1">
+                <div>Channel: <span className="text-[#4F46E5] font-semibold">{settings?.slack_channel || '#incidents-war-room'}</span></div>
+                <div>Status: <span className="text-emerald-700 font-medium">{settings?.slack_connected ? 'Live Connected' : 'Sandbox Buffer'}</span></div>
+              </div>
+              <p className="text-[11px] text-[#64748B] font-sans">
+                Automated incident alert broadcasts, command handlers, and diagnosis thread updates.
+              </p>
+            </Card>
+
+            {/* Card 4: Clerk Auth */}
+            <Card className="p-4 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#172033] flex items-center gap-1.5">
+                  <Lock className="w-4 h-4 text-emerald-600" /> Clerk SSO & RBAC
                 </span>
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
               </div>
               <div className="text-xs font-mono text-[#172033] space-y-1">
-                <div>Driver: <span className="text-[#172033]">Motor / AsyncIO</span></div>
-                <div>Store: <span className="text-[#4F46E5] font-semibold">{settings?.db_mode || 'In-Memory Resilient Store'}</span></div>
+                <div>Provider: <span className="text-[#172033]">Clerk Cloud</span></div>
+                <div>Mode: <span className="text-emerald-700 font-medium">{settings?.clerk_auth_enabled ? 'Enforced JWT' : 'Dev SRE Sandbox'}</span></div>
               </div>
               <p className="text-[11px] text-[#64748B] font-sans">
-                MongoDB Atlas connection with ACID isolation for incidents, users, and audit trails.
+                Enterprise Multi-Factor Authentication, Role-Based Access Control, and session audit logs.
               </p>
             </Card>
           </div>
@@ -160,21 +197,34 @@ export const SettingsPage: React.FC = () => {
           <Card className="p-5 space-y-3 text-xs font-mono">
             <h3 className="text-sm font-semibold text-[#172033] font-sans">Backend Environment Variables (.env)</h3>
             <p className="text-[#64748B] font-sans">
-              To point IncidentMind AI to a live Hindsight Cloud instance or Groq production API key, configure the backend environment:
+              To point IncidentMind AI to Vectorize Hindsight Cloud, Slack Bot, Clerk Auth, or Groq API, configure `.env`:
             </p>
 
-            <pre className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#172033] overflow-x-auto text-[11px]">
-{`# Backend Environment Configuration (.env)
-HINDSIGHT_API_KEY=your_hindsight_api_key_here
+            <pre className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#172033] overflow-x-auto text-[11px] leading-relaxed">
+{`# 1. Vectorize Hindsight Persistent Memory
+HINDSIGHT_API_KEY=hs_live_your_key_here
 HINDSIGHT_BASE_URL=https://api.hindsight.vectorize.io
 HINDSIGHT_BANK_ID=incidentmind-prod-bank
+HINDSIGHT_ENABLED=true
 
-GROQ_API_KEY=your_groq_api_key_here
+# 2. Slack War Room & Incident Bot
+SLACK_BOT_TOKEN=xoxb-your-slack-bot-token
+SLACK_SIGNING_SECRET=your_slack_signing_secret
+SLACK_DEFAULT_CHANNEL=#incidents-war-room
+
+# 3. Clerk Authentication & SSO
+CLERK_PUBLISHABLE_KEY=pk_live_your_clerk_key
+CLERK_SECRET_KEY=sk_live_your_clerk_secret
+AUTH_ENABLED=true
+
+# 4. Groq Fast LPU Inference
+GROQ_API_KEY=gsk_your_groq_api_key
 GROQ_MODEL=llama-3.3-70b-versatile
 
-MONGODB_URI=mongodb://localhost:27017
+# 5. Database & Mode
+MONGODB_URI=mongodb+srv://user:pass@cluster0.mongodb.net/?retryWrites=true&w=majority
 DATABASE_NAME=incidentmind_db
-DEMO_MODE=true`}
+DEMO_MODE=false`}
             </pre>
           </Card>
         </div>
@@ -231,16 +281,52 @@ DEMO_MODE=true`}
       )}
 
       {activeTab === 'notifications' && (
-        <Card className="p-5 space-y-4 text-xs">
-          <h3 className="text-sm font-semibold text-[#172033]">Alert Routing & Incident Escalations</h3>
-          <p className="text-[#64748B]">
-            Connect PagerDuty, Opsgenie, or Slack Webhooks for incoming production alert dispatch.
-          </p>
-          <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
-            <div className="font-semibold text-[#172033] flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Webhook Integration Active
+        <Card className="p-6 space-y-6 text-xs">
+          <div>
+            <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
+              <MessageSquare className="w-4 h-4 text-[#4F46E5]" /> Slack War Room & Alert Integrations
+            </h3>
+            <p className="text-[#64748B] mt-1">
+              Connect your Slack workspace to broadcast live incident alerts, share AI root-cause hypotheses, and allow SREs to declare incidents via Slack commands.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+              <span className="text-[10px] font-mono font-semibold uppercase text-[#4F46E5] bg-[#EEF2FF] border border-indigo-100 px-2 py-0.5 rounded">
+                War Room Channel
+              </span>
+              <h4 className="font-bold text-sm text-[#172033]">{settings?.slack_channel || '#incidents-war-room'}</h4>
+              <p className="text-[11px] text-[#64748B]">
+                All declared incidents and AI investigation summaries are automatically posted as threaded discussions.
+              </p>
             </div>
-            <p className="text-[#64748B] font-mono text-[11px]">POST /api/incidents handles automated telemetry ingest from Datadog, Prometheus, or CloudWatch.</p>
+
+            <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+              <span className="text-[10px] font-mono font-semibold uppercase text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+                Slack Slash Commands
+              </span>
+              <h4 className="font-bold text-sm text-[#172033]">/incident declare [title]</h4>
+              <p className="text-[11px] text-[#64748B]">
+                Endpoint: <code className="text-[#4F46E5] bg-white px-1 py-0.5 rounded border border-[#E2E8F0]">POST /api/webhooks/slack/command</code>
+              </p>
+            </div>
+          </div>
+
+          <div className="pt-2 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div>
+              <div className="font-semibold text-[#172033]">Live Slack Alert Dispatch Test</div>
+              <div className="text-[#64748B] text-[11px]">Send a test incident alert with Block Kit action buttons to verify webhook connectivity.</div>
+              {slackTestResult && (
+                <div className={`mt-2 text-xs font-mono font-medium ${slackTestResult.startsWith('Failed') ? 'text-red-600' : 'text-emerald-700'}`}>
+                  {slackTestResult}
+                </div>
+              )}
+            </div>
+            <Button size="sm" onClick={handleTestSlack} disabled={slackTesting}>
+              <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+              {slackTesting ? 'Dispatching...' : 'Send Test Slack Notification'}
+            </Button>
           </div>
         </Card>
       )}

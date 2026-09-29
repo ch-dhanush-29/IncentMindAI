@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
 from typing import List, Optional, Dict, Any
 from app.models.incident import (
     Incident, IncidentCreate, IncidentUpdate, 
@@ -7,6 +7,7 @@ from app.models.incident import (
 from app.repositories.incident_repo import incident_repo
 from app.services.incident_service import incident_service
 from app.services.hindsight_adapter import hindsight_adapter
+from app.services.slack_service import slack_service
 
 router = APIRouter(prefix="/incidents", tags=["Incidents"])
 
@@ -20,8 +21,10 @@ async def list_incidents(
     return await incident_repo.list_all(service=service, severity=severity, status=status, query=q)
 
 @router.post("", response_model=Incident, status_code=201)
-async def create_incident(incident_in: IncidentCreate):
-    return await incident_repo.create(incident_in)
+async def create_incident(incident_in: IncidentCreate, background_tasks: BackgroundTasks):
+    incident = await incident_repo.create(incident_in)
+    background_tasks.add_task(slack_service.notify_incident_declared, incident)
+    return incident
 
 @router.get("/{incident_id}", response_model=Incident)
 async def get_incident(incident_id: str):

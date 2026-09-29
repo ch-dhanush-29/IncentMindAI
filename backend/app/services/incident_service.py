@@ -1,4 +1,4 @@
-﻿import logging
+import logging
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 from app.models.incident import (
@@ -8,6 +8,7 @@ from app.models.incident import (
 from app.repositories.incident_repo import incident_repo
 from app.services.hindsight_adapter import hindsight_adapter
 from app.services.groq_adapter import groq_adapter
+from app.services.slack_service import slack_service
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +46,11 @@ class IncidentService:
             incident_id, 
             f"Ran investigation (memory_enabled={use_memory}, recalled_count={len(recalled_memories)})"
         )
+        try:
+            await slack_service.notify_investigation_completed(incident_id, investigation)
+        except Exception as e:
+            logger.warning(f"Could not dispatch Slack investigation update: {e}")
+
         return investigation
 
     async def answer_question(self, incident_id: str, question: str) -> Dict[str, Any]:
@@ -125,6 +131,12 @@ class IncidentService:
 
         await incident_repo.save(incident)
         incident_repo._log_audit("INCIDENT_RESOLVED_AND_RETAINED", incident.id, f"Verified root cause: {req.verified_root_cause}")
+
+        try:
+            await slack_service.notify_incident_resolved(incident)
+        except Exception as e:
+            logger.warning(f"Could not dispatch Slack resolution update: {e}")
+
         return incident
 
 incident_service = IncidentService()

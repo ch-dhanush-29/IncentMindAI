@@ -12,6 +12,7 @@ from app.api.incidents import router as incidents_router
 from app.api.memory import router as memory_router
 from app.api.analytics import router as analytics_router
 from app.api.system import router as system_router
+from app.api.webhooks import router as webhooks_router
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger("incidentmind")
@@ -45,6 +46,7 @@ app.include_router(incidents_router, prefix=settings.API_V1_PREFIX)
 app.include_router(memory_router, prefix=settings.API_V1_PREFIX)
 app.include_router(analytics_router, prefix=settings.API_V1_PREFIX)
 app.include_router(system_router, prefix=settings.API_V1_PREFIX)
+app.include_router(webhooks_router, prefix=settings.API_V1_PREFIX)
 
 # Static Frontend SPA Serving
 frontend_dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))

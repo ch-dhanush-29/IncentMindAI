@@ -108,5 +108,17 @@ export const api = {
     const res = await fetch(`${BASE_URL}/audit`);
     if (!res.ok) throw new Error('Failed to fetch audit');
     return res.json();
+  },
+
+  async getSlackStatus(): Promise<any> {
+    const res = await fetch(`${BASE_URL}/webhooks/slack/status`);
+    if (!res.ok) throw new Error('Failed to fetch Slack status');
+    return res.json();
+  },
+
+  async testSlackAlert(): Promise<any> {
+    const res = await fetch(`${BASE_URL}/webhooks/slack/test`, { method: 'POST' });
+    if (!res.ok) throw new Error('Failed to test Slack alert');
+    return res.json();
   }
 };
