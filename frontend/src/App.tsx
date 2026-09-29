@@ -11,6 +11,8 @@ import { IncidentHistory } from './pages/IncidentHistory';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { Postmortem } from './pages/Postmortem';
 import { SettingsPage } from './pages/SettingsPage';
+import { AfterActionReports } from './pages/AfterActionReports';
+import { ImprovementItems } from './pages/ImprovementItems';
 import { CreateIncidentModal } from './components/CreateIncidentModal';
 
 export function App() {
@@ -64,7 +66,7 @@ export function App() {
   }
 
   return (
-    <div className="flex h-screen bg-[#F5F7FB] text-[#172033] overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#F5F7FB] dark:bg-[#0B0D11] text-[#172033] dark:text-[#F1F5F9] overflow-hidden font-sans transition-colors">
       {/* Sidebar Desktop */}
       <div className={`${mobileSidebarOpen ? 'block' : 'hidden'} md:block fixed md:relative z-40 h-full`}>
         <Sidebar 
@@ -83,7 +85,7 @@ export function App() {
       {mobileSidebarOpen && (
         <div 
           onClick={() => setMobileSidebarOpen(false)}
-          className="fixed inset-0 bg-slate-900/30 backdrop-blur-xs z-30 md:hidden"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-30 md:hidden"
         />
       )}
 
@@ -96,11 +98,12 @@ export function App() {
           onNavigateLanding={() => setCurrentTab('landing')}
         />
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
           {currentTab === 'dashboard' && (
             <Dashboard 
               onSelectIncident={handleSelectIncidentDetail} 
               onStartInvestigation={handleStartInvestigation}
+              openCreateModal={() => setIsCreateModalOpen(true)}
             />
           )}
 
@@ -109,6 +112,16 @@ export function App() {
               onSelectIncident={handleSelectIncidentDetail} 
               openCreateModal={() => setIsCreateModalOpen(true)} 
             />
+          )}
+
+          {currentTab === 'after-action' && (
+            <AfterActionReports 
+              onSelectIncident={handleSelectIncidentDetail} 
+            />
+          )}
+
+          {currentTab === 'improvements' && (
+            <ImprovementItems />
           )}
 
           {currentTab === 'incident-detail' && selectedIncidentId && (
