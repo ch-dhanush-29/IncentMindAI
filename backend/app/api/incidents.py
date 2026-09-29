@@ -2,7 +2,8 @@ from fastapi import APIRouter, HTTPException, Query, BackgroundTasks
 from typing import List, Optional, Dict, Any
 from app.models.incident import (
     Incident, IncidentCreate, IncidentUpdate, 
-    InvestigationResult, QuestionRequest, ResolutionRequest
+    InvestigationResult, QuestionRequest, ResolutionRequest,
+    NoteCreate, ReopenRequest
 )
 from app.repositories.incident_repo import incident_repo
 from app.services.incident_service import incident_service
@@ -16,9 +17,10 @@ async def list_incidents(
     service: Optional[str] = None,
     severity: Optional[str] = None,
     status: Optional[str] = None,
+    assignee: Optional[str] = None,
     q: Optional[str] = None
 ):
-    return await incident_repo.list_all(service=service, severity=severity, status=status, query=q)
+    return await incident_repo.list_all(service=service, severity=severity, status=status, assignee=assignee, query=q)
 
 @router.post("", response_model=Incident, status_code=201)
 async def create_incident(incident_in: IncidentCreate, background_tasks: BackgroundTasks):
@@ -36,6 +38,20 @@ async def get_incident(incident_id: str):
 @router.patch("/{incident_id}", response_model=Incident)
 async def update_incident(incident_id: str, update_in: IncidentUpdate):
     incident = await incident_repo.update(incident_id, update_in)
+    if not incident:
+        raise HTTPException(status_code=404, detail="Incident not found")
+    return incident
+
+@router.post("/{incident_id}/notes", response_model=Incident)
+async def add_incident_note(incident_id: str, note_in: NoteCreate):
+    incident = await incident_repo.add_note(incident_id, note_in.model_dump())
+    if not incident:
+        raise HTTPException(status_code=404, detail="Incident not found")
+    return incident
+
+@router.post("/{incident_id}/reopen", response_model=Incident)
+async def reopen_incident(incident_id: str, req: ReopenRequest):
+    incident = await incident_repo.reopen(incident_id, reason=req.reason, engineer=req.engineer)
     if not incident:
         raise HTTPException(status_code=404, detail="Incident not found")
     return incident
@@ -68,3 +84,4 @@ async def resolve_incident(incident_id: str, req: ResolutionRequest):
         return await incident_service.resolve_and_retain(incident_id, req)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+

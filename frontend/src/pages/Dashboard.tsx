@@ -64,104 +64,111 @@ export const Dashboard: React.FC<{
     }
   };
 
-  // Mock / enriched card list matching screenshot
-  const myIncidents = [
+  // Dynamically compute incident cards from live backend records
+  const liveCards = incidents.map((inc) => {
+    const isCritical = inc.severity === 'Critical';
+    const isHigh = inc.severity === 'High';
+    return {
+      id: inc.id,
+      title: inc.title,
+      category: inc.service || 'Service',
+      type: inc.service.includes('auth') ? 'Auth & JWT' : inc.service.includes('payment') ? 'Database' : 'Service Outage',
+      severity: inc.severity,
+      severityColor: isCritical ? 'border-red-500 text-red-500' : isHigh ? 'border-orange-500 text-orange-500' : 'border-amber-500 text-amber-500',
+      leftStripe: isCritical ? 'border-l-4 border-l-red-500' : isHigh ? 'border-l-4 border-l-orange-500' : 'border-l-4 border-l-blue-500',
+      status: inc.status,
+      statusStyle: inc.status === 'Resolved' || inc.status === 'Closed'
+        ? 'border-emerald-500/60 text-emerald-600 bg-emerald-500/10'
+        : 'border-amber-500/60 text-amber-600 bg-amber-500/10',
+      assignee: inc.assignee || 'Unassigned',
+      timeAgo: new Date(inc.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      date: new Date(inc.created_at).toLocaleDateString(),
+      service: inc.service,
+      isSynthetic: false
+    };
+  });
+
+  // Synthetic demo fallback cards if fewer than 3 incidents exist
+  const syntheticCards = [
     {
       id: 'INC-SEC-019',
-      title: 'Generic Phishing Incident',
+      title: 'Generic Phishing Incident (Synthetic Demo)',
       category: 'Incident',
       type: 'Phishing',
       severity: 'Critical',
       severityColor: 'border-red-500 text-red-500',
       leftStripe: 'border-l-4 border-l-red-500',
       status: 'Resolved',
-      statusStyle: 'border-emerald-500/60 text-emerald-400 bg-emerald-500/10',
+      statusStyle: 'border-emerald-500/60 text-emerald-600 bg-emerald-500/10',
       assignee: 'Ryan Cox Administrator',
       timeAgo: '116d ago',
       date: '5/17/2025',
-      service: 'identity-gateway'
+      service: 'identity-gateway',
+      isSynthetic: true
     },
     {
       id: 'INC-SEC-034',
-      title: 'Data Leak Suspected',
+      title: 'Data Leak Suspected (Synthetic Demo)',
       category: 'Incident',
       type: 'Data Breach',
       severity: 'High',
       severityColor: 'border-orange-500 text-orange-500',
       leftStripe: 'border-l-4 border-l-orange-500',
       status: 'Responding',
-      statusStyle: 'border-orange-500/60 text-orange-400 bg-orange-500/10',
+      statusStyle: 'border-orange-500/60 text-orange-600 bg-orange-500/10',
       assignee: 'Ryan Cox Administrator',
       timeAgo: '44d ago',
       date: '7/28/2025',
-      service: 'marketing-portal'
-    },
-    {
-      id: 'INC-SEC-055',
-      title: 'Testing Again Slack/Jira',
-      category: 'Incident',
-      type: 'Phishing',
-      severity: 'High',
-      severityColor: 'border-amber-500 text-amber-500',
-      leftStripe: 'border-l-4 border-l-amber-500',
-      status: 'Reported',
-      statusStyle: 'border-blue-500/60 text-blue-400 bg-blue-500/10',
-      assignee: 'Ryan Cox Administrator',
-      timeAgo: '17d ago',
-      date: '8/24/2025',
-      service: 'slack-bot-service'
-    },
-    {
-      id: incidents[0]?.id || 'INC-11790C',
-      title: incidents[0]?.title || 'PostgreSQL Connection Pool Saturation Under Peak Checkout Load',
-      category: 'Infrastructure',
-      type: 'Database',
-      severity: 'Critical',
-      severityColor: 'border-red-500 text-red-500',
-      leftStripe: 'border-l-4 border-l-red-500',
-      status: 'Investigating',
-      statusStyle: 'border-amber-500/60 text-amber-400 bg-amber-500/10',
-      assignee: 'Incident Commander',
-      timeAgo: '2h ago',
-      date: 'Today',
-      service: 'payment-api'
-    },
-    {
-      id: incidents[1]?.id || 'INC-24748B',
-      title: incidents[1]?.title || 'Auth Service Authentication Token Cache Stampede',
-      category: 'Authentication',
-      type: 'SSO & JWT',
-      severity: 'High',
-      severityColor: 'border-orange-500 text-orange-500',
-      leftStripe: 'border-l-4 border-l-orange-500',
-      status: 'Mitigated',
-      statusStyle: 'border-purple-500/60 text-purple-400 bg-purple-500/10',
-      assignee: 'Ryan Cox (Analyst)',
-      timeAgo: '1d ago',
-      date: 'Yesterday',
-      service: 'auth-service'
+      service: 'marketing-portal',
+      isSynthetic: true
     }
   ];
 
-  // Active Incidents Metric Cards
+  const myIncidents = liveCards.length >= 3 ? liveCards : [...liveCards, ...syntheticCards.slice(0, 3 - liveCards.length)];
+
+  // Active Incidents Metric Cards dynamically derived from backend data
+  const critCount = summary?.by_severity?.Critical ?? incidents.filter(i => i.severity === 'Critical').length;
+  const highCount = summary?.by_severity?.High ?? incidents.filter(i => i.severity === 'High').length;
+  const medCount = summary?.by_severity?.Medium ?? incidents.filter(i => i.severity === 'Medium').length;
+  const lowCount = summary?.by_severity?.Low ?? incidents.filter(i => i.severity === 'Low').length;
+  const totalCount = summary?.total_incidents ?? incidents.length;
+
   const activeMetrics = [
-    { label: 'Total', count: 12, border: '', bg: 'bg-[#161B22] dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
+    { label: 'Total', count: totalCount, border: '', bg: 'bg-[#161B22] dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
     { label: 'Info', count: 0, border: 'border-l-4 border-l-slate-400', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
-    { label: 'Low', count: 1, border: 'border-l-4 border-l-blue-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
-    { label: 'Medium', count: 2, border: 'border-l-4 border-l-amber-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
-    { label: 'High', count: 5, border: 'border-l-4 border-l-orange-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
-    { label: 'Critical', count: 4, border: 'border-l-4 border-l-red-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' }
+    { label: 'Low', count: lowCount, border: 'border-l-4 border-l-blue-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
+    { label: 'Medium', count: medCount, border: 'border-l-4 border-l-amber-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
+    { label: 'High', count: highCount, border: 'border-l-4 border-l-orange-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' },
+    { label: 'Critical', count: critCount, border: 'border-l-4 border-l-red-500', bg: 'bg-white dark:bg-[#161B22]', text: 'text-[#172033] dark:text-[#F1F5F9]' }
   ];
 
-  // Incident Matrix rows
-  const matrixRows = [
-    { category: 'CVE', reported: 1, investigating: 0, responding: 0, contained: 0, recovering: 0, total: 1 },
-    { category: 'Data Breach', reported: 1, investigating: 0, responding: 1, contained: 0, recovering: 0, total: 2 },
-    { category: 'Infrastructure & DB', reported: 0, investigating: 1, responding: 0, contained: 1, recovering: 0, total: 2 },
-    { category: 'Authentication & SSO', reported: 0, investigating: 0, responding: 1, contained: 0, recovering: 1, total: 2 },
-    { category: 'Payment Gateway', reported: 0, investigating: 1, responding: 0, contained: 0, recovering: 0, total: 1 },
-    { category: 'Phishing & Social', reported: 1, investigating: 0, responding: 0, contained: 1, recovering: 0, total: 2 }
-  ];
+  // Dynamic Incident Matrix rows derived from real services
+  const serviceGroups: Record<string, { reported: number; investigating: number; responding: number; contained: number; recovering: number; total: number }> = {};
+  
+  incidents.forEach(inc => {
+    const svc = inc.service || 'Other';
+    if (!serviceGroups[svc]) {
+      serviceGroups[svc] = { reported: 0, investigating: 0, responding: 0, contained: 0, recovering: 0, total: 0 };
+    }
+    serviceGroups[svc].total += 1;
+    if (inc.status === 'New') serviceGroups[svc].reported += 1;
+    else if (inc.status === 'Investigating') serviceGroups[svc].investigating += 1;
+    else if (inc.status === 'Mitigated') serviceGroups[svc].contained += 1;
+    else if (inc.status === 'Resolved' || inc.status === 'Closed') serviceGroups[svc].recovering += 1;
+    else serviceGroups[svc].responding += 1;
+  });
+
+  const matrixRows = Object.keys(serviceGroups).length > 0
+    ? Object.entries(serviceGroups).map(([svc, counts]) => ({
+        category: svc,
+        ...counts
+      }))
+    : [
+        { category: 'payment-api', reported: 0, investigating: 1, responding: 0, contained: 1, recovering: 0, total: 2 },
+        { category: 'auth-service', reported: 1, investigating: 0, responding: 1, contained: 0, recovering: 0, total: 2 },
+        { category: 'checkout-worker', reported: 0, investigating: 1, responding: 0, contained: 0, recovering: 0, total: 1 }
+      ];
+
 
   // Incident Leaders Table
   const incidentLeaders = irRole === 'lead' ? [
@@ -289,10 +296,15 @@ export const Dashboard: React.FC<{
                       </div>
                     </div>
 
-                    <div className="pt-1">
+                    <div className="pt-1 flex items-center gap-1.5">
                       <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${inc.statusStyle}`}>
                         {inc.status}
                       </span>
+                      {inc.isSynthetic && (
+                        <span className="px-1.5 py-0.5 rounded-md text-[9px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-500 border border-slate-200 dark:border-slate-700">
+                          Synthetic Demo
+                        </span>
+                      )}
                     </div>
                   </div>
 

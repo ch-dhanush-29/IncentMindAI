@@ -1,4 +1,4 @@
-﻿from enum import Enum
+from enum import Enum
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from datetime import datetime
@@ -90,6 +90,7 @@ class Incident(BaseModel):
     logs_excerpt: Optional[str] = None
     metadata: Dict[str, Any] = Field(default_factory=dict)
     
+    assignee: Optional[str] = "unassigned"
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     resolved_at: Optional[datetime] = None
@@ -105,6 +106,7 @@ class IncidentCreate(BaseModel):
     service: str
     severity: Severity = Severity.MEDIUM
     environment: str = "production"
+    assignee: Optional[str] = "unassigned"
     symptoms: List[str] = Field(default_factory=list)
     error_messages: List[str] = Field(default_factory=list)
     affected_components: List[str] = Field(default_factory=list)
@@ -117,9 +119,19 @@ class IncidentUpdate(BaseModel):
     status: Optional[IncidentStatus] = None
     severity: Optional[Severity] = None
     environment: Optional[str] = None
+    assignee: Optional[str] = None
     symptoms: Optional[List[str]] = None
     error_messages: Optional[List[str]] = None
     logs_excerpt: Optional[str] = None
+
+class NoteCreate(BaseModel):
+    content: str
+    author: Optional[str] = "sre-engineer"
+    note_type: str = "investigation_note"
+
+class ReopenRequest(BaseModel):
+    reason: Optional[str] = "Reopened for further investigation"
+    engineer: Optional[str] = "sre-engineer"
 
 class QuestionRequest(BaseModel):
     question: str
@@ -133,3 +145,4 @@ class ResolutionRequest(BaseModel):
     is_verified_by_human: bool = True
     lessons_learned: List[str] = Field(default_factory=list)
     follow_up_tickets: List[str] = Field(default_factory=list)
+

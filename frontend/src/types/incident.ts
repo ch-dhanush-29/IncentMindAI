@@ -1,4 +1,4 @@
-﻿export type Severity = 'Critical' | 'High' | 'Medium' | 'Low';
+export type Severity = 'Critical' | 'High' | 'Medium' | 'Low';
 export type IncidentStatus = 'New' | 'Investigating' | 'Mitigated' | 'Resolved' | 'Closed';
 export type HypothesisStatus = 'Confirmed' | 'Suspected' | 'Unknown' | 'Rejected';
 
@@ -68,6 +68,7 @@ export interface Incident {
   severity: Severity;
   status: IncidentStatus;
   environment: string;
+  assignee?: string;
   symptoms: string[];
   error_messages: string[];
   affected_components: string[];

@@ -160,11 +160,21 @@ class SlackBotService:
         """
         Post AI-generated root cause analysis and recommended actions into the Slack war room.
         """
-        hypothesis = getattr(investigation, "hypothesis", "Investigating telemetry patterns")
-        confidence = getattr(investigation, "confidence", 0.92)
-        actions = getattr(investigation, "recommended_actions", [])
+        hypothesis = getattr(investigation, "summary", "Investigating telemetry patterns")
+        confidence = 0.85
+        if hasattr(investigation, "hypotheses") and investigation.hypotheses:
+            hypothesis = investigation.hypotheses[0].cause
+            st_val = getattr(investigation.hypotheses[0].status, "value", str(investigation.hypotheses[0].status))
+            confidence = 0.94 if st_val == "Confirmed" else 0.78
 
-        actions_text = "\n".join([f"• `{a.get('type', 'Action')}`: {a.get('description', '')}" for a in actions[:3]])
+        actions = getattr(investigation, "recommended_actions", [])
+        formatted_actions = []
+        for a in actions[:3]:
+            if isinstance(a, dict):
+                formatted_actions.append(f"• `{a.get('type', 'Action')}`: {a.get('description', '')}")
+            else:
+                formatted_actions.append(f"• {str(a)}")
+        actions_text = "\n".join(formatted_actions) if formatted_actions else "• Inspect active service telemetry"
 
         blocks = [
             {

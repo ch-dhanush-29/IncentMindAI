@@ -152,6 +152,34 @@ class HindsightMemoryAdapter:
             "service_filter": service
         })
 
+        # Compute local matches first for instant provenance linking
+        query_words = set(query.lower().replace(",", " ").replace(";", " ").split())
+        scored_local = []
+
+        for mem in self._local_sandbox_memories:
+            mem_text = (mem["content"] + " " + str(mem.get("metadata", {}))).lower()
+            matched = sum(1 for w in query_words if len(w) > 3 and w in mem_text)
+            
+            # Service boost
+            if service and mem.get("metadata", {}).get("service", "").lower() == service.lower():
+                matched += 3
+
+            if matched > 0:
+                score = round(min(0.50 + (matched * 0.1), 0.98), 2)
+                scored_local.append({
+                    "memory_id": mem["id"],
+                    "summary": mem["content"],
+                    "similarity_score": score,
+                    "source_incident_id": mem.get("source_incident_id"),
+                    "service": mem.get("metadata", {}).get("service"),
+                    "verified_root_cause": mem.get("metadata", {}).get("verified_root_cause"),
+                    "resolution_applied": mem.get("metadata", {}).get("permanent_fix"),
+                    "relevance_explanation": f"Matched historical incident pattern ({matched} symptom markers aligned).",
+                    "retained_at": mem.get("retained_at")
+                })
+
+        scored_local.sort(key=lambda x: x["similarity_score"] or 0, reverse=True)
+
         if self.is_cloud_connected:
             try:
                 async with httpx.AsyncClient(timeout=12.0) as client:
@@ -164,56 +192,65 @@ class HindsightMemoryAdapter:
                     )
                     if resp.is_success:
                         data = resp.json()
-                        # Map Hindsight Cloud results
                         results = []
                         raw_results = data.get("results", [])
                         for item in raw_results:
                             mem_text = item.get("text") or item.get("content", "")
+                            doc_id = item.get("document_id")
+
+                            # Link with structured local record if document matches
+                            matched_local = next(
+                                (m for m in self._local_sandbox_memories if (doc_id and m.get("source_incident_id") == doc_id) or (m.get("source_incident_id") and m.get("source_incident_id") in mem_text)),
+                                None
+                            )
+
+                            v_root_cause = None
+                            v_fix = None
+                            if matched_local:
+                                v_root_cause = matched_local.get("metadata", {}).get("verified_root_cause")
+                                v_fix = matched_local.get("metadata", {}).get("permanent_fix")
+                                if not doc_id:
+                                    doc_id = matched_local.get("source_incident_id")
+
+                            if not v_root_cause and "Verified Root Cause: " in mem_text:
+                                v_root_cause = mem_text.split("Verified Root Cause: ")[1].split(".")[0].strip()
+                            if not v_fix and "Applied Resolution: " in mem_text:
+                                v_fix = mem_text.split("Applied Resolution: ")[1].split(".")[0].strip()
+
                             results.append({
                                 "memory_id": str(item.get("id", "mem-remote")),
-                                "summary": mem_text,
+                                "summary": matched_local["content"] if matched_local else mem_text,
                                 "similarity_score": round(item.get("score", 0.92), 2) if item.get("score") else 0.92,
-                                "source_incident_id": item.get("document_id") or "Hindsight-Cloud",
-                                "service": service or (item.get("entities", ["Production Service"])[0] if item.get("entities") else "Production Service"),
-                                "verified_root_cause": mem_text.split(" | ")[0] if " | " in mem_text else mem_text,
-                                "resolution_applied": mem_text,
+                                "source_incident_id": doc_id or (matched_local.get("source_incident_id") if matched_local else "Hindsight-Cloud"),
+                                "service": (matched_local.get("metadata", {}).get("service") if matched_local else None) or service or (item.get("entities", ["Production Service"])[0] if item.get("entities") else "Production Service"),
+                                "verified_root_cause": v_root_cause or mem_text,
+                                "resolution_applied": v_fix or mem_text,
                                 "relevance_explanation": f"Recalled from Vectorize Hindsight Cloud (Bank: {self.bank_id}) via TEMPR retrieval.",
                                 "retained_at": item.get("mentioned_at") or item.get("occurred_start") or timestamp
                             })
+
+                        # Merge local verified records that weren't in cloud response with top session freshness
+                        existing_doc_ids = {r.get("source_incident_id") for r in results}
+                        for sm in scored_local:
+                            sm["similarity_score"] = 1.0
+                            if sm.get("source_incident_id") not in existing_doc_ids:
+                                results.insert(0, sm)
+                            else:
+                                for r in results:
+                                    if r.get("source_incident_id") == sm.get("source_incident_id"):
+                                        r["similarity_score"] = 1.0
+                                        r["verified_root_cause"] = sm.get("verified_root_cause") or r.get("verified_root_cause")
+                                        r["resolution_applied"] = sm.get("resolution_applied") or r.get("resolution_applied")
+
                         if results:
+                            results.sort(key=lambda x: x.get("similarity_score") or 0, reverse=True)
                             return results[:limit]
+
+
             except Exception as e:
                 logger.error(f"Remote Hindsight recall failed: {e}. Falling back to sandbox memories.")
 
-        # Sandbox retrieval: match keywords / service
-        query_words = set(query.lower().replace(",", " ").replace(";", " ").split())
-        scored_memories = []
-
-        for mem in self._local_sandbox_memories:
-            mem_text = (mem["content"] + " " + str(mem.get("metadata", {}))).lower()
-            matched = sum(1 for w in query_words if len(w) > 3 and w in mem_text)
-            
-            # Service boost
-            if service and mem.get("metadata", {}).get("service", "").lower() == service.lower():
-                matched += 3
-
-            if matched > 0:
-                score = round(min(0.50 + (matched * 0.1), 0.98), 2)
-                scored_memories.append({
-                    "memory_id": mem["id"],
-                    "summary": mem["content"],
-                    "similarity_score": score,
-                    "source_incident_id": mem.get("source_incident_id"),
-                    "service": mem.get("metadata", {}).get("service"),
-                    "verified_root_cause": mem.get("metadata", {}).get("verified_root_cause"),
-                    "resolution_applied": mem.get("metadata", {}).get("permanent_fix"),
-                    "relevance_explanation": f"Matched historical incident pattern ({matched} symptom markers aligned).",
-                    "retained_at": mem.get("retained_at")
-                })
-
-        # Sort by similarity score descending
-        scored_memories.sort(key=lambda x: x["similarity_score"] or 0, reverse=True)
-        return scored_memories[:limit]
+        return scored_local[:limit]
 
     def get_all_memories(self) -> List[Dict[str, Any]]:
         return list(self._local_sandbox_memories)

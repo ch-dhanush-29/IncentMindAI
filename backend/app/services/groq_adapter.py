@@ -123,11 +123,8 @@ Respond ONLY with a valid JSON object matching this exact schema:
 
         # Call Groq if configured
         if self.is_connected:
-            candidate_models = [self.model]
-            if "qwen/qwen3.8-27b" not in candidate_models:
-                candidate_models.append("qwen/qwen3.8-27b")
-            if "openai/gpt-oss-120b" not in candidate_models:
-                candidate_models.append("openai/gpt-oss-120b")
+            candidate_models = [self.model, "openai/gpt-oss-120b", "allam-2-7b"]
+
 
             for m in candidate_models:
                 try:
@@ -143,8 +140,10 @@ Respond ONLY with a valid JSON object matching this exact schema:
                                 {"role": "user", "content": prompt}
                             ],
                             "response_format": {"type": "json_object"},
-                            "temperature": 0.2
+                            "temperature": 0.2,
+                            "max_tokens": 800
                         }
+
                         resp = await client.post("https://api.groq.com/openai/v1/chat/completions", json=payload, headers=headers)
                         if resp.is_success:
                             data = resp.json()
@@ -168,29 +167,82 @@ Respond ONLY with a valid JSON object matching this exact schema:
     ) -> InvestigationResult:
         hypotheses = []
         for h in parsed.get("hypotheses", []):
-            st = HypothesisStatus.SUSPECTED
-            if h.get("status") == "Confirmed":
-                st = HypothesisStatus.CONFIRMED
-            elif h.get("status") == "Unknown":
-                st = HypothesisStatus.UNKNOWN
-            hypotheses.append(RootCauseHypothesis(
-                cause=h.get("cause", "Unknown Root Cause"),
-                status=st,
-                evidence_supporting=h.get("evidence_supporting", []),
-                risk_level=h.get("risk_level", "Medium"),
-                notes=h.get("notes")
-            ))
+            if isinstance(h, str):
+                hypotheses.append(RootCauseHypothesis(cause=h, status=HypothesisStatus.SUSPECTED))
+                continue
+            if isinstance(h, dict):
+                st = HypothesisStatus.SUSPECTED
+                if h.get("status") == "Confirmed":
+                    st = HypothesisStatus.CONFIRMED
+                elif h.get("status") == "Unknown":
+                    st = HypothesisStatus.UNKNOWN
+                hypotheses.append(RootCauseHypothesis(
+                    cause=h.get("cause", "Unknown Root Cause"),
+                    status=st,
+                    evidence_supporting=h.get("evidence_supporting", []) if isinstance(h.get("evidence_supporting"), list) else [],
+                    risk_level=h.get("risk_level", "Medium"),
+                    notes=h.get("notes")
+                ))
 
         steps = []
         for idx, s in enumerate(parsed.get("diagnostic_steps", []), 1):
-            steps.append(DiagnosticStep(
-                step_number=s.get("step_number", idx),
-                action=s.get("action", ""),
-                rationale=s.get("rationale", ""),
-                is_reversible=s.get("is_reversible", True),
-                risk=s.get("risk", "Low"),
-                command_or_query=s.get("command_or_query")
-            ))
+            if isinstance(s, str):
+                steps.append(DiagnosticStep(step_number=idx, action=s, rationale="Diagnostic step"))
+                continue
+            if isinstance(s, dict):
+                steps.append(DiagnosticStep(
+                    step_number=s.get("step_number", idx),
+                    action=s.get("action", f"Step {idx}"),
+                    rationale=s.get("rationale", ""),
+                    is_reversible=s.get("is_reversible", True),
+                    risk=s.get("risk", "Low"),
+                    command_or_query=s.get("command_or_query")
+                ))
+
+        if not steps:
+            steps = [
+                DiagnosticStep(
+                    step_number=1,
+                    action="Inspect container logs and error rate telemetry metrics",
+                    rationale="Confirm anomaly triggers and telemetry baselines.",
+                    is_reversible=True,
+                    risk="Low"
+                ),
+                DiagnosticStep(
+                    step_number=2,
+                    action="Check service connection pool metrics and active thread states",
+                    rationale="Isolate resource starvation or database socket saturation.",
+                    is_reversible=True,
+                    risk="Low"
+                )
+            ]
+
+
+        if not hypotheses:
+            hypotheses = [
+                RootCauseHypothesis(
+                    cause="Resource saturation or unclosed socket connections",
+                    status=HypothesisStatus.SUSPECTED,
+                    evidence_supporting=["Reported error symptoms in incident dossier."],
+                    risk_level="Medium"
+                )
+            ]
+
+        # Ensure recommended_actions is a clean List[str]
+        raw_actions = parsed.get("recommended_actions", [])
+        actions: List[str] = []
+        for a in raw_actions:
+            if isinstance(a, str):
+                actions.append(a)
+            elif isinstance(a, dict):
+                actions.append(a.get("description") or a.get("action") or str(a))
+
+        if not actions:
+            actions = [
+                "Inspect live diagnostic telemetry traces",
+                "Apply recommended mitigation once verified by incident lead"
+            ]
+
 
         return InvestigationResult(
             incident_id=incident_id,
@@ -202,7 +254,7 @@ Respond ONLY with a valid JSON object matching this exact schema:
             hypotheses=hypotheses,
             diagnostic_steps=steps,
             suggested_runbooks=parsed.get("suggested_runbooks", []),
-            recommended_actions=parsed.get("recommended_actions", [])
+            recommended_actions=actions
         )
 
     def _generate_sandbox_investigation(

@@ -3,11 +3,12 @@ import type { Incident, InvestigationResult } from '../types/incident';
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 export const api = {
-  async getIncidents(service?: string, severity?: string, status?: string, q?: string): Promise<Incident[]> {
+  async getIncidents(service?: string, severity?: string, status?: string, q?: string, assignee?: string): Promise<Incident[]> {
     const params = new URLSearchParams();
     if (service) params.append('service', service);
     if (severity) params.append('severity', severity);
     if (status) params.append('status', status);
+    if (assignee) params.append('assignee', assignee);
     if (q) params.append('q', q);
     const res = await fetch(`${BASE_URL}/incidents?${params.toString()}`);
     if (!res.ok) throw new Error('Failed to fetch incidents');
@@ -37,6 +38,26 @@ export const api = {
       body: JSON.stringify(data),
     });
     if (!res.ok) throw new Error('Failed to update incident');
+    return res.json();
+  },
+
+  async addNote(id: string, content: string, author: string = 'sre-engineer', note_type: string = 'investigation_note'): Promise<Incident> {
+    const res = await fetch(`${BASE_URL}/incidents/${id}/notes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content, author, note_type }),
+    });
+    if (!res.ok) throw new Error('Failed to add note');
+    return res.json();
+  },
+
+  async reopenIncident(id: string, reason: string = 'Reopened for investigation', engineer: string = 'sre-engineer'): Promise<Incident> {
+    const res = await fetch(`${BASE_URL}/incidents/${id}/reopen`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason, engineer }),
+    });
+    if (!res.ok) throw new Error('Failed to reopen incident');
     return res.json();
   },
 
