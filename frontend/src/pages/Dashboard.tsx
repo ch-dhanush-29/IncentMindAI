@@ -524,19 +524,16 @@ export const Dashboard: React.FC<{
         </div>
       </div>
 
-      {/* 4. VISUAL & MEMORY ENRICHMENT SECTION (Filled with Images, Architecture & Hindsight Flow) */}
+      {/* 4. VISUAL INTELLIGENCE & INVESTIGATION FLOW */}
       <div className="mt-8 p-5 rounded-2xl bg-white dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-sm font-bold text-[#172033] dark:text-[#F1F5F9] flex items-center gap-2">
               <BrainCircuit className="w-4 h-4 text-indigo-500" />
-              <span>Hindsight AI Persistent Memory & Telemetry Architecture</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-                Vector Bank: incidentmind-prod-bank
-              </span>
+              <span>Incident Intelligence & Diagnostic Flow</span>
             </h2>
             <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-0.5">
-              Live inspection of agentic memory nodes, causal links, and sub-200ms semantic resolution assistance.
+              Correlate active symptoms with proven historical resolutions.
             </p>
           </div>
 
@@ -550,7 +547,7 @@ export const Dashboard: React.FC<{
                   : 'text-[#64748B] dark:text-[#94A3B8]'
               }`}
             >
-              Dashboard Architecture
+              Overview
             </button>
             <button
               onClick={() => setActiveVisualTab('memory')}
@@ -560,7 +557,7 @@ export const Dashboard: React.FC<{
                   : 'text-[#64748B] dark:text-[#94A3B8]'
               }`}
             >
-              Persistent Memory
+              Past Knowledge
             </button>
             <button
               onClick={() => setActiveVisualTab('analysis')}
@@ -570,7 +567,7 @@ export const Dashboard: React.FC<{
                   : 'text-[#64748B] dark:text-[#94A3B8]'
               }`}
             >
-              Root Cause Trees
+              Root Cause Tree
             </button>
           </div>
         </div>
@@ -586,43 +583,41 @@ export const Dashboard: React.FC<{
                   ? '/images/incidentmind/persistent-memory.png'
                   : '/images/incidentmind/root-cause-analysis.png'
               } 
-              alt="IncidentMind Architecture"
-              className="w-full h-64 md:h-72 object-cover group-hover:scale-101 transition-transform duration-300"
+              alt="Incident Overview"
+              className="w-full h-60 md:h-64 object-cover group-hover:scale-101 transition-transform duration-300"
             />
             <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-mono text-white/90">
-              {activeVisualTab === 'dashboard' ? 'High-Performance SRE Telemetry & Copilot' : activeVisualTab === 'memory' ? 'Vectorize Hindsight Persistent Bank' : 'Grounded Root Cause Diagnostic Tree'}
+              {activeVisualTab === 'dashboard' ? 'Real-Time Incident Telemetry' : activeVisualTab === 'memory' ? 'Retained Historical Solutions' : 'Automated Diagnostic Breakdown'}
             </div>
           </div>
 
           <div className="md:col-span-5 space-y-3 text-xs">
-            <div className="p-3.5 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] space-y-1.5">
-              <div className="font-semibold text-xs text-[#172033] dark:text-[#F1F5F9] flex items-center justify-between">
-                <span>Memory Graph Topology</span>
-                <span className="font-mono text-[10px] text-emerald-500">23 Active Links</span>
+            <div className="p-3 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834]">
+              <div className="font-semibold text-xs text-[#172033] dark:text-[#F1F5F9]">
+                Instant Historical Context
               </div>
-              <p className="text-[#64748B] dark:text-[#94A3B8] text-[11px] leading-relaxed">
-                Every resolved incident is automatically vectorized with causal, temporal, and semantic edges, enabling immediate root cause hypotheses when similar failure patterns emerge.
-              </p>
+              <div className="text-[#64748B] dark:text-[#94A3B8] text-[11px] mt-0.5">
+                Surfaces previously verified fixes the moment an alert triggers.
+              </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] space-y-1.5">
-              <div className="font-semibold text-xs text-[#172033] dark:text-[#F1F5F9] flex items-center justify-between">
-                <span>Inference Engine</span>
-                <span className="font-mono text-[10px] text-[#4F46E5] dark:text-indigo-400">Groq Fast LPU</span>
+            <div className="p-3 rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834]">
+              <div className="font-semibold text-xs text-[#172033] dark:text-[#F1F5F9]">
+                Actionable Safe Steps
               </div>
-              <p className="text-[#64748B] dark:text-[#94A3B8] text-[11px] leading-relaxed">
-                Powered by Qwen-27B high-speed inference with 100% human-in-the-loop validation for safe, non-destructive diagnostic execution.
-              </p>
+              <div className="text-[#64748B] dark:text-[#94A3B8] text-[11px] mt-0.5">
+                Guided runbook recommendations with human confirmation.
+              </div>
             </div>
 
-            <div className="pt-1 flex items-center gap-2">
+            <div className="pt-1">
               {onStartInvestigation && (
                 <button
                   onClick={() => onStartInvestigation(incidents[0]?.id || 'INC-11790C')}
-                  className="flex-1 py-2 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-2 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Launch AI Investigation Studio</span>
+                  <span>Open Investigation Studio</span>
                 </button>
               )}
             </div>

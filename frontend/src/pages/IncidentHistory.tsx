@@ -57,7 +57,7 @@ export const IncidentHistory: React.FC<IncidentHistoryProps> = ({ onSelectIncide
             <span>Incident Knowledge Archive</span>
           </h2>
           <p className="text-xs text-[#64748B] mt-1">
-            Searchable historical incident repository with linked postmortems, verified fixes, and Hindsight memory provenance.
+            Searchable historical incident repository with linked postmortems, verified fixes, and institutional knowledge.
           </p>
         </div>
       </div>

@@ -70,7 +70,7 @@ export const AnalyticsPage: React.FC = () => {
           <span>SRE Performance & Recurrence Analytics</span>
         </h2>
         <p className="text-xs text-[#64748B] mt-1">
-          Quantitative telemetry on incident duration, MTTR acceleration via Hindsight memory, and recurring failure prevention.
+          Quantitative metrics on incident duration, MTTR reduction, and recurring failure prevention.
         </p>
       </div>
 
@@ -86,12 +86,12 @@ export const AnalyticsPage: React.FC = () => {
           <span className="text-xs font-medium text-[#64748B]">Mean Time to Resolution (MTTR)</span>
           <div className="text-3xl font-mono font-extrabold text-[#4F46E5] pt-1">{summary?.mean_time_to_resolve_minutes || 18}m</div>
           <span className="text-[11px] text-emerald-700 font-mono font-semibold flex items-center gap-1">
-            <TrendingDown className="w-3.5 h-3.5" /> 42% Triage Acceleration with Hindsight
+            <TrendingDown className="w-3.5 h-3.5" /> 42% Triage Acceleration with Memory
           </span>
         </Card>
 
         <Card className="p-5 space-y-1">
-          <span className="text-xs font-medium text-[#64748B]">Active Hindsight Memories</span>
+          <span className="text-xs font-medium text-[#64748B]">Active Retained Memories</span>
           <div className="text-3xl font-mono font-extrabold text-[#4F46E5] pt-1">{summary?.total_hindsight_memories || 0}</div>
           <span className="text-[11px] text-[#64748B] font-mono">Durable Knowledge Records</span>
         </Card>
@@ -110,10 +110,10 @@ export const AnalyticsPage: React.FC = () => {
         <div className="space-y-1.5 max-w-xl">
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4 text-[#4F46E5]" />
-            <span className="font-bold text-[#172033] text-sm">Hindsight Persistent Memory Impact on Triage Speed</span>
+            <span className="font-bold text-[#172033] text-sm">Institutional Memory Impact on Triage Speed</span>
           </div>
           <p className="text-xs text-[#64748B] leading-relaxed">
-            By recalling exact previous root causes and verified diagnostic runbooks, IncidentMind AI reduces mean time to resolution from 52 minutes (cold-start manual triage) to under 8 minutes.
+            By recalling proven solutions and verified diagnostic steps, IncidentMind AI reduces mean time to resolution from 52 minutes to under 8 minutes.
           </p>
         </div>
 
@@ -124,7 +124,7 @@ export const AnalyticsPage: React.FC = () => {
           </div>
           <div className="text-[#94A3B8] font-mono">→</div>
           <div className="p-3 rounded-xl bg-white border border-indigo-200 text-center min-w-[130px] shadow-xs">
-            <span className="text-[10px] text-[#4F46E5] font-mono block font-semibold">With Hindsight</span>
+            <span className="text-[10px] text-[#4F46E5] font-mono block font-semibold">With Memory</span>
             <span className="text-xl font-extrabold text-emerald-700 font-mono">~6 mins</span>
           </div>
         </div>
@@ -135,7 +135,7 @@ export const AnalyticsPage: React.FC = () => {
         <Card className="lg:col-span-2 p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-[#172033]">Daily Incident Volume vs Hindsight Memory Assists</h3>
+              <h3 className="text-sm font-semibold text-[#172033]">Daily Incident Volume vs Memory Assists</h3>
               <p className="text-xs text-[#64748B] mt-0.5">Automated recall rate across daily alert volume</p>
             </div>
             <span className="text-[11px] text-[#64748B] font-mono">Rolling 5-Day Window</span>
@@ -199,9 +199,9 @@ export const AnalyticsPage: React.FC = () => {
       <Card className="p-5 space-y-4">
         <div>
           <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
-            <span>Production Recurrence Index (Hindsight Detection)</span>
+            <span>Production Recurrence Index</span>
             <span className="text-[10px] font-mono text-[#4F46E5] bg-[#EEF2FF] border border-indigo-100 px-2 py-0.5 rounded-full font-medium">
-              Automated Signature Grouping
+              Automated Pattern Grouping
             </span>
           </h3>
           <p className="text-xs text-[#64748B] mt-0.5">Services exhibiting recurring failure signatures across rolling deployment cycles</p>
@@ -217,7 +217,7 @@ export const AnalyticsPage: React.FC = () => {
                   <span className="text-[#64748B] font-normal">• {sig.pattern}</span>
                 </div>
                 <div className="text-[11px] text-[#64748B]">
-                  Historical frequency: {sig.occurrences} matches documented in Hindsight bank
+                  Historical frequency: {sig.occurrences} documented matches
                 </div>
               </div>
               <span className="px-2.5 py-1 rounded-full bg-[#EEF2FF] border border-indigo-100 text-[#4F46E5] text-[11px] font-bold">

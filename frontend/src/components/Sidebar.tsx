@@ -33,11 +33,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Home', icon: Home },
-    { id: 'incidents', label: 'Incidents', icon: ShieldAlert, badge: 'Live' },
+    { id: 'incidents', label: 'Incidents', icon: ShieldAlert, badge: 'Active' },
     { id: 'after-action', label: 'After Action Reports', icon: FileText },
     { id: 'improvements', label: 'Improvement Items', icon: Lightbulb, badge: '6' },
     { id: 'analytics', label: 'Analytics', icon: BarChart2 },
-    { id: 'memory-explorer', label: 'Reports', icon: Layers, badge: 'TEMPR' },
+    { id: 'memory-explorer', label: 'Knowledge Base', icon: Layers },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 
@@ -156,21 +156,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <ClerkAuthControl compact={false} />
             </div>
 
-            {/* Live Infrastructure Status */}
-            <div className="space-y-1 text-[10px] text-[#64748B] dark:text-[#94A3B8] pt-1 font-mono">
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
-                  <Radio className="w-2.5 h-2.5 text-emerald-500 animate-pulse" /> 
-                  <span>Groq Fast Inference</span>
-                </span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">ONLINE</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Vectorize Hindsight</span>
-                <span className={`font-semibold ${hindsightConnected ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-500'}`}>
-                  {hindsightConnected ? 'CLOUD ACTIVE' : 'SANDBOX'}
-                </span>
-              </div>
+            {/* System Status */}
+            <div className="flex items-center justify-between pt-1 px-1 text-[11px] text-[#64748B] dark:text-[#94A3B8]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>Systems Operational</span>
+              </span>
+              <span className="font-mono text-[10px] text-slate-400">Enterprise</span>
             </div>
           </>
         ) : (

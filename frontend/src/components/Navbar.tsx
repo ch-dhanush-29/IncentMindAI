@@ -75,11 +75,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Right Actions */}
       <div className="flex items-center gap-3">
-        {/* Hindsight Status Pill */}
-        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/40 text-[11px] font-mono text-[#4F46E5] dark:text-indigo-400 font-medium">
-          <Database className="w-3 h-3 text-[#4F46E5] dark:text-indigo-400" />
-          <span>Hindsight TEMPR</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse ml-0.5" />
+        {/* System Status Indicator */}
+        <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>Operational</span>
         </div>
 
         {/* Notifications Icon */}

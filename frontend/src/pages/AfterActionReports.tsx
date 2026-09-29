@@ -108,7 +108,7 @@ export const AfterActionReports: React.FC<{
             After Action Reports (Postmortems & Retrospectives)
           </h2>
           <p className="text-xs text-[#64748B] dark:text-[#94A3B8] mt-1">
-            Verified post-incident analyses, confirmed root causes, and persistent knowledge stored into Hindsight memory.
+            Verified post-incident analyses, confirmed root causes, and institutional knowledge preserved for the team.
           </p>
         </div>
 
@@ -133,7 +133,7 @@ export const AfterActionReports: React.FC<{
               }`}
             >
               <Database className="w-3 h-3" />
-              <span>Hindsight Retained</span>
+              <span>Retained Knowledge</span>
             </button>
           </div>
         </div>
@@ -171,7 +171,7 @@ export const AfterActionReports: React.FC<{
 
                 <div className="flex items-center gap-1.5">
                   <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
-                    <ShieldCheck className="w-3 h-3" /> Retained in Hindsight
+                    <ShieldCheck className="w-3 h-3" /> Retained in Knowledge Base
                   </span>
                 </div>
               </div>

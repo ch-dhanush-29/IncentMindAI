@@ -102,15 +102,15 @@ export const MemoryExplorer: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-[#172033] flex items-center gap-2">
-            Hindsight Biomimetic Memory Explorer
+            Institutional Memory Explorer
           </h2>
           <p className="text-xs text-[#64748B] mt-1">
-            Inspect persistent agent memory records, TEMPR architectural representations, and live audit provenance.
+            Inspect persistent incident resolutions, historical lessons, and verification provenance.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <HindsightBadge label="TEMPR Persistent Store" />
+          <HindsightBadge label="Institutional Memory Store" />
         </div>
       </div>
 
@@ -119,7 +119,7 @@ export const MemoryExplorer: React.FC = () => {
         <Card className="p-4 flex items-center justify-between">
           <div className="space-y-1">
             <span className="text-xs font-mono text-[#64748B]">Primary Memory Bank</span>
-            <div className="text-sm font-bold text-[#172033] font-mono">incidentmind-prod-bank</div>
+            <div className="text-sm font-bold text-[#172033] font-mono">Enterprise Knowledge Bank</div>
           </div>
           <Database className="w-5 h-5 text-[#4F46E5]" />
         </Card>
@@ -135,7 +135,7 @@ export const MemoryExplorer: React.FC = () => {
         <Card className="p-4 flex flex-col justify-between space-y-1">
           <div className="text-xs font-mono text-emerald-700 font-semibold flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            {status?.hindsight?.status === 'connected_remote' ? 'Hindsight Cloud API' : 'Hindsight Embedded Bank'}
+            {status?.hindsight?.status === 'connected_remote' ? 'Cloud Memory Active' : 'Local Memory Active'}
           </div>
           <span className="text-[11px] text-[#64748B] font-mono">Provenance & Recurrence Tracking Active</span>
         </Card>
@@ -147,10 +147,10 @@ export const MemoryExplorer: React.FC = () => {
           <div>
             <h3 className="text-sm font-bold text-[#172033] flex items-center gap-2">
               <Layers className="w-4 h-4 text-[#4F46E5]" />
-              <span>TEMPR Memory Architecture Deep Dive</span>
+              <span>5-Pillar Knowledge Architecture</span>
             </h3>
             <p className="text-xs text-[#64748B] mt-0.5">
-              How Hindsight structures persistent memory across 5 architectural pillars
+              How IncidentMind structures persistent incident memory across 5 key pillars
             </p>
           </div>
 
@@ -193,7 +193,7 @@ export const MemoryExplorer: React.FC = () => {
               </div>
 
               <div className="p-4 rounded-xl bg-[#EEF2FF]/60 border border-indigo-100 flex flex-col justify-center space-y-1 font-mono text-xs">
-                <span className="text-[#64748B] text-[10px]">Active Engine Telemetry:</span>
+                <span className="text-[#64748B] text-[10px]">Pillar Metric:</span>
                 <span className="text-[#4F46E5] font-semibold text-xs leading-relaxed">{tab.metric}</span>
               </div>
             </div>
@@ -241,13 +241,13 @@ export const MemoryExplorer: React.FC = () => {
               <BrainCircuit className="w-4 h-4 text-[#4F46E5]" />
               <span>Retained Incident Knowledge Records ({filteredMemories.length})</span>
             </h3>
-            <span className="text-[11px] font-mono text-[#64748B]">Click any card to inspect TEMPR vectors</span>
+            <span className="text-[11px] font-mono text-[#64748B]">Click any card to inspect full details</span>
           </div>
 
           {loading ? (
             <div className="p-12 text-center text-[#64748B] font-mono text-xs flex flex-col items-center justify-center space-y-3">
               <div className="w-6 h-6 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin" />
-              <span>Querying memory records from Hindsight bank...</span>
+              <span>Querying institutional memory records...</span>
             </div>
           ) : filteredMemories.length === 0 ? (
             <Card className="p-8 text-center text-xs text-[#64748B]">
@@ -296,7 +296,7 @@ export const MemoryExplorer: React.FC = () => {
 
                     <div className="flex items-center justify-between text-[11px] font-mono text-[#64748B] pt-1">
                       <span>Retained: {new Date(mem.retained_at).toLocaleDateString()}</span>
-                      <span className="text-[#4F46E5] font-semibold">Inspect Full Vectors →</span>
+                      <span className="text-[#4F46E5] font-semibold">Inspect Full Record →</span>
                     </div>
                   </div>
                 );
@@ -312,7 +312,7 @@ export const MemoryExplorer: React.FC = () => {
             <div className="flex items-center justify-between border-b border-[#E2E8F0] pb-3">
               <h3 className="text-sm font-semibold text-[#172033] flex items-center gap-2">
                 <Code className="w-4 h-4 text-[#4F46E5]" />
-                <span>Raw Record Inspector</span>
+                <span>Record Inspector</span>
               </h3>
               <span className="text-[10px] font-mono text-[#64748B]">
                 {selectedMemory?.id || 'None Selected'}
@@ -329,7 +329,7 @@ export const MemoryExplorer: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-[#64748B] block font-mono text-[10px]">JSON Payload (Hindsight Store):</span>
+                  <span className="text-[#64748B] block font-mono text-[10px]">Structured Record Payload:</span>
                   <CodeBlock 
                     code={JSON.stringify(selectedMemory, null, 2)} 
                     language="json" 
@@ -338,7 +338,7 @@ export const MemoryExplorer: React.FC = () => {
               </div>
             ) : (
               <div className="p-8 text-center text-xs text-[#64748B] font-mono">
-                Click any memory card on the left to inspect its raw provenance and vector metadata.
+                Click any memory card on the left to inspect its details.
               </div>
             )}
           </Card>

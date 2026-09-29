@@ -42,89 +42,89 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const descriptionCards = [
     {
       id: 'card-1',
-      tag: 'HINDSIGHT ENGINE',
-      title: 'Persistent Memory Across Incidents',
-      description: 'IncidentMind AI builds a cumulative organizational memory. Every incident, log snippet, and post-mortem is indexed so knowledge is never lost to team turnover.',
+      tag: 'INSTITUTIONAL MEMORY',
+      title: 'Remember Every Incident',
+      description: 'Preserve verified incident solutions and root causes so institutional knowledge is never lost.',
       image: '/images/incidentmind/persistent-memory.png',
-      alt: 'Persistent memory across incidents diagram',
-      cta: 'Explore Memory Engine',
+      alt: 'Persistent memory across incidents',
+      cta: 'Explore Memory',
       action: onOpenMemoryExplorer,
-      badge: 'Vector Retention',
+      badge: 'Cumulative Knowledge',
     },
     {
       id: 'card-2',
-      tag: 'SEMANTIC SEARCH',
-      title: 'Instant Historical Context Retrieval',
-      description: 'When an alert fires, IncidentMind AI scans past outages and retrieves similar incidents within seconds, complete with root causes and previous resolutions.',
+      tag: 'HISTORICAL CONTEXT',
+      title: 'Learn from Past Incidents',
+      description: 'Instantly surface matching past outages and verified fixes the moment an alert triggers.',
       image: '/images/incidentmind/historical-context.png',
       alt: 'Historical context retrieval comparison',
-      cta: 'View Similar Incidents',
+      cta: 'View Past Incidents',
       action: onOpenHistory,
-      badge: '< 200ms Recall',
+      badge: 'Instant Recall',
     },
     {
       id: 'card-3',
-      tag: 'AGENTIC TRIAGE',
-      title: 'AI-Assisted Incident Investigation',
-      description: 'An intelligent agent works alongside on-call engineers, analyzing stack traces, anomalous metrics, and system topology to isolate failure points.',
+      tag: 'AI INVESTIGATION',
+      title: 'Investigate with Context',
+      description: 'Correlate active logs, metrics, and dependencies to isolate failure points quickly.',
       image: '/images/incidentmind/incident-investigation.jpg',
       alt: 'AI-assisted incident investigation console',
-      cta: 'Open War Room',
+      cta: 'Open Investigation',
       action: onOpenInvestigation,
-      badge: 'Autonomous Co-Pilot',
+      badge: 'Incident Co-Pilot',
     },
     {
       id: 'card-4',
-      tag: '5-WHYS DEEP DIVE',
-      title: 'Automated Root Cause Analysis',
-      description: 'Eliminate manual post-mortems. The system pinpoints whether an outage stems from a bad deployment, connection pool saturation, or third-party API throttling.',
+      tag: 'ROOT CAUSE ANALYSIS',
+      title: 'Identify Potential Root Causes',
+      description: 'Pinpoint core failure drivers across services with automated multi-factor diagnostic analysis.',
       image: '/images/incidentmind/root-cause-analysis.png',
       alt: 'Automated root cause analysis breakdown',
-      cta: 'Inspect RCA Engine',
+      cta: 'View Diagnostics',
       action: onOpenAnalytics,
-      badge: '94% Confidence',
+      badge: 'Automated RCA',
     },
     {
       id: 'card-5',
-      tag: 'RUNBOOK AUTOMATION',
-      title: 'Context-Aware Recommended Actions',
-      description: 'Rather than generic advice, get targeted remediation playbooks tailored to your exact infrastructure, backed by proven resolutions from past incidents.',
+      tag: 'ACTIONABLE STEPS',
+      title: 'Get Actionable Recommendations',
+      description: 'Receive targeted, step-by-step remediation playbooks proven by past incident resolutions.',
       image: '/images/incidentmind/recommended-actions.png',
       alt: 'Recommended mitigation actions list',
-      cta: 'Test Action Scripts',
+      cta: 'Inspect Playbooks',
       action: onOpenInvestigation,
-      badge: 'Verified Runbooks',
+      badge: 'Proven Playbooks',
     },
     {
       id: 'card-6',
-      tag: 'MTTR OPTIMIZATION',
+      tag: 'FAST RESOLUTION',
       title: 'Resolve Incidents Faster',
-      description: 'Drastically cut Mean Time to Resolution by eliminating initial panic and research time. On-call responders start with verified solutions on minute one.',
+      description: 'Drastically reduce downtime by starting every investigation with validated fixes.',
       image: '/images/incidentmind/faster-resolution.png',
       alt: 'Faster incident resolution and MTTR reduction graph',
-      cta: 'View MTTR Analytics',
+      cta: 'View Resolution Times',
       action: onOpenAnalytics,
-      badge: '-68% MTTR',
+      badge: 'Accelerated MTTR',
     },
     {
       id: 'card-7',
-      tag: 'CONTINUOUS LEARNING',
+      tag: 'KNOWLEDGE RETENTION',
       title: 'Turn Resolutions into Knowledge',
-      description: 'Closed incidents automatically generate comprehensive post-mortems and feed back into the memory engine, training the AI to handle future edge cases.',
+      description: 'Convert every resolved incident into structured learnings so the whole team benefits.',
       image: '/images/incidentmind/knowledge-retention.png',
       alt: 'Automated post-mortem and knowledge retention report',
-      cta: 'Browse Knowledge Base',
+      cta: 'Browse Knowledge',
       action: onOpenHistory,
-      badge: 'Self-Enriching',
+      badge: 'Continuous Learning',
     },
     {
       id: 'card-8',
-      tag: 'PROACTIVE GUARDRAILS',
+      tag: 'PROACTIVE PREVENTION',
       title: 'Prevent Repeat Incidents',
-      description: 'Identify latent architectural bottlenecks and recurring failure loops before they manifest into severe customer-facing service disruptions.',
+      description: 'Detect recurring failure patterns and risks before they impact customer-facing services.',
       image: '/images/incidentmind/prevent-recurrence.png',
       alt: 'Prevent repeat incidents and proactive guardrails clustering',
-      cta: 'Configure Guardrails',
+      cta: 'View Risk Guardrails',
       action: onLaunchConsole,
       badge: 'Proactive Alerting',
     },
@@ -135,28 +135,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       icon: BrainCircuit,
       title: 'Remember',
       subtitle: 'Institutional Memory',
-      desc: 'Retain every post-mortem and resolution in persistent vector memory. Never lose institutional knowledge to team turnover.',
+      desc: 'Preserve verified incident solutions in permanent organizational memory.',
       badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-200',
     },
     {
       icon: Search,
       title: 'Investigate',
-      subtitle: 'Agentic Diagnosis',
-      desc: 'Correlate active alerts with historical telemetry and root causes in real-time alongside an autonomous SRE co-pilot.',
+      subtitle: 'Contextual Diagnosis',
+      desc: 'Correlate live telemetry with historical data to isolate root causes rapidly.',
       badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
     },
     {
       icon: Zap,
       title: 'Resolve',
       subtitle: 'Verified Action',
-      desc: 'Execute AI-guided runbooks and verified remediation scripts with human confirmation and sub-minute execution safety.',
+      desc: 'Execute safe, proven remediation playbooks with full human oversight.',
       badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
     },
     {
       icon: ShieldCheck,
       title: 'Prevent',
       subtitle: 'System Guardrails',
-      desc: 'Surface recurrent failure patterns and latent architectural risks before they cause widespread downtime.',
+      desc: 'Identify recurring failure patterns before they cause production downtime.',
       badgeColor: 'bg-amber-50 text-amber-800 border-amber-200',
     },
   ];
@@ -165,59 +165,59 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     {
       step: '01',
       title: 'Ingest & Correlate',
-      description: 'Ingest alerts from PagerDuty, Datadog, Prometheus, or Slack webhooks. Normalize symptoms, affected topologies, and blast radius.',
+      description: 'Capture active incident signals and identify impacted services immediately.',
       icon: Activity,
     },
     {
       step: '02',
       title: 'Recall & Match',
-      description: 'Hindsight persistent memory scans vector embeddings to retrieve identical past outages with verified resolution histories in milliseconds.',
+      description: 'Match current symptoms against verified resolutions from past incidents.',
       icon: RefreshCw,
     },
     {
       step: '03',
       title: 'Investigate & Diagnose',
-      description: 'Agent analyzes logs, stack traces, and system metrics. Generates a multi-step 5-whys root cause analysis grounded in prior data.',
+      description: 'Analyze telemetry and error patterns to pinpoint the underlying cause.',
       icon: Cpu,
     },
     {
       step: '04',
       title: 'Resolve & Retain',
-      description: 'Engineers execute validated remediation scripts. Post-mortem is automatically published and committed to the persistent memory bank.',
+      description: 'Apply validated solutions and automatically save learnings for the future.',
       icon: FileCheck,
     },
   ];
 
-  const temprFramework = [
+  const intelligenceLifecycle = [
     {
-      letter: 'T',
-      name: 'Trigger',
+      step: '01',
+      name: 'Detect',
       color: 'bg-indigo-600',
-      description: 'Alert threshold breach, error surge, or manual engineer declaration ingested via webhooks.',
+      description: 'Instantly ingest and prioritize incident signals across your infrastructure.',
     },
     {
-      letter: 'E',
-      name: 'Extract',
+      step: '02',
+      name: 'Analyze',
       color: 'bg-blue-600',
-      description: 'Structured telemetry extraction: error traces, affected microservices, commit shas, and service topology.',
+      description: 'Extract affected services, error signatures, and blast radius in real time.',
     },
     {
-      letter: 'M',
+      step: '03',
       name: 'Match',
       color: 'bg-violet-600',
-      description: 'Dense vector search across historical incident banks using semantic similarity and metric correlation.',
+      description: 'Correlate current symptoms against verified historical resolutions.',
     },
     {
-      letter: 'P',
-      name: 'Predict',
+      step: '04',
+      name: 'Diagnose',
       color: 'bg-purple-600',
-      description: 'High-confidence probability scoring of root cause hypotheses based on previous proven resolutions.',
+      description: 'Provide high-confidence root cause analysis based on proven evidence.',
     },
     {
-      letter: 'R',
+      step: '05',
       name: 'Resolve',
       color: 'bg-emerald-600',
-      description: 'Execution of contextual runbook scripts followed by automatic ingestion into institutional memory.',
+      description: 'Execute validated remediation playbooks and preserve knowledge permanently.',
     },
   ];
 
@@ -236,19 +236,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <span className="font-bold text-base tracking-tight text-[#172033]">
                 IncidentMind <span className="text-[#4F46E5] text-xs font-mono px-1.5 py-0.5 rounded bg-[#EEF2FF] border border-indigo-100 font-semibold">AI</span>
               </span>
-              <p className="text-[10px] text-[#64748B] font-mono leading-none">Hindsight SRE Memory</p>
+              <p className="text-[10px] text-[#64748B] font-mono leading-none">Incident Intelligence</p>
             </div>
           </div>
 
           {/* Nav Links */}
           <nav className="hidden md:flex items-center gap-7 text-xs font-medium text-[#64748B]">
             <a href="#features" className="hover:text-[#4F46E5] transition-colors">Features</a>
-            <a href="#how-it-works" className="hover:text-[#4F46E5] transition-colors">How It Works</a>
-            <a href="#memory-engine" className="hover:text-[#4F46E5] transition-colors">Memory Engine</a>
+            <a href="#how-it-works" className="hover:text-[#4F46E5] transition-colors">Workflow</a>
+            <a href="#lifecycle" className="hover:text-[#4F46E5] transition-colors">Intelligence</a>
             <button onClick={onOpenHistory} className="hover:text-[#4F46E5] transition-colors cursor-pointer">
               Past Incidents
             </button>
-            <a href="#architecture" className="hover:text-[#4F46E5] transition-colors">Architecture</a>
+            <a href="#capabilities" className="hover:text-[#4F46E5] transition-colors">Capabilities</a>
           </nav>
 
           {/* Action Buttons */}
@@ -283,10 +283,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] shadow-2xs mb-5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-[11px] font-mono font-semibold text-[#4F46E5] tracking-wide uppercase">
-                AI-Powered Incident Response Engine
+                AI-Powered Incident Response
               </span>
               <span className="text-[10px] text-[#64748B] font-mono border-l border-[#E2E8F0] pl-2">
-                Hindsight v1.0
+                Enterprise Ready
               </span>
             </div>
 
@@ -298,8 +298,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Subtitle */}
             <p className="mt-5 text-base sm:text-lg text-[#64748B] leading-relaxed max-w-2xl mx-auto">
-              IncidentMind AI uses persistent memory (Hindsight) to analyze incidents, recall previous resolutions, 
-              and suggest precise remediation steps in minutes. Never investigate the same outage twice.
+              IncidentMind AI helps DevOps and SRE teams investigate, resolve, and prevent incidents faster using AI and persistent memory.
             </p>
 
             {/* Dual CTAs */}
@@ -308,7 +307,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 onClick={onLaunchConsole}
                 className="px-6 py-3 rounded-xl bg-[#4F46E5] hover:bg-[#4338CA] text-white font-medium text-sm shadow-sm hover:shadow-md transition-all flex items-center gap-2 cursor-pointer group"
               >
-                <span>Launch Console</span>
+                <span>Get Started</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
@@ -323,20 +322,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 className="px-4 py-3 rounded-xl hover:bg-[#EEF2FF] text-[#4F46E5] font-medium text-sm transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <BrainCircuit className="w-4 h-4" />
-                <span>Explore Memory Engine</span>
+                <span>Explore Features</span>
               </button>
             </div>
 
             {/* Trust chips */}
             <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-[#64748B] font-mono">
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Sub-second semantic recall
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Instant knowledge recall
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Human-in-the-loop retention
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Human-in-the-loop verification
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Powered by Hindsight TEMPR
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> Enterprise reliability guardrails
               </span>
             </div>
           </div>
@@ -377,7 +376,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-[#172033] truncate">Live incident triage with contextual memory recall</p>
-                    <p className="text-[11px] text-[#64748B] truncate font-mono">Correlating 24 past outages across Redis & Kubernetes</p>
+                    <p className="text-[11px] text-[#64748B] truncate font-mono">Correlating historical patterns across production services</p>
                   </div>
                 </div>
               </div>
@@ -428,8 +427,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               Your Past Incidents Make You Stronger
             </h2>
             <p className="mt-3 text-sm sm:text-base text-[#64748B] leading-relaxed">
-              Traditional APM tools alert you when microservices crash. IncidentMind AI remembers how you fixed them, 
-              instantly equipping on-call engineers with proven solutions from day one.
+              IncidentMind AI transforms every resolved incident into persistent knowledge, helping your team investigate smarter and prevent recurring problems.
             </p>
           </div>
 
@@ -481,7 +479,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       <span>{card.cta}</span>
                       <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
                     </button>
-                    <span className="text-[11px] text-[#94A3B8] font-mono">IncidentMind Platform</span>
+                    <span className="text-[11px] text-[#94A3B8] font-mono">IncidentMind AI</span>
                   </div>
                 </div>
               </div>
@@ -501,7 +499,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               From Alert to Permanent Institutional Memory
             </h2>
             <p className="mt-3 text-sm sm:text-base text-[#64748B] leading-relaxed">
-              Every stage of response feeds into the next. Your engineering team gains compounding leverage with every resolved incident.
+              Every stage of response feeds into the next, building compounding knowledge for your engineering team.
             </p>
           </div>
 
@@ -532,24 +530,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       </section>
 
-      {/* SECTION 6: HINDSIGHT PERSISTENT MEMORY ARCHITECTURE (TEMPR Framework) */}
-      <section id="memory-engine" className="py-16 md:py-24 bg-[#F5F7FB]">
+      {/* SECTION 6: INTELLIGENCE LIFECYCLE & CAPABILITIES */}
+      <section id="lifecycle" className="py-16 md:py-24 bg-[#F5F7FB]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-14">
             <span className="text-xs font-mono font-semibold text-[#4F46E5] uppercase tracking-wider bg-[#EEF2FF] border border-indigo-100 px-3 py-1 rounded-full">
-              Hindsight Cognitive Architecture
+              Continuous Learning
             </span>
             <h2 className="mt-3 text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#172033] tracking-tight">
-              The TEMPR Memory Engine
+              The 5-Stage Incident Intelligence Cycle
             </h2>
             <p className="mt-3 text-sm sm:text-base text-[#64748B] leading-relaxed">
-              How IncidentMind AI structures incident memory into actionable, grounded intelligence without hallucination.
+              How IncidentMind AI structures incident data into actionable, verified solutions without speculation.
             </p>
           </div>
 
-          {/* TEMPR Cards */}
+          {/* Intelligence Lifecycle Cards */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-10">
-            {temprFramework.map((item, idx) => (
+            {intelligenceLifecycle.map((item, idx) => (
               <div 
                 key={idx} 
                 className="bg-white p-5 rounded-2xl border border-[#E2E8F0] shadow-2xs flex flex-col justify-between"
@@ -557,7 +555,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div>
                   <div className="flex items-center gap-2 mb-3">
                     <span className={`w-8 h-8 rounded-lg ${item.color} text-white font-mono font-bold flex items-center justify-center text-sm shadow-xs`}>
-                      {item.letter}
+                      {item.step}
                     </span>
                     <span className="text-sm font-bold text-[#172033]">{item.name}</span>
                   </div>
@@ -569,30 +567,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             ))}
           </div>
 
-          {/* Architectural Specs Box */}
-          <div className="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-sm">
+          {/* Capabilities Specs Box */}
+          <div id="capabilities" className="bg-white rounded-2xl border border-[#E2E8F0] p-6 sm:p-8 shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center md:text-left">
               <div className="border-b md:border-b-0 md:border-r border-[#E2E8F0] pb-6 md:pb-0 md:pr-6">
-                <span className="text-[11px] font-mono text-[#64748B] uppercase tracking-wider">Retrieval Architecture</span>
-                <h4 className="text-lg font-bold text-[#172033] mt-1">Dual-Tier Memory Bank</h4>
+                <span className="text-[11px] font-mono text-[#64748B] uppercase tracking-wider">Institutional Memory</span>
+                <h4 className="text-lg font-bold text-[#172033] mt-1">Verified Solution Store</h4>
                 <p className="text-xs text-[#64748B] mt-1.5 leading-relaxed">
-                  Fast sub-second local cache + persistent Hindsight vector store for long-term audit and semantic clustering.
+                  Every incident resolution is organized and indexed so your team never investigates the same problem twice.
                 </p>
               </div>
 
               <div className="border-b md:border-b-0 md:border-r border-[#E2E8F0] pb-6 md:pb-0 md:pr-6">
-                <span className="text-[11px] font-mono text-[#64748B] uppercase tracking-wider">Inference Speed</span>
-                <h4 className="text-lg font-bold text-[#172033] mt-1">Groq Llama-70B Engine</h4>
+                <span className="text-[11px] font-mono text-[#64748B] uppercase tracking-wider">Fast Triage</span>
+                <h4 className="text-lg font-bold text-[#172033] mt-1">Sub-Second Diagnostics</h4>
                 <p className="text-xs text-[#64748B] mt-1.5 leading-relaxed">
-                  Real-time reasoning across active telemetry streams with zero synthetic hallucination and explicit citations.
+                  Real-time correlation delivers immediate, evidence-grounded answers when production services are degraded.
                 </p>
               </div>
 
               <div>
-                <span className="text-[11px] font-mono text-[#64748B] uppercase tracking-wider">Enterprise Safety</span>
-                <h4 className="text-lg font-bold text-[#172033] mt-1">Human-in-the-Loop Signoff</h4>
+                <span className="text-[11px] font-mono text-[#64748B] uppercase tracking-wider">Human-In-The-Loop</span>
+                <h4 className="text-lg font-bold text-[#172033] mt-1">Safe Action Authorization</h4>
                 <p className="text-xs text-[#64748B] mt-1.5 leading-relaxed">
-                  Remediation scripts require human authorization before execution. Post-mortems require verification before retention.
+                  All remediation playbooks and automation require explicit engineer confirmation before execution.
                 </p>
               </div>
             </div>
@@ -668,7 +666,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <span className="font-bold text-sm text-[#172033]">IncidentMind AI</span>
               </div>
               <p className="text-xs text-[#64748B] leading-relaxed mb-4">
-                AI-powered incident response agent using Hindsight persistent memory for DevOps and SRE teams.
+                AI-powered incident response platform with persistent institutional memory for engineering teams.
               </p>
               <div className="flex items-center gap-2.5">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-mono font-medium">
@@ -684,24 +682,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <h4 className="font-semibold text-[#172033] mb-3 uppercase tracking-wider text-[11px]">Platform</h4>
               <ul className="space-y-2">
                 <li><button onClick={onLaunchConsole} className="hover:text-[#4F46E5] transition-colors cursor-pointer">Executive Overview</button></li>
-                <li><button onClick={onOpenInvestigation} className="hover:text-[#4F46E5] transition-colors cursor-pointer">AI Investigation Studio</button></li>
+                <li><button onClick={onOpenInvestigation} className="hover:text-[#4F46E5] transition-colors cursor-pointer">AI Investigation</button></li>
                 <li><button onClick={onOpenMemoryExplorer} className="hover:text-[#4F46E5] transition-colors cursor-pointer">Memory Explorer</button></li>
-                <li><button onClick={onOpenAnalytics} className="hover:text-[#4F46E5] transition-colors cursor-pointer">SRE Deep Analytics</button></li>
+                <li><button onClick={onOpenAnalytics} className="hover:text-[#4F46E5] transition-colors cursor-pointer">Reliability Analytics</button></li>
               </ul>
             </div>
 
-            {/* Col 3: Architecture */}
+            {/* Col 3: Intelligence */}
             <div>
-              <h4 className="font-semibold text-[#172033] mb-3 uppercase tracking-wider text-[11px]">Architecture</h4>
+              <h4 className="font-semibold text-[#172033] mb-3 uppercase tracking-wider text-[11px]">Intelligence</h4>
               <ul className="space-y-2">
-                <li><a href="#memory-engine" className="hover:text-[#4F46E5] transition-colors">TEMPR Framework</a></li>
-                <li><span className="hover:text-[#4F46E5] transition-colors">Hindsight Vector Bank</span></li>
-                <li><span className="hover:text-[#4F46E5] transition-colors">Groq Llama-3.3-70B</span></li>
-                <li><span className="hover:text-[#4F46E5] transition-colors">Zero-Retention Security</span></li>
+                <li><a href="#lifecycle" className="hover:text-[#4F46E5] transition-colors">Intelligence Cycle</a></li>
+                <li><a href="#features" className="hover:text-[#4F46E5] transition-colors">Persistent Knowledge</a></li>
+                <li><a href="#how-it-works" className="hover:text-[#4F46E5] transition-colors">Incident Lifecycle</a></li>
+                <li><a href="#capabilities" className="hover:text-[#4F46E5] transition-colors">Security & Safety</a></li>
               </ul>
             </div>
 
-            {/* Col 4: Resources */}
+            {/* Col 4: Project */}
             <div>
               <h4 className="font-semibold text-[#172033] mb-3 uppercase tracking-wider text-[11px]">Project</h4>
               <ul className="space-y-2">
@@ -716,19 +714,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     <span>GitHub Repository</span>
                   </a>
                 </li>
-                <li><a href="/docs" target="_blank" className="hover:text-[#4F46E5] transition-colors">FastAPI Interactive Docs</a></li>
-                <li><a href="/api/health" target="_blank" className="hover:text-[#4F46E5] transition-colors">Health Endpoint</a></li>
-                <li><span className="text-[#94A3B8]">v1.0.0 Enterprise Edition</span></li>
+                <li><span className="hover:text-[#4F46E5] transition-colors cursor-pointer">Live System Status</span></li>
+                <li><span className="hover:text-[#4F46E5] transition-colors cursor-pointer">Incident Playbooks</span></li>
+                <li><span className="text-[#94A3B8]">Enterprise Edition</span></li>
               </ul>
             </div>
           </div>
 
           <div className="pt-8 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#64748B]">
-            <p>© 2026 IncidentMind AI. Built with Hindsight persistent memory for enterprise site reliability engineers.</p>
+            <p>© 2026 IncidentMind AI. All rights reserved.</p>
             <div className="flex items-center gap-4">
-              <span className="text-[11px] font-mono">Cluster: prod-east-1</span>
+              <span className="text-[11px] font-mono">Status: Operational</span>
               <span>•</span>
-              <span className="text-[11px] font-mono">Hindsight Bank: Connected</span>
+              <span className="text-[11px] font-mono">Protected by Enterprise Guardrails</span>
             </div>
           </div>
         </div>

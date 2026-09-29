@@ -137,7 +137,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-[#64748B] font-mono text-sm space-y-3">
         <div className="w-8 h-8 border-2 border-[#4F46E5] border-t-transparent rounded-full animate-spin" />
-        <span>Synthesizing Telemetry & Performing Hindsight Recall...</span>
+        <span>Synthesizing Telemetry & Correlating Memory...</span>
       </div>
     );
   }
@@ -152,9 +152,9 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
 
   const promptSuggestions = [
     "What was the exact verified root cause in the previous occurrence?",
-    "Show the safe PostgreSQL query to inspect locked connection handles",
+    "Show the safe query to inspect connection handles",
     "What is the rollback procedure if the pod restart fails?",
-    "Why did baseline generic LLM diagnose this incorrectly?"
+    "Show recommended safe diagnostic steps"
   ];
 
   return (
@@ -199,7 +199,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                 ? 'bg-[#EEF2FF] text-[#4F46E5] border-indigo-200 font-semibold'
                 : 'bg-white hover:bg-[#F8FAFC] border-[#E2E8F0] text-[#172033]'
             }`}
-            title="Side-by-side comparison of agent diagnosis with vs without Hindsight persistent memory"
+            title="Side-by-side comparison of diagnosis with vs without institutional memory"
           >
             <SplitSquareVertical className="w-4 h-4 text-[#4F46E5]" />
             <span>{compareMode ? 'Comparing Active' : 'Compare vs No-Memory'}</span>
@@ -236,13 +236,13 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
               </div>
               <div>
                 <h3 className="text-sm font-bold text-[#172033] flex items-center gap-2">
-                  <span>Hindsight Grounded Recall vs Generic Baseline LLM</span>
+                  <span>Institutional Memory Recall vs Generic Baseline</span>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EEF2FF] border border-indigo-100 text-[#4F46E5] font-semibold">
                     A/B SRE Diagnostic Benchmark
                   </span>
                 </h3>
                 <p className="text-xs text-[#64748B]">
-                  Visual proof of persistent memory eliminating hallucination and collapsing triage time.
+                  Visual comparison showing how institutional memory eliminates guesswork and reduces triage time.
                 </p>
               </div>
             </div>
@@ -303,12 +303,12 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
               </div>
             </div>
 
-            {/* Column B: With Hindsight Memory (Hero) */}
+            {/* Column B: With Institutional Memory (Hero) */}
             <div className="p-5 rounded-2xl bg-indigo-50/50 border border-indigo-200 space-y-3 shadow-xs">
               <div className="flex items-center justify-between border-b border-indigo-200 pb-2.5">
                 <div className="flex items-center gap-2">
                   <BrainCircuit className="w-4 h-4 text-[#4F46E5]" />
-                  <span className="font-bold text-[#4F46E5] text-xs font-mono">WITH HINDSIGHT PERSISTENT MEMORY</span>
+                  <span className="font-bold text-[#4F46E5] text-xs font-mono">WITH INSTITUTIONAL MEMORY</span>
                 </div>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EEF2FF] text-[#4F46E5] border border-indigo-200 font-bold">
                   {String(investigation?.recalled_memories.length || 1)} Match(es) Found
@@ -366,7 +366,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
                 <Sparkles className="w-4 h-4 text-[#4F46E5]" />
                 <h3 className="text-sm font-semibold text-[#172033]">Agentic Investigation Synthesis</h3>
               </div>
-              <HindsightBadge label="Hindsight TEMPR Recall" />
+              <HindsightBadge label="Institutional Memory" />
             </div>
 
             <p className="text-xs text-[#172033] leading-relaxed font-sans">
@@ -539,7 +539,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
             </div>
 
             <p className="text-xs text-[#64748B]">
-              Ask follow-up questions bounded strictly to this incident's telemetry and recalled Hindsight memories.
+              Ask follow-up questions bounded strictly to this incident's telemetry and verified historical memories.
             </p>
 
             {/* Clickable prompt suggestions */}
@@ -610,12 +610,12 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
 
         {/* Right 1 Col: Recalled Memories, Runbooks, Symptoms & Logs */}
         <div className="space-y-6">
-          {/* Recalled Hindsight Memories */}
+          {/* Recalled Past Incidents */}
           <Card className="p-5 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Database className="w-4 h-4 text-[#4F46E5]" />
-                <h3 className="text-sm font-semibold text-[#172033]">Recalled Hindsight Memories</h3>
+                <h3 className="text-sm font-semibold text-[#172033]">Recalled Past Incidents</h3>
               </div>
               <button
                 onClick={onOpenExplorer}
