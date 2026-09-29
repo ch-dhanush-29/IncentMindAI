@@ -12,16 +12,33 @@ import {
 export const AfterActionReports: React.FC<{
   onSelectIncident?: (id: string) => void;
 }> = ({ onSelectIncident }) => {
-  const [incidents, setIncidents] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [incidents, setIncidents] = useState<any[]>(() => {
+    try {
+      const saved = sessionStorage.getItem('incidentmind_incidents_cache');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('incidentmind_incidents_cache');
+      return !saved;
+    } catch {
+      return true;
+    }
+  });
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState<'all' | 'verified' | 'retained'>('all');
 
-  const loadData = async () => {
+  const loadData = async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent && incidents.length === 0) setLoading(true);
       const data = await api.getIncidents();
       setIncidents(data);
+      try {
+        sessionStorage.setItem('incidentmind_incidents_cache', JSON.stringify(data));
+      } catch {}
     } catch (e) {
       console.error('Failed to load after action reports', e);
     } finally {

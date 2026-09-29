@@ -2,8 +2,32 @@ import type { Incident, InvestigationResult } from '../types/incident';
 
 const BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
+// High-speed client cache for sub-millisecond tab switching
+let incidentsCache: { data: Incident[]; timestamp: number } | null = null;
+let analyticsSummaryCache: { data: any; timestamp: number } | null = null;
+let analyticsTrendsCache: { data: any; timestamp: number } | null = null;
+const CACHE_TTL_MS = 20000; // 20s TTL
+
+if (typeof window !== 'undefined') {
+  window.addEventListener('incident_stream_update', () => {
+    incidentsCache = null;
+    analyticsSummaryCache = null;
+    analyticsTrendsCache = null;
+  });
+}
+
 export const api = {
-  async getIncidents(service?: string, severity?: string, status?: string, q?: string, assignee?: string): Promise<Incident[]> {
+  clearCache() {
+    incidentsCache = null;
+    analyticsSummaryCache = null;
+    analyticsTrendsCache = null;
+  },
+
+  async getIncidents(service?: string, severity?: string, status?: string, q?: string, assignee?: string, forceRefresh = false): Promise<Incident[]> {
+    const isUnfiltered = !service && !severity && !status && !assignee && !q;
+    if (isUnfiltered && !forceRefresh && incidentsCache && (Date.now() - incidentsCache.timestamp) < CACHE_TTL_MS) {
+      return incidentsCache.data;
+    }
     const params = new URLSearchParams();
     if (service) params.append('service', service);
     if (severity) params.append('severity', severity);
@@ -12,7 +36,11 @@ export const api = {
     if (q) params.append('q', q);
     const res = await fetch(`${BASE_URL}/incidents?${params.toString()}`);
     if (!res.ok) throw new Error('Failed to fetch incidents');
-    return res.json();
+    const data = await res.json();
+    if (isUnfiltered) {
+      incidentsCache = { data, timestamp: Date.now() };
+    }
+    return data;
   },
 
   async getIncident(id: string): Promise<Incident> {
@@ -101,16 +129,26 @@ export const api = {
     return res.json();
   },
 
-  async getAnalyticsSummary(): Promise<any> {
+  async getAnalyticsSummary(forceRefresh = false): Promise<any> {
+    if (!forceRefresh && analyticsSummaryCache && (Date.now() - analyticsSummaryCache.timestamp) < CACHE_TTL_MS) {
+      return analyticsSummaryCache.data;
+    }
     const res = await fetch(`${BASE_URL}/analytics/summary`);
     if (!res.ok) throw new Error('Failed to fetch analytics summary');
-    return res.json();
+    const data = await res.json();
+    analyticsSummaryCache = { data, timestamp: Date.now() };
+    return data;
   },
 
-  async getAnalyticsTrends(): Promise<any> {
+  async getAnalyticsTrends(forceRefresh = false): Promise<any> {
+    if (!forceRefresh && analyticsTrendsCache && (Date.now() - analyticsTrendsCache.timestamp) < CACHE_TTL_MS) {
+      return analyticsTrendsCache.data;
+    }
     const res = await fetch(`${BASE_URL}/analytics/trends`);
     if (!res.ok) throw new Error('Failed to fetch trends');
-    return res.json();
+    const data = await res.json();
+    analyticsTrendsCache = { data, timestamp: Date.now() };
+    return data;
   },
 
   async getHealthReady(): Promise<any> {

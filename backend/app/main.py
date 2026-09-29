@@ -24,6 +24,12 @@ async def lifespan(app: FastAPI):
     # Real-data only: do not auto-seed synthetic data on startup
     count = len(await incident_repo.list_all())
     logger.info(f"System ready with {count} active persisted incidents.")
+    
+    # Pre-warm Hindsight memory cache in background so Analytics and AfterActionReports open instantly
+    import asyncio
+    from app.services.hindsight_adapter import hindsight_adapter
+    asyncio.create_task(hindsight_adapter.get_all_memories_async())
+    
     yield
     logger.info("Shutting down IncidentMind AI unified server...")
 

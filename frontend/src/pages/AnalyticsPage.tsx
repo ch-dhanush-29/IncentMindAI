@@ -22,9 +22,23 @@ import {
 import { Card } from '../components/ui';
 
 export const AnalyticsPage: React.FC = () => {
-  const [summary, setSummary] = useState<any>(null);
-  const [trends, setTrends] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [summary, setSummary] = useState<any>(() => {
+    try {
+      const saved = sessionStorage.getItem('incidentmind_analytics_summary');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [trends, setTrends] = useState<any>(() => {
+    try {
+      const saved = sessionStorage.getItem('incidentmind_analytics_trends');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [loading, setLoading] = useState(() => !summary || !trends);
 
   useEffect(() => {
     async function loadData() {
@@ -35,6 +49,10 @@ export const AnalyticsPage: React.FC = () => {
         ]);
         setSummary(s);
         setTrends(t);
+        try {
+          sessionStorage.setItem('incidentmind_analytics_summary', JSON.stringify(s));
+          sessionStorage.setItem('incidentmind_analytics_trends', JSON.stringify(t));
+        } catch {}
       } catch (e) {
         console.error(e);
       } finally {

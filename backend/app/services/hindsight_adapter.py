@@ -22,6 +22,10 @@ class HindsightMemoryAdapter:
         # In-memory memory bank for local sandbox demo if no API key provided
         self._local_sandbox_memories: List[Dict[str, Any]] = []
         self._audit_log: List[Dict[str, Any]] = []
+        # Ultra-fast in-memory cache for Hindsight memories (300s / 5min TTL)
+        self._memories_cache: Optional[List[Dict[str, Any]]] = None
+        self._memories_cache_time: float = 0.0
+        self._cache_ttl_seconds: float = 300.0
 
     async def check_connection(self) -> Dict[str, Any]:
         """Verify Hindsight connectivity or report sandbox mode."""
@@ -134,6 +138,8 @@ class HindsightMemoryAdapter:
 
         # Always maintain in sandbox memory for immediate search and testability
         self._local_sandbox_memories.append(memory_record)
+        # Invalidate cache so new memory appears immediately
+        self._memories_cache = None
         return memory_record
 
     async def recall(
@@ -253,10 +259,16 @@ class HindsightMemoryAdapter:
 
         return scored_local[:limit]
 
-    async def get_all_memories_async(self) -> List[Dict[str, Any]]:
+    async def get_all_memories_async(self, force_refresh: bool = False) -> List[Dict[str, Any]]:
         """
         Fetch all retained memories from Vectorize Hindsight Cloud bank or local sandbox.
+        Includes an ultra-fast TTL in-memory cache to guarantee sub-millisecond API response times.
         """
+        import time
+        now = time.time()
+        if not force_refresh and self._memories_cache is not None and (now - self._memories_cache_time) < self._cache_ttl_seconds:
+            return list(self._memories_cache)
+
         cloud_memories: List[Dict[str, Any]] = []
         if self.is_cloud_connected:
             try:
@@ -268,18 +280,18 @@ class HindsightMemoryAdapter:
                         data = resp.json()
                         items = data.get("items", [])
                         
-                        # Fetch documents content concurrently (up to 25 items)
+                        # Fetch documents content concurrently (up to 10 items)
                         async def fetch_doc(item: Dict[str, Any]):
                             doc_id = item.get("id")
                             try:
-                                d_resp = await client.get(f"{url}/{doc_id}", headers=headers)
+                                d_resp = await client.get(f"{url}/{doc_id}", headers=headers, timeout=4.0)
                                 if d_resp.status_code == 200:
                                     return d_resp.json()
                             except Exception:
                                 pass
                             return item
 
-                        tasks = [fetch_doc(item) for item in items[:25]]
+                        tasks = [fetch_doc(item) for item in items[:10]]
                         fetched_docs = await asyncio.gather(*tasks, return_exceptions=True)
 
                         for doc in fetched_docs:
@@ -341,6 +353,8 @@ class HindsightMemoryAdapter:
             if local_m.get("id") not in seen_ids and local_m.get("source_incident_id") not in seen_ids:
                 combined.append(local_m)
 
+        self._memories_cache = combined
+        self._memories_cache_time = now
         return combined
 
     def get_all_memories(self) -> List[Dict[str, Any]]:
