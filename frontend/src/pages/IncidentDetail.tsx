@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
 import { api } from '../services/api';
 import type { Incident, Severity, IncidentStatus } from '../types/incident';
 import { 
@@ -34,6 +35,11 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
   onStartInvestigation,
   onNavigateToResolve
 }) => {
+  const { user } = useUser();
+  const currentEmail = user?.primaryEmailAddress?.emailAddress || 'commander@incidentmind.ai';
+  const currentUserName = user?.fullName || user?.firstName || 'Incident Commander';
+  const currentUserId = user?.id || 'unknown';
+
   const [incident, setIncident] = useState<Incident | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'timeline' | 'symptoms' | 'investigation' | 'resolution' | 'notes' | 'audit'>('timeline');
@@ -41,7 +47,7 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
 
   // Notes state
   const [newNote, setNewNote] = useState('');
-  const [authorName, setAuthorName] = useState('sre-engineer');
+  const [authorName, setAuthorName] = useState(currentUserName);
   const [noteType, setNoteType] = useState('investigation_note');
   const [isSubmittingNote, setIsSubmittingNote] = useState(false);
 
@@ -120,7 +126,13 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
     if (!incident || !newNote.trim()) return;
     try {
       setIsSubmittingNote(true);
-      const updated = await api.addNote(incident.id, newNote.trim(), authorName, noteType);
+      const updated = await api.addNote(
+        incident.id, 
+        newNote.trim(), 
+        authorName || currentUserName, 
+        noteType,
+        { email: currentEmail, userId: currentUserId }
+      );
       setIncident(updated);
       setNewNote('');
       showToast('Investigation note saved and logged to audit trail');
@@ -135,7 +147,12 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
     if (!incident) return;
     try {
       setIsUpdatingField(true);
-      const updated = await api.reopenIncident(incident.id, reopenReason, authorName);
+      const updated = await api.reopenIncident(
+        incident.id, 
+        reopenReason, 
+        authorName || currentUserName,
+        { email: currentEmail, userId: currentUserId }
+      );
       setIncident(updated);
       setShowReopenPrompt(false);
       showToast('Incident successfully reopened and marked Investigating');

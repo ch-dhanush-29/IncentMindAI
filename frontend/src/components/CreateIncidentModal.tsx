@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useUser } from '@clerk/clerk-react';
 import { api } from '../services/api';
 import { X, AlertCircle, ShieldAlert, Sparkles, Flame } from 'lucide-react';
 import { Button } from './ui';
@@ -10,6 +11,11 @@ interface CreateIncidentModalProps {
 }
 
 export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({ isOpen, onClose, onCreated }) => {
+  const { user } = useUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress || 'commander@incidentmind.ai';
+  const userName = user?.fullName || user?.firstName || 'Incident Commander';
+  const userId = user?.id || 'unknown';
+
   const [title, setTitle] = useState('');
   const [service, setService] = useState('payment-api');
   const [severity, setSeverity] = useState('Critical');
@@ -75,7 +81,13 @@ export const CreateIncidentModal: React.FC<CreateIncidentModalProps> = ({ isOpen
         symptoms: symptoms.split('\n').filter(s => s.trim().length > 0),
         error_messages: errorMessages.split('\n').filter(e => e.trim().length > 0),
         affected_components: [service],
-        logs_excerpt: logsExcerpt
+        logs_excerpt: logsExcerpt,
+        assignee: userName,
+        metadata: {
+          creator_email: userEmail,
+          creator_name: userName,
+          creator_id: userId
+        }
       };
 
       const result = await api.createIncident(payload);

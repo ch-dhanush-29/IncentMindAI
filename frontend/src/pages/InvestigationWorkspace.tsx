@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
 import { api } from '../services/api';
 import type { Incident, InvestigationResult } from '../types/incident';
 import { 
@@ -30,6 +31,13 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
   onNavigateToResolve,
   onOpenExplorer,
 }) => {
+  const { user } = useUser();
+  const userContext = {
+    email: user?.primaryEmailAddress?.emailAddress || 'commander@incidentmind.ai',
+    name: user?.fullName || user?.firstName || 'Incident Commander',
+    userId: user?.id || 'unknown'
+  };
+
   const [incident, setIncident] = useState<Incident | null>(null);
   const [investigation, setInvestigation] = useState<InvestigationResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -83,7 +91,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
   const runAnalysis = async (id: string, withMem: boolean) => {
     try {
       setLoading(true);
-      const res = await api.analyzeIncident(id, withMem);
+      const res = await api.analyzeIncident(id, withMem, userContext);
       setInvestigation(res);
       const inc = await api.getIncident(id);
       setIncident(inc);
@@ -99,9 +107,9 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
     try {
       setLoading(true);
       setCompareMode(true);
-      const baseline = await api.analyzeIncident(incident.id, false);
+      const baseline = await api.analyzeIncident(incident.id, false, userContext);
       setBaselineInvestigation(baseline);
-      const memAssisted = await api.analyzeIncident(incident.id, true);
+      const memAssisted = await api.analyzeIncident(incident.id, true, userContext);
       setInvestigation(memAssisted);
     } catch (e) {
       console.error(e);
@@ -115,7 +123,7 @@ export const InvestigationWorkspace: React.FC<InvestigationWorkspaceProps> = ({
     if (!incident || !q.trim()) return;
     try {
       setAsking(true);
-      const res = await api.askQuestion(incident.id, q);
+      const res = await api.askQuestion(incident.id, q, userContext);
       const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       setChatLog(prev => [...prev, { q, a: res.answer, time: timeStr }]);
       if (!promptText) setQuestion('');

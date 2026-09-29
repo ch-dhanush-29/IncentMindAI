@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
 import { LandingPage } from './pages/LandingPage';
@@ -15,14 +16,38 @@ import { AfterActionReports } from './pages/AfterActionReports';
 import { ImprovementItems } from './pages/ImprovementItems';
 import { CreateIncidentModal } from './components/CreateIncidentModal';
 import { HelpModal } from './components/HelpModal';
+import { UserHistoryModal } from './components/UserHistoryModal';
+import { api } from './services/api';
 
 export function App() {
+  const { user, isSignedIn } = useUser();
   const [currentTab, setCurrentTab] = useState('landing');
   const [selectedIncidentId, setSelectedIncidentId] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isUserHistoryOpen, setIsUserHistoryOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  // Automatically record session login for authenticated Clerk account
+  useEffect(() => {
+    const email = user?.primaryEmailAddress?.emailAddress || 'commander@incidentmind.ai';
+    const name = user?.fullName || user?.firstName || 'Incident Commander';
+    const id = user?.id || 'unknown';
+
+    const sessionKey = `im_session_${email}_${new Date().toISOString().slice(0, 13)}`;
+    if (!sessionStorage.getItem(sessionKey)) {
+      sessionStorage.setItem(sessionKey, '1');
+      api.recordUserActivity({
+        user_id: id,
+        user_email: email,
+        user_name: name,
+        action_type: 'SESSION_START',
+        details: `Active command session started (${isSignedIn ? 'Clerk SSO Verified' : 'SRE Sandbox'})`,
+        metadata: { signed_in: isSignedIn, role: 'Incident Commander' }
+      });
+    }
+  }, [user, isSignedIn]);
 
   // Navigate to Incident Detail Page
   const handleSelectIncidentDetail = (id: string) => {
@@ -80,6 +105,7 @@ export function App() {
           hindsightConnected={true} 
           collapsed={sidebarCollapsed}
           setCollapsed={setSidebarCollapsed}
+          onOpenUserHistory={() => setIsUserHistoryOpen(true)}
         />
       </div>
 
@@ -99,6 +125,7 @@ export function App() {
           onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
           onNavigateLanding={() => setCurrentTab('landing')}
           onOpenHelp={() => setIsHelpModalOpen(true)}
+          onOpenUserHistory={() => setIsUserHistoryOpen(true)}
         />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
@@ -181,6 +208,13 @@ export function App() {
         isOpen={isHelpModalOpen}
         onClose={() => setIsHelpModalOpen(false)}
         onNavigateTab={(tab) => setCurrentTab(tab)}
+      />
+
+      {/* Account Activity History Modal */}
+      <UserHistoryModal
+        isOpen={isUserHistoryOpen}
+        onClose={() => setIsUserHistoryOpen(false)}
+        onSelectIncident={handleSelectIncidentDetail}
       />
     </div>
   );

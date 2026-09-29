@@ -69,39 +69,80 @@ export const api = {
     return res.json();
   },
 
-  async addNote(id: string, content: string, author: string = 'sre-engineer', note_type: string = 'investigation_note'): Promise<Incident> {
+  async addNote(
+    id: string, 
+    content: string, 
+    author: string = 'sre-engineer', 
+    note_type: string = 'investigation_note',
+    userContext?: { email?: string; userId?: string }
+  ): Promise<Incident> {
     const res = await fetch(`${BASE_URL}/incidents/${id}/notes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content, author, note_type }),
+      body: JSON.stringify({ 
+        content, 
+        author, 
+        note_type,
+        author_email: userContext?.email,
+        author_id: userContext?.userId
+      }),
     });
     if (!res.ok) throw new Error('Failed to add note');
     return res.json();
   },
 
-  async reopenIncident(id: string, reason: string = 'Reopened for investigation', engineer: string = 'sre-engineer'): Promise<Incident> {
+  async reopenIncident(
+    id: string, 
+    reason: string = 'Reopened for investigation', 
+    engineer: string = 'sre-engineer',
+    userContext?: { email?: string; userId?: string }
+  ): Promise<Incident> {
     const res = await fetch(`${BASE_URL}/incidents/${id}/reopen`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reason, engineer }),
+      body: JSON.stringify({ 
+        reason, 
+        engineer,
+        engineer_email: userContext?.email,
+        engineer_id: userContext?.userId
+      }),
     });
     if (!res.ok) throw new Error('Failed to reopen incident');
     return res.json();
   },
 
-  async analyzeIncident(id: string, useMemory: boolean = true): Promise<InvestigationResult> {
-    const res = await fetch(`${BASE_URL}/incidents/${id}/analyze?use_memory=${useMemory}`, {
+  async analyzeIncident(
+    id: string, 
+    useMemory: boolean = true,
+    userContext?: { email?: string; name?: string; userId?: string }
+  ): Promise<InvestigationResult> {
+    const params = new URLSearchParams();
+    params.append('use_memory', String(useMemory));
+    if (userContext?.email) params.append('user_email', userContext.email);
+    if (userContext?.name) params.append('user_name', userContext.name);
+    if (userContext?.userId) params.append('user_id', userContext.userId);
+
+    const res = await fetch(`${BASE_URL}/incidents/${id}/analyze?${params.toString()}`, {
       method: 'POST',
     });
     if (!res.ok) throw new Error('Investigation failed');
     return res.json();
   },
 
-  async askQuestion(id: string, question: string): Promise<any> {
+  async askQuestion(
+    id: string, 
+    question: string,
+    userContext?: { email?: string; name?: string; userId?: string }
+  ): Promise<any> {
     const res = await fetch(`${BASE_URL}/incidents/${id}/questions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question }),
+      body: JSON.stringify({ 
+        question,
+        user_email: userContext?.email,
+        user_name: userContext?.name,
+        user_id: userContext?.userId
+      }),
     });
     if (!res.ok) throw new Error('Failed to query agent');
     return res.json();
@@ -114,6 +155,57 @@ export const api = {
       body: JSON.stringify(resolution),
     });
     if (!res.ok) throw new Error('Failed to resolve incident');
+    return res.json();
+  },
+
+  // User Activity Persistence & History Tracking
+  async recordUserActivity(activity: {
+    user_id?: string;
+    user_email: string;
+    user_name?: string;
+    action_type: string;
+    details: string;
+    incident_id?: string;
+    incident_title?: string;
+    metadata?: Record<string, any>;
+  }): Promise<any> {
+    try {
+      const res = await fetch(`${BASE_URL}/user/activity`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(activity),
+      });
+      if (!res.ok) return null;
+      return res.json();
+    } catch {
+      return null;
+    }
+  },
+
+  async getUserHistory(
+    userEmail?: string,
+    userId?: string,
+    actionType?: string,
+    limit: number = 100
+  ): Promise<any[]> {
+    const params = new URLSearchParams();
+    if (userEmail) params.append('user_email', userEmail);
+    if (userId) params.append('user_id', userId);
+    if (actionType && actionType !== 'ALL') params.append('action_type', actionType);
+    params.append('limit', String(limit));
+
+    const res = await fetch(`${BASE_URL}/user/history?${params.toString()}`);
+    if (!res.ok) throw new Error('Failed to fetch user activity history');
+    return res.json();
+  },
+
+  async getUserSummary(userEmail?: string, userId?: string): Promise<any> {
+    const params = new URLSearchParams();
+    if (userEmail) params.append('user_email', userEmail);
+    if (userId) params.append('user_id', userId);
+
+    const res = await fetch(`${BASE_URL}/user/summary?${params.toString()}`);
+    if (!res.ok) throw new Error('Failed to fetch user summary statistics');
     return res.json();
   },
 

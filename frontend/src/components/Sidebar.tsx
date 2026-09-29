@@ -11,7 +11,8 @@ import {
   ChevronLeft,
   ChevronRight, 
   Radio, 
-  Sparkles
+  Sparkles,
+  History
 } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { ClerkAuthControl } from './ClerkAuth';
@@ -22,6 +23,7 @@ interface SidebarProps {
   hindsightConnected: boolean;
   collapsed: boolean;
   setCollapsed: (c: boolean) => void;
+  onOpenUserHistory?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
@@ -29,7 +31,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setCurrentTab, 
   hindsightConnected,
   collapsed,
-  setCollapsed
+  setCollapsed,
+  onOpenUserHistory
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Home', icon: Home },
@@ -160,6 +163,23 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <ClerkAuthControl compact={false} />
             </div>
 
+            {/* My Activity History Button */}
+            {onOpenUserHistory && (
+              <button
+                onClick={onOpenUserHistory}
+                className="w-full flex items-center justify-between px-2.5 py-1.5 mb-2 rounded-xl bg-white dark:bg-[#141820] hover:bg-indigo-50/70 dark:hover:bg-[#1E2430] border border-[#E2E8F0] dark:border-[#222834] text-xs text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] dark:hover:text-indigo-400 transition-colors cursor-pointer"
+                title="View your lifetime account activity history"
+              >
+                <div className="flex items-center gap-2">
+                  <History className="w-3.5 h-3.5 text-[#4F46E5] dark:text-indigo-400" />
+                  <span className="font-medium text-[11px]">My Activity History</span>
+                </div>
+                <span className="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800/60 px-1.5 py-0.2 rounded font-semibold">
+                  Log
+                </span>
+              </button>
+            )}
+
             {/* System Status */}
             <div className="flex items-center justify-between pt-1 px-1 text-[11px] text-[#64748B] dark:text-[#94A3B8]">
               <span className="flex items-center gap-1.5">
@@ -173,6 +193,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="flex flex-col items-center gap-2.5">
             <ThemeToggle className="p-1.5" />
             <ClerkAuthControl compact={true} />
+            {onOpenUserHistory && (
+              <button
+                onClick={onOpenUserHistory}
+                className="p-1.5 rounded-lg text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] hover:bg-slate-100 dark:hover:bg-[#1E2430] cursor-pointer"
+                title="My Activity History"
+              >
+                <History className="w-4 h-4 text-[#4F46E5]" />
+              </button>
+            )}
             <div className={`w-2.5 h-2.5 rounded-full ${hindsightConnected ? 'bg-emerald-500' : 'bg-amber-400'}`} title="Hindsight Connected" />
           </div>
         )}

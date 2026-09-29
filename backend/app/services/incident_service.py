@@ -17,7 +17,14 @@ class IncidentService:
     Core orchestrator linking incidents, Hindsight memory recall/retention,
     and LLM hypothesis verification.
     """
-    async def investigate(self, incident_id: str, use_memory: bool = True) -> InvestigationResult:
+    async def investigate(
+        self, 
+        incident_id: str, 
+        use_memory: bool = True,
+        user_email: Optional[str] = None,
+        user_name: Optional[str] = None,
+        user_id: Optional[str] = None
+    ) -> InvestigationResult:
         incident = await incident_repo.get_by_id(incident_id)
         if not incident:
             raise ValueError(f"Incident {incident_id} not found")
@@ -46,6 +53,19 @@ class IncidentService:
             incident_id, 
             f"Ran investigation (memory_enabled={use_memory}, recalled_count={len(recalled_memories)})"
         )
+
+        if user_email:
+            await incident_repo.record_user_activity(
+                user_id=user_id or "unknown",
+                user_email=user_email,
+                user_name=user_name or "Incident Commander",
+                action_type="INVESTIGATION_RUN",
+                details=f"Ran AI investigation on {incident.title} (memory_enabled={use_memory})",
+                incident_id=incident.id,
+                incident_title=incident.title,
+                metadata={"use_memory": use_memory, "hypotheses_count": len(investigation.hypotheses)}
+            )
+
         try:
             await slack_service.notify_investigation_completed(incident_id, investigation)
         except Exception as e:
@@ -64,7 +84,14 @@ class IncidentService:
         return investigation
 
 
-    async def answer_question(self, incident_id: str, question: str) -> Dict[str, Any]:
+    async def answer_question(
+        self, 
+        incident_id: str, 
+        question: str,
+        user_email: Optional[str] = None,
+        user_name: Optional[str] = None,
+        user_id: Optional[str] = None
+    ) -> Dict[str, Any]:
         incident = await incident_repo.get_by_id(incident_id)
         if not incident:
             raise ValueError(f"Incident {incident_id} not found")
@@ -88,6 +115,19 @@ class IncidentService:
             "answer": response_text
         })
         await incident_repo.save(incident)
+
+        if user_email:
+            await incident_repo.record_user_activity(
+                user_id=user_id or "unknown",
+                user_email=user_email,
+                user_name=user_name or "Incident Commander",
+                action_type="COPILOT_QUERY",
+                details=f"Asked Copilot on {incident.title}: '{question[:70]}'",
+                incident_id=incident.id,
+                incident_title=incident.title,
+                metadata={"question": question}
+            )
+
         return {"question": question, "answer": response_text, "context_memories_used": len(memories)}
 
     async def resolve_and_retain(self, incident_id: str, req: ResolutionRequest) -> Incident:
@@ -142,6 +182,21 @@ class IncidentService:
 
         await incident_repo.save(incident)
         incident_repo._log_audit("INCIDENT_RESOLVED_AND_RETAINED", incident.id, f"Verified root cause: {req.verified_root_cause}")
+
+        # Record persistent user activity
+        author_email = req.user_email or "commander@incidentmind.ai"
+        author_name = req.user_name or "Incident Commander"
+        author_id = req.user_id or "unknown"
+        await incident_repo.record_user_activity(
+            user_id=author_id,
+            user_email=author_email,
+            user_name=author_name,
+            action_type="POSTMORTEM_RETAINED",
+            details=f"Retained verified postmortem for {incident.service} ({incident.title}): {req.verified_root_cause[:70]}",
+            incident_id=incident.id,
+            incident_title=incident.title,
+            metadata={"verified_root_cause": req.verified_root_cause, "permanent_fix": req.permanent_fix}
+        )
 
         try:
             await slack_service.notify_incident_resolved(incident)

@@ -51,22 +51,46 @@ async def add_incident_note(incident_id: str, note_in: NoteCreate):
 
 @router.post("/{incident_id}/reopen", response_model=Incident)
 async def reopen_incident(incident_id: str, req: ReopenRequest):
-    incident = await incident_repo.reopen(incident_id, reason=req.reason, engineer=req.engineer)
+    incident = await incident_repo.reopen(
+        incident_id, 
+        reason=req.reason, 
+        engineer=req.engineer,
+        engineer_email=req.engineer_email,
+        engineer_id=req.engineer_id
+    )
     if not incident:
         raise HTTPException(status_code=404, detail="Incident not found")
     return incident
 
 @router.post("/{incident_id}/analyze", response_model=InvestigationResult)
-async def analyze_incident(incident_id: str, use_memory: bool = True):
+async def analyze_incident(
+    incident_id: str, 
+    use_memory: bool = True,
+    user_email: Optional[str] = None,
+    user_name: Optional[str] = None,
+    user_id: Optional[str] = None
+):
     try:
-        return await incident_service.investigate(incident_id, use_memory=use_memory)
+        return await incident_service.investigate(
+            incident_id, 
+            use_memory=use_memory,
+            user_email=user_email,
+            user_name=user_name,
+            user_id=user_id
+        )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
 @router.post("/{incident_id}/questions")
 async def ask_question(incident_id: str, req: QuestionRequest):
     try:
-        return await incident_service.answer_question(incident_id, req.question)
+        return await incident_service.answer_question(
+            incident_id, 
+            req.question,
+            user_email=req.user_email,
+            user_name=req.user_name,
+            user_id=req.user_id
+        )
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Database, Menu, Plus, LayoutGrid, Bell, HelpCircle } from 'lucide-react';
+import { Search, Database, Menu, Plus, LayoutGrid, Bell, HelpCircle, History } from 'lucide-react';
 import { ThemeToggle } from './ThemeToggle';
 import { ClerkAuthControl } from './ClerkAuth';
 
@@ -10,6 +10,7 @@ interface NavbarProps {
   onToggleMobileSidebar?: () => void;
   onNavigateLanding?: () => void;
   onOpenHelp?: () => void;
+  onOpenUserHistory?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ 
@@ -18,7 +19,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentTab,
   onToggleMobileSidebar,
   onNavigateLanding,
-  onOpenHelp
+  onOpenHelp,
+  onOpenUserHistory
 }) => {
   const [sseStatus, setSseStatus] = useState<'connected' | 'connecting' | 'error'>('connecting');
   const [lastEvent, setLastEvent] = useState<string | null>(null);
@@ -163,6 +165,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             title="Operational User Guide & Live Manual"
           >
             <HelpCircle className="w-4 h-4" />
+          </button>
+        )}
+
+        {/* User Account Activity History Button */}
+        {onOpenUserHistory && (
+          <button 
+            onClick={onOpenUserHistory}
+            className="p-2 rounded-xl text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] dark:hover:text-indigo-400 hover:bg-[#EEF2FF] dark:hover:bg-[#1E2536] border border-[#E2E8F0] dark:border-[#222834] transition-colors relative cursor-pointer flex items-center gap-1.5"
+            title="My Account Activity History & Persistent Audit Log"
+          >
+            <History className="w-4 h-4" />
+            <span className="hidden xl:inline text-xs font-medium">My History</span>
           </button>
         )}
 

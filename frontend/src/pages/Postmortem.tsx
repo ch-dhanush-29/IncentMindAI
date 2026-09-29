@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useUser } from '@clerk/clerk-react';
 import { api } from '../services/api';
 import type { Incident } from '../types/incident';
 import { 
@@ -19,6 +20,11 @@ interface PostmortemProps {
 }
 
 export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDone }) => {
+  const { user } = useUser();
+  const userEmail = user?.primaryEmailAddress?.emailAddress || 'commander@incidentmind.ai';
+  const userName = user?.fullName || user?.firstName || 'Incident Commander';
+  const userId = user?.id || 'unknown';
+
   const [incidents, setAllIncidents] = useState<Incident[]>([]);
   const [currentId, setCurrentId] = useState<string>(selectedIncidentId || '');
   const [currentIncident, setCurrentIncident] = useState<Incident | null>(null);
@@ -123,7 +129,10 @@ export const Postmortem: React.FC<PostmortemProps> = ({ selectedIncidentId, onDo
         mitigation_applied: mitigation || 'Restored healthy state',
         permanent_fix: permanentFix,
         is_verified_by_human: true,
-        verified_by_user: 'sre-engineer',
+        verified_by_user: userName,
+        user_email: userEmail,
+        user_name: userName,
+        user_id: userId,
         lessons_learned: lessons.split('\n').filter(l => l.trim().length > 0),
         follow_up_tickets: tickets.split(',').map(t => t.trim()).filter(Boolean),
         retain_in_hindsight: true

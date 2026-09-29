@@ -82,3 +82,30 @@ export interface Incident {
   notes: any[];
   audit_trail: any[];
 }
+
+export interface UserActivity {
+  id: string;
+  user_id?: string;
+  user_email: string;
+  user_name?: string;
+  action_type: string;
+  details: string;
+  incident_id?: string;
+  incident_title?: string;
+  metadata?: Record<string, any>;
+  timestamp: string;
+}
+
+export interface UserSummary {
+  user_email: string;
+  user_id: string;
+  total_actions: number;
+  incidents_declared: number;
+  investigations_run: number;
+  notes_added: number;
+  postmortems_retained: number;
+  copilot_queries: number;
+  sessions_count: number;
+  last_active: string;
+}
+

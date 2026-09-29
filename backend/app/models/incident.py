@@ -128,13 +128,20 @@ class NoteCreate(BaseModel):
     content: str
     author: Optional[str] = "sre-engineer"
     note_type: str = "investigation_note"
+    author_email: Optional[str] = None
+    author_id: Optional[str] = None
 
 class ReopenRequest(BaseModel):
     reason: Optional[str] = "Reopened for further investigation"
     engineer: Optional[str] = "sre-engineer"
+    engineer_email: Optional[str] = None
+    engineer_id: Optional[str] = None
 
 class QuestionRequest(BaseModel):
     question: str
+    user_email: Optional[str] = None
+    user_name: Optional[str] = None
+    user_id: Optional[str] = None
 
 class ResolutionRequest(BaseModel):
     verified_root_cause: str
@@ -145,4 +152,29 @@ class ResolutionRequest(BaseModel):
     is_verified_by_human: bool = True
     lessons_learned: List[str] = Field(default_factory=list)
     follow_up_tickets: List[str] = Field(default_factory=list)
+    user_email: Optional[str] = None
+    user_name: Optional[str] = None
+    user_id: Optional[str] = None
+
+class UserActivity(BaseModel):
+    id: str = Field(default_factory=lambda: f"ACT-{uuid.uuid4().hex[:8].upper()}")
+    user_id: Optional[str] = "unknown"
+    user_email: str
+    user_name: Optional[str] = "Incident Commander"
+    action_type: str  # LOGIN, INCIDENT_DECLARED, INVESTIGATION_RUN, NOTE_ADDED, STATUS_CHANGED, POSTMORTEM_RETAINED, COPILOT_QUERY
+    details: str
+    incident_id: Optional[str] = None
+    incident_title: Optional[str] = None
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+
+class UserActivityCreate(BaseModel):
+    user_id: Optional[str] = "unknown"
+    user_email: str
+    user_name: Optional[str] = "Incident Commander"
+    action_type: str
+    details: str
+    incident_id: Optional[str] = None
+    incident_title: Optional[str] = None
+    metadata: Dict[str, Any] = Field(default_factory=dict)
 
