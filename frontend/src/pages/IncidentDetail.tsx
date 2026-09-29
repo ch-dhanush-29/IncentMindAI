@@ -318,53 +318,53 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-2 border-b border-[#E2E8F0] dark:border-[#222834] pt-2 text-xs font-mono overflow-x-auto">
+        <div className="flex items-center gap-1.5 p-1.5 bg-[#F8FAFC] dark:bg-[#161B22] border border-[#E2E8F0] dark:border-[#222834] rounded-xl text-xs font-mono overflow-x-auto">
           <button
             onClick={() => setActiveTab('timeline')}
-            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'timeline'
-                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
-                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
+                ? 'bg-[#4F46E5] text-white font-bold shadow-xs'
+                : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-white dark:hover:bg-[#1E2430]'
             }`}
           >
             Lifecycle Stepper
           </button>
           <button
             onClick={() => setActiveTab('symptoms')}
-            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'symptoms'
-                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
-                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
+                ? 'bg-[#4F46E5] text-white font-bold shadow-xs'
+                : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-white dark:hover:bg-[#1E2430]'
             }`}
           >
             Symptoms & Raw Logs
           </button>
           <button
             onClick={() => setActiveTab('investigation')}
-            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'investigation'
-                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
-                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
+                ? 'bg-[#4F46E5] text-white font-bold shadow-xs'
+                : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-white dark:hover:bg-[#1E2430]'
             }`}
           >
             Investigation Findings
           </button>
           <button
             onClick={() => setActiveTab('resolution')}
-            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap ${
               activeTab === 'resolution'
-                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
-                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
+                ? 'bg-[#4F46E5] text-white font-bold shadow-xs'
+                : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-white dark:hover:bg-[#1E2430]'
             }`}
           >
             Confirmed Postmortem
           </button>
           <button
             onClick={() => setActiveTab('notes')}
-            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'notes'
-                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
-                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
+                ? 'bg-[#4F46E5] text-white font-bold shadow-xs'
+                : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-white dark:hover:bg-[#1E2430]'
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5" />
@@ -372,10 +372,10 @@ export const IncidentDetail: React.FC<IncidentDetailProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('audit')}
-            className={`px-3 py-2 border-b-2 font-medium transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-lg font-medium transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               activeTab === 'audit'
-                ? 'border-[#4F46E5] text-[#4F46E5] dark:text-indigo-400 font-bold'
-                : 'border-transparent text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
+                ? 'bg-[#4F46E5] text-white font-bold shadow-xs'
+                : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-white dark:hover:bg-[#1E2430]'
             }`}
           >
             <History className="w-3.5 h-3.5" />

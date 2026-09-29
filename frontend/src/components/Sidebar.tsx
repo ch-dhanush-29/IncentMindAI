@@ -96,30 +96,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onClick={() => setCurrentTab(item.id)}
                 className={`w-full flex items-center ${
                   collapsed ? 'justify-center py-3' : 'justify-between px-3 py-2.5'
-                } rounded-xl text-xs font-medium transition-colors duration-150 relative group cursor-pointer ${
+                } rounded-xl text-xs transition-all duration-150 relative group cursor-pointer ${
                   isActive
-                    ? 'bg-[#EEF2FF] dark:bg-[#1E2536] text-[#4F46E5] dark:text-indigo-400 font-semibold border border-indigo-100 dark:border-indigo-900/50'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#161B22] border border-transparent'
+                    ? 'bg-[#4F46E5] text-white font-semibold shadow-sm shadow-indigo-500/25 border border-[#4338CA] dark:bg-[#4F46E5] dark:text-white dark:border-[#4338CA]'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] hover:bg-[#F8FAFC] dark:hover:bg-[#161B22] border border-transparent font-medium'
                 }`}
                 title={collapsed ? item.label : undefined}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${
-                    isActive ? 'text-[#4F46E5] dark:text-indigo-400' : 'text-[#94A3B8] dark:text-[#64748B] group-hover:text-[#64748B] dark:group-hover:text-[#94A3B8]'
+                    isActive ? 'text-white' : 'text-[#94A3B8] dark:text-[#64748B] group-hover:text-[#64748B] dark:group-hover:text-[#94A3B8]'
                   }`} />
                   {!collapsed && <span className="truncate">{item.label}</span>}
                 </div>
                 {!collapsed && item.badge && (
                   <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border transition-all ${
                     isActive 
-                      ? 'bg-white dark:bg-[#111827] text-[#4F46E5] dark:text-indigo-400 border-indigo-200 dark:border-indigo-800' 
+                      ? 'bg-white/20 text-white border-white/30 font-bold backdrop-blur-xs' 
                       : 'bg-slate-100 dark:bg-[#1F2937] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800'
                   }`}>
                     {item.badge}
                   </span>
                 )}
                 {!collapsed && !item.badge && isActive && (
-                  <ChevronRight className="w-3.5 h-3.5 text-[#4F46E5] dark:text-indigo-400" />
+                  <ChevronRight className="w-3.5 h-3.5 text-white/90" />
                 )}
               </button>
             );
@@ -131,10 +131,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => setCurrentTab('landing')}
               className={`w-full flex items-center ${
                 collapsed ? 'justify-center py-2.5' : 'px-3 py-2'
-              } rounded-xl text-xs font-medium text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] dark:hover:text-indigo-400 hover:bg-[#EEF2FF]/60 dark:hover:bg-[#1E2536]/50 transition-colors cursor-pointer`}
+              } rounded-xl text-xs transition-colors cursor-pointer ${
+                currentTab === 'landing'
+                  ? 'bg-[#4F46E5] text-white font-semibold shadow-sm border border-[#4338CA] dark:bg-[#4F46E5] dark:text-white'
+                  : 'font-medium text-[#64748B] dark:text-[#94A3B8] hover:text-[#4F46E5] dark:hover:text-indigo-400 hover:bg-[#EEF2FF]/60 dark:hover:bg-[#1E2536]/50'
+              }`}
               title="Product Landing Page"
             >
-              <Sparkles className="w-4 h-4 text-[#4F46E5] dark:text-indigo-400 mr-2 flex-shrink-0" />
+              <Sparkles className={`w-4 h-4 mr-2 flex-shrink-0 ${currentTab === 'landing' ? 'text-white' : 'text-[#4F46E5] dark:text-indigo-400'}`} />
               {!collapsed && <span>Product Overview</span>}
             </button>
           </div>

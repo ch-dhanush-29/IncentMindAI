@@ -226,20 +226,20 @@ export const Dashboard: React.FC<{
             <div className="flex w-full rounded-xl bg-[#F8FAFC] dark:bg-[#141820] border border-[#E2E8F0] dark:border-[#222834] p-1 text-xs">
               <button
                 onClick={() => setIrRole('lead')}
-                className={`flex-1 py-1.5 rounded-lg font-medium text-xs transition-all cursor-pointer ${
+                className={`flex-1 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
                   irRole === 'lead'
-                    ? 'bg-white dark:bg-[#1F2633] text-[#172033] dark:text-[#F1F5F9] shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
+                    ? 'bg-[#4F46E5] text-white shadow-xs font-bold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] font-medium'
                 }`}
               >
                 IR Lead
               </button>
               <button
                 onClick={() => setIrRole('second')}
-                className={`flex-1 py-1.5 rounded-lg font-medium text-xs transition-all cursor-pointer ${
+                className={`flex-1 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
                   irRole === 'second'
-                    ? 'bg-white dark:bg-[#1F2633] text-[#172033] dark:text-[#F1F5F9] shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
+                    ? 'bg-[#4F46E5] text-white shadow-xs font-bold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] font-medium'
                 }`}
               >
                 IR Second
@@ -439,20 +439,20 @@ export const Dashboard: React.FC<{
             <div className="flex w-full rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] border border-[#E2E8F0] dark:border-[#222834] p-1 text-xs">
               <button
                 onClick={() => setLeaderRole('lead')}
-                className={`flex-1 py-1 rounded-lg font-medium text-xs transition-all cursor-pointer ${
+                className={`flex-1 py-1 rounded-lg text-xs transition-all cursor-pointer ${
                   leaderRole === 'lead'
-                    ? 'bg-white dark:bg-[#252D3D] text-[#172033] dark:text-[#F1F5F9] shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8]'
+                    ? 'bg-[#4F46E5] text-white shadow-xs font-bold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] font-medium'
                 }`}
               >
                 IR Lead
               </button>
               <button
                 onClick={() => setLeaderRole('second')}
-                className={`flex-1 py-1 rounded-lg font-medium text-xs transition-all cursor-pointer ${
+                className={`flex-1 py-1 rounded-lg text-xs transition-all cursor-pointer ${
                   leaderRole === 'second'
-                    ? 'bg-white dark:bg-[#252D3D] text-[#172033] dark:text-[#F1F5F9] shadow-xs font-semibold'
-                    : 'text-[#64748B] dark:text-[#94A3B8]'
+                    ? 'bg-[#4F46E5] text-white shadow-xs font-bold'
+                    : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] font-medium'
                 }`}
               >
                 IR Second
@@ -565,30 +565,30 @@ export const Dashboard: React.FC<{
           <div className="flex items-center rounded-xl bg-[#F8FAFC] dark:bg-[#181D26] p-1 border border-[#E2E8F0] dark:border-[#222834] text-xs">
             <button
               onClick={() => setActiveVisualTab('dashboard')}
-              className={`px-3 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs transition-colors cursor-pointer ${
                 activeVisualTab === 'dashboard' 
-                  ? 'bg-white dark:bg-[#252D3D] text-[#4F46E5] dark:text-indigo-400 shadow-xs' 
-                  : 'text-[#64748B] dark:text-[#94A3B8]'
+                  ? 'bg-[#4F46E5] text-white shadow-xs font-bold' 
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] font-medium'
               }`}
             >
               Overview
             </button>
             <button
               onClick={() => setActiveVisualTab('memory')}
-              className={`px-3 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs transition-colors cursor-pointer ${
                 activeVisualTab === 'memory' 
-                  ? 'bg-white dark:bg-[#252D3D] text-[#4F46E5] dark:text-indigo-400 shadow-xs' 
-                  : 'text-[#64748B] dark:text-[#94A3B8]'
+                  ? 'bg-[#4F46E5] text-white shadow-xs font-bold' 
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] font-medium'
               }`}
             >
               Past Knowledge
             </button>
             <button
               onClick={() => setActiveVisualTab('analysis')}
-              className={`px-3 py-1 rounded-lg font-medium transition-colors cursor-pointer ${
+              className={`px-3 py-1 rounded-lg text-xs transition-colors cursor-pointer ${
                 activeVisualTab === 'analysis' 
-                  ? 'bg-white dark:bg-[#252D3D] text-[#4F46E5] dark:text-indigo-400 shadow-xs' 
-                  : 'text-[#64748B] dark:text-[#94A3B8]'
+                  ? 'bg-[#4F46E5] text-white shadow-xs font-bold' 
+                  : 'text-[#64748B] dark:text-[#94A3B8] hover:text-[#172033] dark:hover:text-[#F1F5F9] font-medium'
               }`}
             >
               Root Cause Tree

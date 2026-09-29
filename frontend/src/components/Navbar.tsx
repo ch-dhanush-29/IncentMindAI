@@ -103,7 +103,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>IRHQ</span>
           </div>
           <span className="text-[#94A3B8] dark:text-[#475569] font-mono text-sm">/</span>
-          <span className="text-sm font-semibold text-[#172033] dark:text-[#F1F5F9] font-sans">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800/80 text-xs font-bold text-indigo-700 dark:text-indigo-300 shadow-2xs font-sans">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#4F46E5] dark:bg-indigo-400" />
             {currentTitle}
           </span>
         </div>

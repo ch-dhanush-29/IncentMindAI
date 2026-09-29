@@ -232,7 +232,7 @@ export const MemoryExplorer: React.FC = () => {
               onClick={() => setServiceFilter(srv)}
               className={`px-2.5 py-1 rounded-xl border transition-colors cursor-pointer ${
                 serviceFilter === srv
-                  ? 'bg-[#EEF2FF] dark:bg-indigo-950/60 text-[#4F46E5] dark:text-indigo-400 border-indigo-200 dark:border-indigo-800 font-bold'
+                  ? 'bg-[#4F46E5] text-white border-[#4338CA] font-bold shadow-xs'
                   : 'bg-white dark:bg-[#181D26] text-[#64748B] dark:text-[#94A3B8] border-[#E2E8F0] dark:border-[#222834] hover:text-[#172033] dark:hover:text-[#F1F5F9]'
               }`}
             >
